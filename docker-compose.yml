@@ -109,7 +109,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
       - PROJECT_NAME=${PROJECT_NAME}
       - STACK_NAME=${STACK_NAME}
-
+      
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
       interval: 10s
@@ -164,6 +164,35 @@ services:
 
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+
+  frontend2:
+    image: '${DOCKER_IMAGE_FRONTEND2?Variable not set}:${TAG-latest}'
+    restart: always
+    networks:
+      - traefik-public
+      - default
+    build:
+      context: ./frontend2
+      args:
+        - VITE_API_URL=https://api.${DOMAIN?Variable not set}
+        - NODE_ENV=production
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik-public
+      - traefik.constraint-label=traefik-public
+
+      - traefik.http.services.${STACK_NAME?Variable not set}-frontend2.loadbalancer.server.port=3000
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-http.rule=Host(`dashboard2.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-http.entrypoints=http
+
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-https.rule=Host(`dashboard2.${DOMAIN?Variable not set}`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-https.entrypoints=https
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-https.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-https.tls.certresolver=le
+
+      # Enable redirection for HTTP and HTTPS
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend2-http.middlewares=https-redirect
 volumes:
   app-db-data:
 

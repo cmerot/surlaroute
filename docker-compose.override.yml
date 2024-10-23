@@ -102,6 +102,16 @@ services:
         - VITE_API_URL=http://localhost:8000
         - NODE_ENV=development
 
+  frontend2:
+    restart: "no"
+    ports:
+      - "5174:3000"
+    build:
+      context: ./frontend2
+      args:
+        - VITE_API_URL=http://localhost:8000
+        - NODE_ENV=development
+
 networks:
   traefik-public:
     # For local dev, don't expect an external Traefik network
