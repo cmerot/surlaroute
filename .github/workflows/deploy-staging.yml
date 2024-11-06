@@ -12,21 +12,26 @@ jobs:
     runs-on:
       - self-hosted
       - staging
+    # Allow to load variables and secrets from github environments
+    environment: staging
     env:
       ENVIRONMENT: staging
-      DOMAIN: ${{ secrets.DOMAIN_STAGING }}
-      STACK_NAME: ${{ secrets.STACK_NAME_STAGING }}
+      DOMAIN: ${{ vars.DOMAIN }}
+      STACK_NAME: ${{ vars.STACK_NAME }}
       SECRET_KEY: ${{ secrets.SECRET_KEY }}
-      FIRST_SUPERUSER: ${{ secrets.FIRST_SUPERUSER }}
+      FIRST_SUPERUSER: ${{ vars.FIRST_SUPERUSER }}
       FIRST_SUPERUSER_PASSWORD: ${{ secrets.FIRST_SUPERUSER_PASSWORD }}
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_USER: ${{ secrets.SMTP_USER }}
+      SMTP_HOST: ${{ vars.SMTP_HOST }}
+      SMTP_USER: ${{ vars.SMTP_USER }}
       SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-      EMAILS_FROM_EMAIL: ${{ secrets.EMAILS_FROM_EMAIL }}
+      EMAILS_FROM_EMAIL: ${{ vars.EMAILS_FROM_EMAIL }}
       POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
       SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      BACKEND_CORS_ORIGINS: ${{vars.BACKEND_CORS_ORIGINS}}
+      PROJECT_NAME: ${{vars.PROJECT_NAME}}
+      FRONTEND_HOST: ${{vars.FRONTEND_HOST}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - run: docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME_STAGING }} build
-      - run: docker compose -f docker-compose.yml --project-name ${{ secrets.STACK_NAME_STAGING }} up -d
+      - run: docker compose -f docker-compose.yml --project-name ${{ vars.STACK_NAME }} build
+      - run: docker compose -f docker-compose.yml --project-name ${{ vars.STACK_NAME }} up -d
