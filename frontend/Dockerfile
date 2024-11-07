@@ -1,23 +1,19 @@
-# Stage 0, "build-stage", based on Node.js, to build and compile the frontend
-FROM node:20 AS build-stage
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 
-WORKDIR /app
-
-COPY package*.json /app/
-
-RUN npm install
-
+FROM base AS build
 COPY ./ /app/
-
+COPY package*.json /app/
+WORKDIR /app
 ARG VITE_API_URL=${VITE_API_URL}
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
 
-RUN npm run build
-
-
-# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
-FROM nginx:1
-
-COPY --from=build-stage /app/dist/ /usr/share/nginx/html
-
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx-backend-not-found.conf /etc/nginx/extra-conf.d/backend-not-found.conf
+FROM base
+COPY --from=build /app/build/ build/
+COPY package.json .
+EXPOSE 3000
+ENV NODE_ENV=production
+CMD ["node", "build"]

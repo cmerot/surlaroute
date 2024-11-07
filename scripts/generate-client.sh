@@ -3,11 +3,14 @@
 set -e
 set -x
 
+rm -rf frontend/src/lib/backend/client frontend/src/lib/backend/openapi.json
+mkdir -p frontend/src/lib/backend
+
 cd backend
-python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" > ../openapi.json
+python -c "import app.main; import json; print(json.dumps(app.main.app.openapi()))" > ../frontend/src/lib/backend/openapi.json
 cd ..
-node frontend/modify-openapi-operationids.js
-mv openapi.json frontend/
+
 cd frontend
-npm run generate-client
-npx biome format --write ./src/client
+pnpm run generate-client
+pnpm run format
+cd ..
