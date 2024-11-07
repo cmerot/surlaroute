@@ -6,7 +6,6 @@
 	import { Input } from '$lib/components/ui/input';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
 	import { addCrumb } from '$lib/utils';
-	import { Mail, User, Plus } from 'lucide-svelte';
 	import { type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { formSchema, type FormSchema } from './schema';
