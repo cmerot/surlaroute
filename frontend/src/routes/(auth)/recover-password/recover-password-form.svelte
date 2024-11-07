@@ -29,5 +29,5 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button variant="secondary" class="w-full font-bold">Continuer</Form.Button>
+	<Form.Button class="w-full font-bold">Continuer</Form.Button>
 </form>
