@@ -1,12 +1,11 @@
 import { dev } from '$app/environment';
-
-interface Session {
+export interface Session {
 	id: string;
 	data?: SessionData;
 	expiresAt: number;
 }
 
-interface SessionData {
+export interface SessionData {
 	access_token: string | null;
 }
 

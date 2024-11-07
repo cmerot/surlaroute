@@ -5,8 +5,6 @@ import { client } from '$lib/backend/client';
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
-console.log(VITE_API_URL);
-
 export const handle: Handle = async ({ event, resolve }) => {
 	let sessionId = event.cookies.get('sessionId');
 	if (!sessionId) {
@@ -22,14 +20,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	if (!sessionStore.get(sessionId)) {
 		sessionStore.create(sessionId, { access_token: null }, 30 * 24 * 60 * 60); // 30 days expiration
 	}
-
 	event.locals.session = sessionStore.get(sessionId);
 	const response = await resolve(event);
 	return response;
 };
 
 function initializeServer() {
-	console.log('server: initialize server');
 	client.setConfig({
 		baseUrl: VITE_API_URL
 	});
