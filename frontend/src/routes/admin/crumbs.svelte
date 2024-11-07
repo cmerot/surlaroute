@@ -6,7 +6,6 @@
 	const data: { [key: string]: string } = getContext('crumbs-data');
 
 	let crumbs: { title: string; url: string }[] = $derived.by(() => {
-		console.log('derived by', data);
 		const tokens = $page.url.pathname.split('/').filter((t) => t !== '');
 		let tokenPath = '';
 		return tokens

@@ -11,7 +11,6 @@ export type CrumbsData = {
 export const addCrumb = (url: string, title: string) => {
 	const data: CrumbsData = getContext('crumbs-data');
 	data[url] = title;
-	console.log('addCrumb', data);
 };
 
 export function cn(...inputs: ClassValue[]) {

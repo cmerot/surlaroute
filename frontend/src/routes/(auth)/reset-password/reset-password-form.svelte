@@ -38,5 +38,5 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button variant="secondary" class="w-full font-bold">Changer le mot de passe</Form.Button>
+	<Form.Button class="w-full font-bold">Changer le mot de passe</Form.Button>
 </form>
