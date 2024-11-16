@@ -7,9 +7,9 @@ import {
 	urlSearchParamsBodySerializer
 } from '@hey-api/client-fetch';
 import type {
-	LoginLoginAccessTokenData,
-	LoginLoginAccessTokenError,
-	LoginLoginAccessTokenResponse,
+	LoginAccessTokenData,
+	LoginAccessTokenError,
+	LoginAccessTokenResponse,
 	LoginTestTokenError,
 	LoginTestTokenResponse,
 	LoginRecoverPasswordData,
@@ -21,68 +21,99 @@ import type {
 	LoginRecoverPasswordHtmlContentData,
 	LoginRecoverPasswordHtmlContentError,
 	LoginRecoverPasswordHtmlContentResponse,
-	UsersReadUsersData,
-	UsersReadUsersError,
-	UsersReadUsersResponse,
-	UsersCreateUserData,
-	UsersCreateUserError,
-	UsersCreateUserResponse,
-	UsersReadUserMeError,
-	UsersReadUserMeResponse,
-	UsersDeleteUserMeError,
-	UsersDeleteUserMeResponse,
-	UsersUpdateUserMeData,
-	UsersUpdateUserMeError,
-	UsersUpdateUserMeResponse,
+	UsersReadData,
+	UsersReadError,
+	UsersReadResponse,
+	UsersCreateData,
+	UsersCreateError,
+	UsersCreateResponse,
+	UsersReadMeError,
+	UsersReadMeResponse,
+	UsersDeleteMeError,
+	UsersDeleteMeResponse,
+	UsersUpdateMeData,
+	UsersUpdateMeError,
+	UsersUpdateMeResponse,
 	UsersUpdatePasswordMeData,
 	UsersUpdatePasswordMeError,
 	UsersUpdatePasswordMeResponse,
-	UsersRegisterUserData,
-	UsersRegisterUserError,
-	UsersRegisterUserResponse,
-	UsersReadUserByIdData,
-	UsersReadUserByIdError,
-	UsersReadUserByIdResponse,
-	UsersUpdateUserData,
-	UsersUpdateUserError,
-	UsersUpdateUserResponse,
-	UsersDeleteUserData,
-	UsersDeleteUserError,
-	UsersDeleteUserResponse,
+	UsersRegisterData,
+	UsersRegisterError,
+	UsersRegisterResponse,
+	UsersReadByIdData,
+	UsersReadByIdError,
+	UsersReadByIdResponse,
+	UsersUpdateData,
+	UsersUpdateError,
+	UsersUpdateResponse,
+	UsersDeleteData,
+	UsersDeleteError,
+	UsersDeleteResponse,
 	UtilsTestEmailData,
 	UtilsTestEmailError,
 	UtilsTestEmailResponse,
 	UtilsHealthCheckError,
 	UtilsHealthCheckResponse,
-	ItemsReadItemsData,
-	ItemsReadItemsError,
-	ItemsReadItemsResponse,
-	ItemsCreateItemData,
-	ItemsCreateItemError,
-	ItemsCreateItemResponse,
-	ItemsReadItemData,
-	ItemsReadItemError,
-	ItemsReadItemResponse,
-	ItemsUpdateItemData,
-	ItemsUpdateItemError,
-	ItemsUpdateItemResponse,
-	ItemsDeleteItemData,
-	ItemsDeleteItemError,
-	ItemsDeleteItemResponse
-} from './types.gen';
+	UtilsLoadFixturesError,
+	UtilsLoadFixturesResponse,
+	ActivitiesReadActivitiesError,
+	ActivitiesReadActivitiesResponse,
+	ActivitiesCreateActivityData,
+	ActivitiesCreateActivityError,
+	ActivitiesCreateActivityResponse,
+	ActivitiesUpdateActivityData,
+	ActivitiesUpdateActivityError,
+	ActivitiesUpdateActivityResponse,
+	ActivitiesReadActivitiesByPathData,
+	ActivitiesReadActivitiesByPathError,
+	ActivitiesReadActivitiesByPathResponse,
+	ActivitiesDeleteActivityData,
+	ActivitiesDeleteActivityError,
+	ActivitiesDeleteActivityResponse,
+	PeopleCreatePersonData,
+	PeopleCreatePersonError,
+	PeopleCreatePersonResponse,
+	PeopleReadPeopleData,
+	PeopleReadPeopleError,
+	PeopleReadPeopleResponse,
+	PeopleReadPersonByIdData,
+	PeopleReadPersonByIdError,
+	PeopleReadPersonByIdResponse,
+	PeopleUpdatePersonData,
+	PeopleUpdatePersonError,
+	PeopleUpdatePersonResponse,
+	PeopleDeletePersonData,
+	PeopleDeletePersonError,
+	PeopleDeletePersonResponse,
+	OrganisationsCreateOrganisationData,
+	OrganisationsCreateOrganisationError,
+	OrganisationsCreateOrganisationResponse,
+	OrganisationsReadOrganisationsData,
+	OrganisationsReadOrganisationsError,
+	OrganisationsReadOrganisationsResponse,
+	OrganisationsReadOrganisationByIdData,
+	OrganisationsReadOrganisationByIdError,
+	OrganisationsReadOrganisationByIdResponse,
+	OrganisationsUpdateOrganisationData,
+	OrganisationsUpdateOrganisationError,
+	OrganisationsUpdateOrganisationResponse,
+	OrganisationsDeleteOrganisationData,
+	OrganisationsDeleteOrganisationError,
+	OrganisationsDeleteOrganisationResponse
+} from './types.gen.ts';
 
 export const client = createClient(createConfig());
 
 /**
- * Login Access Token
+ * Access Token
  * OAuth2 compatible token login, get an access token for future requests
  */
-export const loginLoginAccessToken = <ThrowOnError extends boolean = false>(
-	options: Options<LoginLoginAccessTokenData, ThrowOnError>
+export const loginAccessToken = <ThrowOnError extends boolean = false>(
+	options: Options<LoginAccessTokenData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).post<
-		LoginLoginAccessTokenResponse,
-		LoginLoginAccessTokenError,
+		LoginAccessTokenResponse,
+		LoginAccessTokenError,
 		ThrowOnError
 	>({
 		...options,
@@ -91,7 +122,7 @@ export const loginLoginAccessToken = <ThrowOnError extends boolean = false>(
 			'Content-Type': 'application/x-www-form-urlencoded',
 			...options?.headers
 		},
-		url: '/api/v1/login/access-token'
+		url: '/api/login/access-token'
 	});
 };
 
@@ -108,7 +139,7 @@ export const loginTestToken = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/login/test-token'
+		url: '/api/login/test-token'
 	});
 };
 
@@ -125,7 +156,7 @@ export const loginRecoverPassword = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/password-recovery/{email}'
+		url: '/api/password-recovery/{email}'
 	});
 };
 
@@ -142,7 +173,7 @@ export const loginResetPassword = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/reset-password/'
+		url: '/api/reset-password/'
 	});
 };
 
@@ -159,91 +190,79 @@ export const loginRecoverPasswordHtmlContent = <ThrowOnError extends boolean = f
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/password-recovery-html-content/{email}'
+		url: '/api/password-recovery-html-content/{email}'
 	});
 };
 
 /**
- * Read Users
- * Retrieve users.
+ * Read
+ * Read users.
  */
-export const usersReadUsers = <ThrowOnError extends boolean = false>(
-	options?: Options<UsersReadUsersData, ThrowOnError>
+export const usersRead = <ThrowOnError extends boolean = false>(
+	options?: Options<UsersReadData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).get<UsersReadUsersResponse, UsersReadUsersError, ThrowOnError>(
-		{
-			...options,
-			url: '/api/v1/users/'
-		}
-	);
+	return (options?.client ?? client).get<UsersReadResponse, UsersReadError, ThrowOnError>({
+		...options,
+		url: '/api/users/'
+	});
 };
 
 /**
- * Create User
+ * Create
  * Create new user.
  */
-export const usersCreateUser = <ThrowOnError extends boolean = false>(
-	options: Options<UsersCreateUserData, ThrowOnError>
+export const usersCreate = <ThrowOnError extends boolean = false>(
+	options: Options<UsersCreateData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).post<
-		UsersCreateUserResponse,
-		UsersCreateUserError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).post<UsersCreateResponse, UsersCreateError, ThrowOnError>({
 		...options,
-		url: '/api/v1/users/'
+		url: '/api/users/'
 	});
 };
 
 /**
- * Read User Me
+ * Read Me
  * Get current user.
  */
-export const usersReadUserMe = <ThrowOnError extends boolean = false>(
+export const usersReadMe = <ThrowOnError extends boolean = false>(
 	options?: Options<unknown, ThrowOnError>
 ) => {
-	return (options?.client ?? client).get<
-		UsersReadUserMeResponse,
-		UsersReadUserMeError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).get<UsersReadMeResponse, UsersReadMeError, ThrowOnError>({
 		...options,
-		url: '/api/v1/users/me'
+		url: '/api/users/me'
 	});
 };
 
 /**
- * Delete User Me
+ * Delete Me
  * Delete own user.
  */
-export const usersDeleteUserMe = <ThrowOnError extends boolean = false>(
+export const usersDeleteMe = <ThrowOnError extends boolean = false>(
 	options?: Options<unknown, ThrowOnError>
 ) => {
 	return (options?.client ?? client).delete<
-		UsersDeleteUserMeResponse,
-		UsersDeleteUserMeError,
+		UsersDeleteMeResponse,
+		UsersDeleteMeError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/me'
+		url: '/api/users/me'
 	});
 };
 
 /**
- * Update User Me
+ * Update Me
  * Update own user.
  */
-export const usersUpdateUserMe = <ThrowOnError extends boolean = false>(
-	options: Options<UsersUpdateUserMeData, ThrowOnError>
+export const usersUpdateMe = <ThrowOnError extends boolean = false>(
+	options: Options<UsersUpdateMeData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).patch<
-		UsersUpdateUserMeResponse,
-		UsersUpdateUserMeError,
-		ThrowOnError
-	>({
-		...options,
-		url: '/api/v1/users/me'
-	});
+	return (options?.client ?? client).patch<UsersUpdateMeResponse, UsersUpdateMeError, ThrowOnError>(
+		{
+			...options,
+			url: '/api/users/me'
+		}
+	);
 };
 
 /**
@@ -259,75 +278,59 @@ export const usersUpdatePasswordMe = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/me/password'
+		url: '/api/users/me/password'
 	});
 };
 
 /**
- * Register User
+ * Register
  * Create new user without the need to be logged in.
  */
-export const usersRegisterUser = <ThrowOnError extends boolean = false>(
-	options: Options<UsersRegisterUserData, ThrowOnError>
+export const usersRegister = <ThrowOnError extends boolean = false>(
+	options: Options<UsersRegisterData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).post<
-		UsersRegisterUserResponse,
-		UsersRegisterUserError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).post<UsersRegisterResponse, UsersRegisterError, ThrowOnError>({
 		...options,
-		url: '/api/v1/users/signup'
+		url: '/api/users/signup'
 	});
 };
 
 /**
- * Read User By Id
+ * Read By Id
  * Get a specific user by id.
  */
-export const usersReadUserById = <ThrowOnError extends boolean = false>(
-	options: Options<UsersReadUserByIdData, ThrowOnError>
+export const usersReadById = <ThrowOnError extends boolean = false>(
+	options: Options<UsersReadByIdData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).get<
-		UsersReadUserByIdResponse,
-		UsersReadUserByIdError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).get<UsersReadByIdResponse, UsersReadByIdError, ThrowOnError>({
 		...options,
-		url: '/api/v1/users/{user_id}'
+		url: '/api/users/{user_id}'
 	});
 };
 
 /**
- * Update User
+ * Update
  * Update a user.
  */
-export const usersUpdateUser = <ThrowOnError extends boolean = false>(
-	options: Options<UsersUpdateUserData, ThrowOnError>
+export const usersUpdate = <ThrowOnError extends boolean = false>(
+	options: Options<UsersUpdateData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).patch<
-		UsersUpdateUserResponse,
-		UsersUpdateUserError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).patch<UsersUpdateResponse, UsersUpdateError, ThrowOnError>({
 		...options,
-		url: '/api/v1/users/{user_id}'
+		url: '/api/users/{user_id}'
 	});
 };
 
 /**
- * Delete User
+ * Delete
  * Delete a user.
  */
-export const usersDeleteUser = <ThrowOnError extends boolean = false>(
-	options: Options<UsersDeleteUserData, ThrowOnError>
+export const usersDelete = <ThrowOnError extends boolean = false>(
+	options: Options<UsersDeleteData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).delete<
-		UsersDeleteUserResponse,
-		UsersDeleteUserError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).delete<UsersDeleteResponse, UsersDeleteError, ThrowOnError>({
 		...options,
-		url: '/api/v1/users/{user_id}'
+		url: '/api/users/{user_id}'
 	});
 };
 
@@ -344,7 +347,7 @@ export const utilsTestEmail = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/utils/test-email/'
+		url: '/api/utils/test-email/'
 	});
 };
 
@@ -360,85 +363,279 @@ export const utilsHealthCheck = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/utils/health-check/'
+		url: '/api/utils/health-check/'
 	});
 };
 
 /**
- * Read Items
- * Retrieve items.
+ * Load Fixtures
  */
-export const itemsReadItems = <ThrowOnError extends boolean = false>(
-	options?: Options<ItemsReadItemsData, ThrowOnError>
+export const utilsLoadFixtures = <ThrowOnError extends boolean = false>(
+	options?: Options<unknown, ThrowOnError>
 ) => {
-	return (options?.client ?? client).get<ItemsReadItemsResponse, ItemsReadItemsError, ThrowOnError>(
-		{
-			...options,
-			url: '/api/v1/items/'
-		}
-	);
+	return (options?.client ?? client).get<
+		UtilsLoadFixturesResponse,
+		UtilsLoadFixturesError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/utils/load-fixtures'
+	});
 };
 
 /**
- * Create Item
- * Create new item.
+ * Read Activities
+ * Read all activities.
  */
-export const itemsCreateItem = <ThrowOnError extends boolean = false>(
-	options: Options<ItemsCreateItemData, ThrowOnError>
+export const activitiesReadActivities = <ThrowOnError extends boolean = false>(
+	options?: Options<unknown, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		ActivitiesReadActivitiesResponse,
+		ActivitiesReadActivitiesError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/activities/'
+	});
+};
+
+/**
+ * Create Activity
+ * Create an activity.
+ */
+export const activitiesCreateActivity = <ThrowOnError extends boolean = false>(
+	options: Options<ActivitiesCreateActivityData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).post<
-		ItemsCreateItemResponse,
-		ItemsCreateItemError,
+		ActivitiesCreateActivityResponse,
+		ActivitiesCreateActivityError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/items/'
+		url: '/api/directory/activities/'
 	});
 };
 
 /**
- * Read Item
- * Get item by ID.
+ * Update Activity
+ * Update an activity.
+ *
+ * If the name or the parent path is patched, it will also update children.
  */
-export const itemsReadItem = <ThrowOnError extends boolean = false>(
-	options: Options<ItemsReadItemData, ThrowOnError>
+export const activitiesUpdateActivity = <ThrowOnError extends boolean = false>(
+	options: Options<ActivitiesUpdateActivityData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).get<ItemsReadItemResponse, ItemsReadItemError, ThrowOnError>({
-		...options,
-		url: '/api/v1/items/{id}'
-	});
-};
-
-/**
- * Update Item
- * Update an item.
- */
-export const itemsUpdateItem = <ThrowOnError extends boolean = false>(
-	options: Options<ItemsUpdateItemData, ThrowOnError>
-) => {
-	return (options?.client ?? client).put<
-		ItemsUpdateItemResponse,
-		ItemsUpdateItemError,
+	return (options?.client ?? client).patch<
+		ActivitiesUpdateActivityResponse,
+		ActivitiesUpdateActivityError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/items/{id}'
+		url: '/api/directory/activities/{path}'
 	});
 };
 
 /**
- * Delete Item
- * Delete an item.
+ * Read Activities By Path
+ * Read activities from a path.
  */
-export const itemsDeleteItem = <ThrowOnError extends boolean = false>(
-	options: Options<ItemsDeleteItemData, ThrowOnError>
+export const activitiesReadActivitiesByPath = <ThrowOnError extends boolean = false>(
+	options: Options<ActivitiesReadActivitiesByPathData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		ActivitiesReadActivitiesByPathResponse,
+		ActivitiesReadActivitiesByPathError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/activities/{path}'
+	});
+};
+
+/**
+ * Delete Activity
+ * Delete an activity and its children.
+ */
+export const activitiesDeleteActivity = <ThrowOnError extends boolean = false>(
+	options: Options<ActivitiesDeleteActivityData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).delete<
-		ItemsDeleteItemResponse,
-		ItemsDeleteItemError,
+		ActivitiesDeleteActivityResponse,
+		ActivitiesDeleteActivityError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/items/{id}'
+		url: '/api/directory/activities/{path}'
+	});
+};
+
+/**
+ * Create Person
+ * Create a person.
+ */
+export const peopleCreatePerson = <ThrowOnError extends boolean = false>(
+	options: Options<PeopleCreatePersonData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		PeopleCreatePersonResponse,
+		PeopleCreatePersonError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/people/'
+	});
+};
+
+/**
+ * Read People
+ * Read paginated people.
+ */
+export const peopleReadPeople = <ThrowOnError extends boolean = false>(
+	options?: Options<PeopleReadPeopleData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		PeopleReadPeopleResponse,
+		PeopleReadPeopleError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/people/'
+	});
+};
+
+/**
+ * Read Person By Id
+ * Read a person by its id.
+ */
+export const peopleReadPersonById = <ThrowOnError extends boolean = false>(
+	options: Options<PeopleReadPersonByIdData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		PeopleReadPersonByIdResponse,
+		PeopleReadPersonByIdError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/people/{id}'
+	});
+};
+
+/**
+ * Update Person
+ * Update a person.
+ */
+export const peopleUpdatePerson = <ThrowOnError extends boolean = false>(
+	options: Options<PeopleUpdatePersonData, ThrowOnError>
+) => {
+	return (options?.client ?? client).patch<
+		PeopleUpdatePersonResponse,
+		PeopleUpdatePersonError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/people/{id}'
+	});
+};
+
+/**
+ * Delete Person
+ * Delete a person.
+ */
+export const peopleDeletePerson = <ThrowOnError extends boolean = false>(
+	options: Options<PeopleDeletePersonData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		PeopleDeletePersonResponse,
+		PeopleDeletePersonError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/people/{id}'
+	});
+};
+
+/**
+ * Create Organisation
+ * Create an organisation.
+ */
+export const organisationsCreateOrganisation = <ThrowOnError extends boolean = false>(
+	options: Options<OrganisationsCreateOrganisationData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		OrganisationsCreateOrganisationResponse,
+		OrganisationsCreateOrganisationError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/organisations/'
+	});
+};
+
+/**
+ * Read Organisations
+ * Read paginated organisations.
+ */
+export const organisationsReadOrganisations = <ThrowOnError extends boolean = false>(
+	options?: Options<OrganisationsReadOrganisationsData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		OrganisationsReadOrganisationsResponse,
+		OrganisationsReadOrganisationsError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/organisations/'
+	});
+};
+
+/**
+ * Read Organisation By Id
+ * Read an organisation by its id.
+ */
+export const organisationsReadOrganisationById = <ThrowOnError extends boolean = false>(
+	options: Options<OrganisationsReadOrganisationByIdData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		OrganisationsReadOrganisationByIdResponse,
+		OrganisationsReadOrganisationByIdError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/organisations/{id}'
+	});
+};
+
+/**
+ * Update Organisation
+ * Update an organisation.
+ */
+export const organisationsUpdateOrganisation = <ThrowOnError extends boolean = false>(
+	options: Options<OrganisationsUpdateOrganisationData, ThrowOnError>
+) => {
+	return (options?.client ?? client).patch<
+		OrganisationsUpdateOrganisationResponse,
+		OrganisationsUpdateOrganisationError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/organisations/{id}'
+	});
+};
+
+/**
+ * Delete Organisation
+ * Delete an organisation.
+ */
+export const organisationsDeleteOrganisation = <ThrowOnError extends boolean = false>(
+	options: Options<OrganisationsDeleteOrganisationData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		OrganisationsDeleteOrganisationResponse,
+		OrganisationsDeleteOrganisationError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/organisations/{id}'
 	});
 };

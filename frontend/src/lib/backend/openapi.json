@@ -1,17 +1,17 @@
 {
 	"openapi": "3.1.0",
-	"info": { "title": "Full Stack FastAPI Project", "version": "0.1.0" },
+	"info": { "title": "Sur la route", "version": "0.1.0" },
 	"paths": {
-		"/api/v1/login/access-token": {
+		"/api/login/access-token": {
 			"post": {
 				"tags": ["login"],
-				"summary": "Login Access Token",
+				"summary": "Access Token",
 				"description": "OAuth2 compatible token login, get an access token for future requests",
-				"operationId": "login-login_access_token",
+				"operationId": "login-access_token",
 				"requestBody": {
 					"content": {
 						"application/x-www-form-urlencoded": {
-							"schema": { "$ref": "#/components/schemas/Body_login-login_access_token" }
+							"schema": { "$ref": "#/components/schemas/Body_login-access_token" }
 						}
 					},
 					"required": true
@@ -34,7 +34,7 @@
 				}
 			}
 		},
-		"/api/v1/login/test-token": {
+		"/api/login/test-token": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Test Token",
@@ -51,7 +51,7 @@
 				"security": [{ "OAuth2PasswordBearer": [] }]
 			}
 		},
-		"/api/v1/password-recovery/{email}": {
+		"/api/password-recovery/{email}": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Recover Password",
@@ -83,7 +83,7 @@
 				}
 			}
 		},
-		"/api/v1/reset-password/": {
+		"/api/reset-password/": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Reset Password",
@@ -113,7 +113,7 @@
 				}
 			}
 		},
-		"/api/v1/password-recovery-html-content/{email}": {
+		"/api/password-recovery-html-content/{email}": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Recover Password Html Content",
@@ -144,12 +144,12 @@
 				}
 			}
 		},
-		"/api/v1/users/": {
+		"/api/users/": {
 			"get": {
 				"tags": ["users"],
-				"summary": "Read Users",
-				"description": "Retrieve users.",
-				"operationId": "users-read_users",
+				"summary": "Read",
+				"description": "Read users.",
+				"operationId": "users-read",
 				"security": [{ "OAuth2PasswordBearer": [] }],
 				"parameters": [
 					{
@@ -184,9 +184,9 @@
 			},
 			"post": {
 				"tags": ["users"],
-				"summary": "Create User",
+				"summary": "Create",
 				"description": "Create new user.",
-				"operationId": "users-create_user",
+				"operationId": "users-create",
 				"security": [{ "OAuth2PasswordBearer": [] }],
 				"requestBody": {
 					"required": true,
@@ -212,12 +212,12 @@
 				}
 			}
 		},
-		"/api/v1/users/me": {
+		"/api/users/me": {
 			"get": {
 				"tags": ["users"],
-				"summary": "Read User Me",
+				"summary": "Read Me",
 				"description": "Get current user.",
-				"operationId": "users-read_user_me",
+				"operationId": "users-read_me",
 				"responses": {
 					"200": {
 						"description": "Successful Response",
@@ -230,9 +230,9 @@
 			},
 			"delete": {
 				"tags": ["users"],
-				"summary": "Delete User Me",
+				"summary": "Delete Me",
 				"description": "Delete own user.",
-				"operationId": "users-delete_user_me",
+				"operationId": "users-delete_me",
 				"responses": {
 					"200": {
 						"description": "Successful Response",
@@ -245,9 +245,9 @@
 			},
 			"patch": {
 				"tags": ["users"],
-				"summary": "Update User Me",
+				"summary": "Update Me",
 				"description": "Update own user.",
-				"operationId": "users-update_user_me",
+				"operationId": "users-update_me",
 				"requestBody": {
 					"content": {
 						"application/json": { "schema": { "$ref": "#/components/schemas/UserUpdateMe" } }
@@ -273,7 +273,7 @@
 				"security": [{ "OAuth2PasswordBearer": [] }]
 			}
 		},
-		"/api/v1/users/me/password": {
+		"/api/users/me/password": {
 			"patch": {
 				"tags": ["users"],
 				"summary": "Update Password Me",
@@ -304,12 +304,12 @@
 				"security": [{ "OAuth2PasswordBearer": [] }]
 			}
 		},
-		"/api/v1/users/signup": {
+		"/api/users/signup": {
 			"post": {
 				"tags": ["users"],
-				"summary": "Register User",
+				"summary": "Register",
 				"description": "Create new user without the need to be logged in.",
-				"operationId": "users-register_user",
+				"operationId": "users-register",
 				"requestBody": {
 					"content": {
 						"application/json": { "schema": { "$ref": "#/components/schemas/UserRegister" } }
@@ -334,12 +334,12 @@
 				}
 			}
 		},
-		"/api/v1/users/{user_id}": {
+		"/api/users/{user_id}": {
 			"get": {
 				"tags": ["users"],
-				"summary": "Read User By Id",
+				"summary": "Read By Id",
 				"description": "Get a specific user by id.",
-				"operationId": "users-read_user_by_id",
+				"operationId": "users-read_by_id",
 				"security": [{ "OAuth2PasswordBearer": [] }],
 				"parameters": [
 					{
@@ -368,9 +368,9 @@
 			},
 			"patch": {
 				"tags": ["users"],
-				"summary": "Update User",
+				"summary": "Update",
 				"description": "Update a user.",
-				"operationId": "users-update_user",
+				"operationId": "users-update",
 				"security": [{ "OAuth2PasswordBearer": [] }],
 				"parameters": [
 					{
@@ -405,9 +405,9 @@
 			},
 			"delete": {
 				"tags": ["users"],
-				"summary": "Delete User",
+				"summary": "Delete",
 				"description": "Delete a user.",
-				"operationId": "users-delete_user",
+				"operationId": "users-delete",
 				"security": [{ "OAuth2PasswordBearer": [] }],
 				"parameters": [
 					{
@@ -435,7 +435,7 @@
 				}
 			}
 		},
-		"/api/v1/utils/test-email/": {
+		"/api/utils/test-email/": {
 			"post": {
 				"tags": ["utils"],
 				"summary": "Test Email",
@@ -468,7 +468,7 @@
 				}
 			}
 		},
-		"/api/v1/utils/health-check/": {
+		"/api/utils/health-check/": {
 			"get": {
 				"tags": ["utils"],
 				"summary": "Health Check",
@@ -485,61 +485,52 @@
 				}
 			}
 		},
-		"/api/v1/items/": {
+		"/api/utils/load-fixtures": {
 			"get": {
-				"tags": ["items"],
-				"summary": "Read Items",
-				"description": "Retrieve items.",
-				"operationId": "items-read_items",
-				"security": [{ "OAuth2PasswordBearer": [] }],
-				"parameters": [
-					{
-						"name": "skip",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "default": 0, "title": "Skip" }
-					},
-					{
-						"name": "limit",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "default": 100, "title": "Limit" }
-					}
-				],
+				"tags": ["utils"],
+				"summary": "Load Fixtures",
+				"operationId": "utils-load_fixtures",
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/ItemsPublic" } }
+							"application/json": { "schema": { "title": "Response Utils-Load Fixtures" } }
 						}
-					},
-					"422": {
-						"description": "Validation Error",
+					}
+				}
+			}
+		},
+		"/api/directory/activities/": {
+			"get": {
+				"tags": ["activities"],
+				"summary": "Read Activities",
+				"description": "Read all activities.",
+				"operationId": "activities-read_activities",
+				"responses": {
+					"200": {
+						"description": "Successful Response",
 						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
+							"application/json": { "schema": { "$ref": "#/components/schemas/ActivitiesPublic" } }
 						}
 					}
 				}
 			},
 			"post": {
-				"tags": ["items"],
-				"summary": "Create Item",
-				"description": "Create new item.",
-				"operationId": "items-create_item",
-				"security": [{ "OAuth2PasswordBearer": [] }],
+				"tags": ["activities"],
+				"summary": "Create Activity",
+				"description": "Create an activity.",
+				"operationId": "activities-create_activity",
 				"requestBody": {
-					"required": true,
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/ItemCreate" } }
-					}
+						"application/json": { "schema": { "$ref": "#/components/schemas/ActivityCreate" } }
+					},
+					"required": true
 				},
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/ItemPublic" } }
+							"application/json": { "schema": { "$ref": "#/components/schemas/ActivityPublic" } }
 						}
 					},
 					"422": {
@@ -553,26 +544,33 @@
 				}
 			}
 		},
-		"/api/v1/items/{id}": {
-			"get": {
-				"tags": ["items"],
-				"summary": "Read Item",
-				"description": "Get item by ID.",
-				"operationId": "items-read_item",
-				"security": [{ "OAuth2PasswordBearer": [] }],
+		"/api/directory/activities/{path}": {
+			"patch": {
+				"tags": ["activities"],
+				"summary": "Update Activity",
+				"description": "Update an activity.\n\nIf the name or the parent path is patched, it will also update children.",
+				"operationId": "activities-update_activity",
 				"parameters": [
 					{
-						"name": "id",
+						"name": "path",
 						"in": "path",
 						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+						"schema": { "type": "string", "title": "Path" }
 					}
 				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/ActivityUpdate" } }
+					}
+				},
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/ItemPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ActivityUpdateResponse" }
+							}
 						}
 					},
 					"422": {
@@ -585,31 +583,38 @@
 					}
 				}
 			},
-			"put": {
-				"tags": ["items"],
-				"summary": "Update Item",
-				"description": "Update an item.",
-				"operationId": "items-update_item",
-				"security": [{ "OAuth2PasswordBearer": [] }],
+			"get": {
+				"tags": ["activities"],
+				"summary": "Read Activities By Path",
+				"description": "Read activities from a path.",
+				"operationId": "activities-read_activities_by_path",
 				"parameters": [
 					{
-						"name": "id",
+						"name": "path",
 						"in": "path",
 						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+						"schema": { "type": "string", "title": "Path" }
+					},
+					{
+						"name": "descendant",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "boolean", "default": false, "title": "Descendant" }
 					}
 				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/ItemUpdate" } }
-					}
-				},
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/ItemPublic" } }
+							"application/json": {
+								"schema": {
+									"anyOf": [
+										{ "$ref": "#/components/schemas/ActivitiesPublic" },
+										{ "$ref": "#/components/schemas/ActivityPublic" }
+									],
+									"title": "Response Activities-Read Activities By Path"
+								}
+							}
 						}
 					},
 					"422": {
@@ -623,11 +628,124 @@
 				}
 			},
 			"delete": {
-				"tags": ["items"],
-				"summary": "Delete Item",
-				"description": "Delete an item.",
-				"operationId": "items-delete_item",
-				"security": [{ "OAuth2PasswordBearer": [] }],
+				"tags": ["activities"],
+				"summary": "Delete Activity",
+				"description": "Delete an activity and its children.",
+				"operationId": "activities-delete_activity",
+				"parameters": [
+					{
+						"name": "path",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "title": "Path" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ActivityDeleteResponse" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/people/": {
+			"post": {
+				"tags": ["people"],
+				"summary": "Create Person",
+				"description": "Create a person.",
+				"operationId": "people-create_person",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/PersonCreate" } }
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["people"],
+				"summary": "Read People",
+				"description": "Read paginated people.",
+				"operationId": "people-read_people",
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": false,
+						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"maximum": 100,
+							"exclusiveMinimum": 0,
+							"default": 100,
+							"title": "Limit"
+						}
+					},
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/PagedResponse_PersonPublic_" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/people/{id}": {
+			"get": {
+				"tags": ["people"],
+				"summary": "Read Person By Id",
+				"description": "Read a person by its id.",
+				"operationId": "people-read_person_by_id",
 				"parameters": [
 					{
 						"name": "id",
@@ -640,7 +758,259 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"tags": ["people"],
+				"summary": "Update Person",
+				"description": "Update a person.",
+				"operationId": "people-update_person",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/PersonUpdate" } }
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UpdateResponse_PersonPublic_" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["people"],
+				"summary": "Delete Person",
+				"description": "Delete a person.",
+				"operationId": "people-delete_person",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/DeleteResponse" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/organisations/": {
+			"post": {
+				"tags": ["organisations"],
+				"summary": "Create Organisation",
+				"description": "Create an organisation.",
+				"operationId": "organisations-create_organisation",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/OrganisationCreate" } }
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/OrganisationPublic" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": ["organisations"],
+				"summary": "Read Organisations",
+				"description": "Read paginated organisations.",
+				"operationId": "organisations-read_organisations",
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": false,
+						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"maximum": 100,
+							"exclusiveMinimum": 0,
+							"default": 100,
+							"title": "Limit"
+						}
+					},
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/PagedResponse_OrganisationPublic_" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/organisations/{id}": {
+			"get": {
+				"tags": ["organisations"],
+				"summary": "Read Organisation By Id",
+				"description": "Read an organisation by its id.",
+				"operationId": "organisations-read_organisation_by_id",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/OrganisationPublic" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"tags": ["organisations"],
+				"summary": "Update Organisation",
+				"description": "Update an organisation.",
+				"operationId": "organisations-update_organisation",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/OrganisationUpdate" } }
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UpdateResponse_OrganisationPublic_" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["organisations"],
+				"summary": "Delete Organisation",
+				"description": "Delete an organisation.",
+				"operationId": "organisations-delete_organisation",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/DeleteResponse" } }
 						}
 					},
 					"422": {
@@ -657,7 +1027,70 @@
 	},
 	"components": {
 		"schemas": {
-			"Body_login-login_access_token": {
+			"ActivitiesPublic": {
+				"properties": {
+					"data": {
+						"items": { "$ref": "#/components/schemas/ActivityPublic" },
+						"type": "array",
+						"title": "Data"
+					}
+				},
+				"type": "object",
+				"required": ["data"],
+				"title": "ActivitiesPublic"
+			},
+			"ActivityCreate": {
+				"properties": {
+					"name": { "type": "string", "title": "Name" },
+					"parent_path": {
+						"anyOf": [{ "type": "string", "examples": ["some.path"] }, { "type": "null" }],
+						"title": "Parent Path"
+					}
+				},
+				"type": "object",
+				"required": ["name"],
+				"title": "ActivityCreate"
+			},
+			"ActivityDeleteResponse": {
+				"properties": { "rowcount": { "type": "integer", "title": "Rowcount" } },
+				"type": "object",
+				"required": ["rowcount"],
+				"title": "ActivityDeleteResponse"
+			},
+			"ActivityPublic": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" },
+					"path": { "type": "string", "title": "Path", "examples": ["some.path"] }
+				},
+				"type": "object",
+				"required": ["id", "name", "path"],
+				"title": "ActivityPublic"
+			},
+			"ActivityUpdate": {
+				"properties": {
+					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" },
+					"parent_path": {
+						"anyOf": [{ "type": "string", "examples": ["some.path"] }, { "type": "null" }],
+						"title": "Parent Path"
+					}
+				},
+				"type": "object",
+				"title": "ActivityUpdate"
+			},
+			"ActivityUpdateResponse": {
+				"properties": {
+					"lca": {
+						"anyOf": [{ "type": "string", "examples": ["some.path"] }, { "type": "null" }],
+						"title": "Lca"
+					},
+					"rowcount": { "type": "integer", "title": "Rowcount" }
+				},
+				"type": "object",
+				"required": ["lca", "rowcount"],
+				"title": "ActivityUpdateResponse"
+			},
+			"Body_login-access_token": {
 				"properties": {
 					"grant_type": {
 						"anyOf": [{ "type": "string", "pattern": "password" }, { "type": "null" }],
@@ -677,7 +1110,17 @@
 				},
 				"type": "object",
 				"required": ["username", "password"],
-				"title": "Body_login-login_access_token"
+				"title": "Body_login-access_token"
+			},
+			"DeleteResponse": {
+				"properties": {
+					"success": { "type": "boolean", "title": "Success" },
+					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
+				},
+				"type": "object",
+				"required": ["success"],
+				"title": "DeleteResponse",
+				"description": "Response schema for any paged API."
 			},
 			"HTTPValidationError": {
 				"properties": {
@@ -689,59 +1132,6 @@
 				},
 				"type": "object",
 				"title": "HTTPValidationError"
-			},
-			"ItemCreate": {
-				"properties": {
-					"title": { "type": "string", "maxLength": 255, "minLength": 1, "title": "Title" },
-					"description": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Description"
-					}
-				},
-				"type": "object",
-				"required": ["title"],
-				"title": "ItemCreate"
-			},
-			"ItemPublic": {
-				"properties": {
-					"title": { "type": "string", "maxLength": 255, "minLength": 1, "title": "Title" },
-					"description": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Description"
-					},
-					"id": { "type": "string", "format": "uuid", "title": "Id" },
-					"owner_id": { "type": "string", "format": "uuid", "title": "Owner Id" }
-				},
-				"type": "object",
-				"required": ["title", "id", "owner_id"],
-				"title": "ItemPublic"
-			},
-			"ItemUpdate": {
-				"properties": {
-					"title": {
-						"anyOf": [{ "type": "string", "maxLength": 255, "minLength": 1 }, { "type": "null" }],
-						"title": "Title"
-					},
-					"description": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Description"
-					}
-				},
-				"type": "object",
-				"title": "ItemUpdate"
-			},
-			"ItemsPublic": {
-				"properties": {
-					"data": {
-						"items": { "$ref": "#/components/schemas/ItemPublic" },
-						"type": "array",
-						"title": "Data"
-					},
-					"count": { "type": "integer", "title": "Count" }
-				},
-				"type": "object",
-				"required": ["data", "count"],
-				"title": "ItemsPublic"
 			},
 			"Message": {
 				"properties": { "message": { "type": "string", "title": "Message" } },
@@ -762,6 +1152,80 @@
 				"type": "object",
 				"required": ["token", "new_password"],
 				"title": "NewPassword"
+			},
+			"OrganisationCreate": {
+				"properties": { "name": { "type": "string", "title": "Name" } },
+				"type": "object",
+				"required": ["name"],
+				"title": "OrganisationCreate"
+			},
+			"OrganisationPublic": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" }
+				},
+				"type": "object",
+				"required": ["id", "name"],
+				"title": "OrganisationPublic"
+			},
+			"OrganisationUpdate": {
+				"properties": {
+					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" }
+				},
+				"type": "object",
+				"title": "OrganisationUpdate"
+			},
+			"PagedResponse_OrganisationPublic_": {
+				"properties": {
+					"total": { "type": "integer", "title": "Total" },
+					"limit": { "type": "integer", "title": "Limit" },
+					"offset": { "type": "integer", "title": "Offset" },
+					"results": {
+						"items": { "$ref": "#/components/schemas/OrganisationPublic" },
+						"type": "array",
+						"title": "Results"
+					}
+				},
+				"type": "object",
+				"required": ["total", "limit", "offset", "results"],
+				"title": "PagedResponse[OrganisationPublic]"
+			},
+			"PagedResponse_PersonPublic_": {
+				"properties": {
+					"total": { "type": "integer", "title": "Total" },
+					"limit": { "type": "integer", "title": "Limit" },
+					"offset": { "type": "integer", "title": "Offset" },
+					"results": {
+						"items": { "$ref": "#/components/schemas/PersonPublic" },
+						"type": "array",
+						"title": "Results"
+					}
+				},
+				"type": "object",
+				"required": ["total", "limit", "offset", "results"],
+				"title": "PagedResponse[PersonPublic]"
+			},
+			"PersonCreate": {
+				"properties": { "name": { "type": "string", "title": "Name" } },
+				"type": "object",
+				"required": ["name"],
+				"title": "PersonCreate"
+			},
+			"PersonPublic": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" }
+				},
+				"type": "object",
+				"required": ["id", "name"],
+				"title": "PersonPublic"
+			},
+			"PersonUpdate": {
+				"properties": {
+					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" }
+				},
+				"type": "object",
+				"title": "PersonUpdate"
 			},
 			"Token": {
 				"properties": {
@@ -790,6 +1254,30 @@
 				"type": "object",
 				"required": ["current_password", "new_password"],
 				"title": "UpdatePassword"
+			},
+			"UpdateResponse_OrganisationPublic_": {
+				"properties": {
+					"success": { "type": "boolean", "title": "Success" },
+					"data": {
+						"anyOf": [{ "$ref": "#/components/schemas/OrganisationPublic" }, { "type": "null" }]
+					},
+					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
+				},
+				"type": "object",
+				"required": ["success"],
+				"title": "UpdateResponse[OrganisationPublic]"
+			},
+			"UpdateResponse_PersonPublic_": {
+				"properties": {
+					"success": { "type": "boolean", "title": "Success" },
+					"data": {
+						"anyOf": [{ "$ref": "#/components/schemas/PersonPublic" }, { "type": "null" }]
+					},
+					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
+				},
+				"type": "object",
+				"required": ["success"],
+				"title": "UpdateResponse[PersonPublic]"
 			},
 			"UserCreate": {
 				"properties": {
@@ -905,7 +1393,7 @@
 		"securitySchemes": {
 			"OAuth2PasswordBearer": {
 				"type": "oauth2",
-				"flows": { "password": { "scopes": {}, "tokenUrl": "/api/v1/login/access-token" } }
+				"flows": { "password": { "scopes": {}, "tokenUrl": "/api/login/access-token" } }
 			}
 		}
 	}

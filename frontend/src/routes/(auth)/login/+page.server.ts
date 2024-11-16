@@ -3,7 +3,7 @@ import { fail, redirect, error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema.js';
-import { loginLoginAccessToken } from '$lib/backend/client/services.gen.js';
+import { loginAccessToken } from '$lib/backend/client/services.gen.js';
 import { getApiErrorMessage } from '$lib/backend/utils.js';
 
 export const load: PageServerLoad = async () => {
@@ -21,7 +21,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const { data, error: err } = await loginLoginAccessToken({
+		const { data, error: err } = await loginAccessToken({
 			body: { username: form.data.email, password: form.data.password }
 		});
 		if (err) {
@@ -29,6 +29,9 @@ export const actions: Actions = {
 		}
 
 		event.cookies.set('notification', 'Login successful', { path: '/' });
+		if (!event.locals.session) {
+			return fail(500, { error: 'Session not found' });
+		}
 		event.locals.session.data = { access_token: data.access_token };
 		redirect(303, event.url.searchParams.get('redirectTo') ?? '/');
 	}

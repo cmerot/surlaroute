@@ -23,7 +23,7 @@
 			<Table.Row>
 				<Table.Cell>
 					<a href="/admin/users/{user.id}" class="block hover:underline">
-						{user.full_name}
+						{user.full_name || user.email}
 					</a>
 				</Table.Cell>
 				<Table.Cell>{user.email}</Table.Cell>

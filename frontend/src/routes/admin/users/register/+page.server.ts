@@ -1,4 +1,4 @@
-import { usersRegisterUser } from '$lib/backend/client/services.gen.js';
+import { usersRegister } from '$lib/backend/client/services.gen.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -20,7 +20,7 @@ export const actions: Actions = {
 				form
 			});
 		}
-		const { error: err, data: user } = await usersRegisterUser({
+		const { error: err, data: user } = await usersRegister({
 			body: form.data
 		});
 		if (err) {

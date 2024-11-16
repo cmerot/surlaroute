@@ -3,7 +3,7 @@ import { fail, redirect, error } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { formSchema } from './schema.js';
-import { usersRegisterUser } from '$lib/backend/client/services.gen.js';
+import { usersRegister } from '$lib/backend/client/services.gen.js';
 import { getApiErrorMessage } from '$lib/backend/utils.js';
 export const load: PageServerLoad = async () => {
 	return {
@@ -20,7 +20,7 @@ export const actions: Actions = {
 			});
 		}
 
-		const { error: err } = await usersRegisterUser({
+		const { error: err } = await usersRegister({
 			body: {
 				full_name: `${form.data.firstName} ${form.data.lastName}`,
 				email: form.data.email,

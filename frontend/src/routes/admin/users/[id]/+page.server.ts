@@ -1,8 +1,4 @@
-import {
-	usersDeleteUser,
-	usersReadUserById,
-	usersUpdateUser
-} from '$lib/backend/client/services.gen.js';
+import { usersDelete, usersReadById, usersUpdate } from '$lib/backend/client/services.gen.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -11,7 +7,7 @@ import { formSchema } from './schema';
 import { getApiErrorMessage } from '$lib/backend/utils.js';
 
 export const load: PageServerLoad = async ({ params }) => {
-	const { data: user } = await usersReadUserById({
+	const { data: user } = await usersReadById({
 		path: {
 			user_id: params.id
 		}
@@ -37,7 +33,7 @@ export const actions: Actions = {
 				form
 			});
 		}
-		const { error: err } = await usersUpdateUser({
+		const { error: err } = await usersUpdate({
 			body: form.data,
 			path: {
 				user_id: event.params.id
@@ -53,7 +49,7 @@ export const actions: Actions = {
 		});
 	},
 	delete: async (event) => {
-		const { error: err } = await usersDeleteUser({
+		const { error: err } = await usersDelete({
 			path: {
 				user_id: event.params.id
 			}

@@ -2,7 +2,7 @@ FROM python:3.10
 
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app/
+WORKDIR /fastapi/
 
 # Install uv
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#installing-uv
@@ -10,7 +10,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.4.15 /uv /bin/uv
 
 # Place executables in the environment at the front of the path
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#using-the-environment
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/fastapi/.venv/bin:$PATH"
 
 # Compile bytecode
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#compiling-bytecode
@@ -27,13 +27,13 @@ RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
     uv sync --frozen --no-install-project
 
-ENV PYTHONPATH=/app
+ENV PYTHONPATH=/fastapi
 
-COPY ./scripts /app/scripts
-
-COPY ./pyproject.toml ./uv.lock ./alembic.ini /app/
-
-COPY ./app /app/app
+COPY ./pyproject.toml ./uv.lock ./alembic.ini /fastapi/
+COPY ./scripts /fastapi/scripts
+COPY ./alembic /fastapi/alembic
+COPY ./tests /fastapi/tests
+COPY ./app /fastapi/app
 
 # Sync the project
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
