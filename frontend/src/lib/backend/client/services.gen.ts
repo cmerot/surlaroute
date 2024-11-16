@@ -68,7 +68,22 @@ import type {
 	ItemsUpdateItemResponse,
 	ItemsDeleteItemData,
 	ItemsDeleteItemError,
-	ItemsDeleteItemResponse
+	ItemsDeleteItemResponse,
+	DirectoryReadPeopleData,
+	DirectoryReadPeopleError,
+	DirectoryReadPeopleResponse,
+	DirectoryCreatePersonData,
+	DirectoryCreatePersonError,
+	DirectoryCreatePersonResponse,
+	DirectoryReadPersonByIdData,
+	DirectoryReadPersonByIdError,
+	DirectoryReadPersonByIdResponse,
+	DirectoryUpdatePersonData,
+	DirectoryUpdatePersonError,
+	DirectoryUpdatePersonResponse,
+	DirectoryDeletePersonData,
+	DirectoryDeletePersonError,
+	DirectoryDeletePersonResponse
 } from './types.gen';
 
 export const client = createClient(createConfig());
@@ -91,7 +106,7 @@ export const loginLoginAccessToken = <ThrowOnError extends boolean = false>(
 			'Content-Type': 'application/x-www-form-urlencoded',
 			...options?.headers
 		},
-		url: '/api/v1/login/access-token'
+		url: '/login/access-token'
 	});
 };
 
@@ -108,7 +123,7 @@ export const loginTestToken = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/login/test-token'
+		url: '/login/test-token'
 	});
 };
 
@@ -125,7 +140,7 @@ export const loginRecoverPassword = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/password-recovery/{email}'
+		url: '/password-recovery/{email}'
 	});
 };
 
@@ -142,7 +157,7 @@ export const loginResetPassword = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/reset-password/'
+		url: '/reset-password/'
 	});
 };
 
@@ -159,7 +174,7 @@ export const loginRecoverPasswordHtmlContent = <ThrowOnError extends boolean = f
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/password-recovery-html-content/{email}'
+		url: '/password-recovery-html-content/{email}'
 	});
 };
 
@@ -173,7 +188,7 @@ export const usersReadUsers = <ThrowOnError extends boolean = false>(
 	return (options?.client ?? client).get<UsersReadUsersResponse, UsersReadUsersError, ThrowOnError>(
 		{
 			...options,
-			url: '/api/v1/users/'
+			url: '/users/'
 		}
 	);
 };
@@ -191,7 +206,7 @@ export const usersCreateUser = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/'
+		url: '/users/'
 	});
 };
 
@@ -208,7 +223,7 @@ export const usersReadUserMe = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/me'
+		url: '/users/me'
 	});
 };
 
@@ -225,7 +240,7 @@ export const usersDeleteUserMe = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/me'
+		url: '/users/me'
 	});
 };
 
@@ -242,7 +257,7 @@ export const usersUpdateUserMe = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/me'
+		url: '/users/me'
 	});
 };
 
@@ -259,7 +274,7 @@ export const usersUpdatePasswordMe = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/me/password'
+		url: '/users/me/password'
 	});
 };
 
@@ -276,7 +291,7 @@ export const usersRegisterUser = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/signup'
+		url: '/users/signup'
 	});
 };
 
@@ -293,7 +308,7 @@ export const usersReadUserById = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/{user_id}'
+		url: '/users/{user_id}'
 	});
 };
 
@@ -310,7 +325,7 @@ export const usersUpdateUser = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/{user_id}'
+		url: '/users/{user_id}'
 	});
 };
 
@@ -327,7 +342,7 @@ export const usersDeleteUser = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/users/{user_id}'
+		url: '/users/{user_id}'
 	});
 };
 
@@ -344,7 +359,7 @@ export const utilsTestEmail = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/utils/test-email/'
+		url: '/utils/test-email/'
 	});
 };
 
@@ -360,7 +375,7 @@ export const utilsHealthCheck = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/utils/health-check/'
+		url: '/utils/health-check/'
 	});
 };
 
@@ -374,7 +389,7 @@ export const itemsReadItems = <ThrowOnError extends boolean = false>(
 	return (options?.client ?? client).get<ItemsReadItemsResponse, ItemsReadItemsError, ThrowOnError>(
 		{
 			...options,
-			url: '/api/v1/items/'
+			url: '/items/'
 		}
 	);
 };
@@ -392,7 +407,7 @@ export const itemsCreateItem = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/items/'
+		url: '/items/'
 	});
 };
 
@@ -405,7 +420,7 @@ export const itemsReadItem = <ThrowOnError extends boolean = false>(
 ) => {
 	return (options?.client ?? client).get<ItemsReadItemResponse, ItemsReadItemError, ThrowOnError>({
 		...options,
-		url: '/api/v1/items/{id}'
+		url: '/items/{id}'
 	});
 };
 
@@ -422,7 +437,7 @@ export const itemsUpdateItem = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/items/{id}'
+		url: '/items/{id}'
 	});
 };
 
@@ -439,6 +454,91 @@ export const itemsDeleteItem = <ThrowOnError extends boolean = false>(
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/v1/items/{id}'
+		url: '/items/{id}'
+	});
+};
+
+/**
+ * Read People
+ * Retrieve people.
+ */
+export const directoryReadPeople = <ThrowOnError extends boolean = false>(
+	options?: Options<DirectoryReadPeopleData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		DirectoryReadPeopleResponse,
+		DirectoryReadPeopleError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/directory/people'
+	});
+};
+
+/**
+ * Create Person
+ * Create new person.
+ */
+export const directoryCreatePerson = <ThrowOnError extends boolean = false>(
+	options: Options<DirectoryCreatePersonData, ThrowOnError>
+) => {
+	return (options?.client ?? client).post<
+		DirectoryCreatePersonResponse,
+		DirectoryCreatePersonError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/directory/people'
+	});
+};
+
+/**
+ * Read Person By Id
+ * Get person by ID.
+ */
+export const directoryReadPersonById = <ThrowOnError extends boolean = false>(
+	options: Options<DirectoryReadPersonByIdData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		DirectoryReadPersonByIdResponse,
+		DirectoryReadPersonByIdError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/directory/people/{id}'
+	});
+};
+
+/**
+ * Update Person
+ * Update a person.
+ */
+export const directoryUpdatePerson = <ThrowOnError extends boolean = false>(
+	options: Options<DirectoryUpdatePersonData, ThrowOnError>
+) => {
+	return (options?.client ?? client).put<
+		DirectoryUpdatePersonResponse,
+		DirectoryUpdatePersonError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/directory/people/{id}'
+	});
+};
+
+/**
+ * Delete Person
+ * Delete a person.
+ */
+export const directoryDeletePerson = <ThrowOnError extends boolean = false>(
+	options: Options<DirectoryDeletePersonData, ThrowOnError>
+) => {
+	return (options?.client ?? client).delete<
+		DirectoryDeletePersonResponse,
+		DirectoryDeletePersonError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/directory/people/{id}'
 	});
 };

@@ -29,6 +29,9 @@ export const actions: Actions = {
 		}
 
 		event.cookies.set('notification', 'Login successful', { path: '/' });
+		if (!event.locals.session) {
+			return fail(500, { error: 'Session not found' });
+		}
 		event.locals.session.data = { access_token: data.access_token };
 		redirect(303, event.url.searchParams.get('redirectTo') ?? '/');
 	}

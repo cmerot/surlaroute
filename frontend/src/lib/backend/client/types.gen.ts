@@ -44,6 +44,27 @@ export type NewPassword = {
 	new_password: string;
 };
 
+export type PeoplePublic = {
+	data: Array<PersonPublic>;
+	count: number;
+};
+
+export type PersonCreate = {
+	email: string;
+	name: string;
+};
+
+export type PersonPublic = {
+	email: string;
+	name: string;
+	id: string;
+};
+
+export type PersonUpdate = {
+	email?: string | null;
+	name?: string | null;
+};
+
 export type Token = {
 	access_token: string;
 	token_type?: string;
@@ -285,3 +306,53 @@ export type ItemsDeleteItemData = {
 export type ItemsDeleteItemResponse = Message;
 
 export type ItemsDeleteItemError = HTTPValidationError;
+
+export type DirectoryReadPeopleData = {
+	query?: {
+		limit?: number;
+		skip?: number;
+	};
+};
+
+export type DirectoryReadPeopleResponse = PeoplePublic;
+
+export type DirectoryReadPeopleError = HTTPValidationError;
+
+export type DirectoryCreatePersonData = {
+	body: PersonCreate;
+};
+
+export type DirectoryCreatePersonResponse = PersonPublic;
+
+export type DirectoryCreatePersonError = HTTPValidationError;
+
+export type DirectoryReadPersonByIdData = {
+	path: {
+		id: string;
+	};
+};
+
+export type DirectoryReadPersonByIdResponse = PersonPublic;
+
+export type DirectoryReadPersonByIdError = HTTPValidationError;
+
+export type DirectoryUpdatePersonData = {
+	body: PersonUpdate;
+	path: {
+		id: string;
+	};
+};
+
+export type DirectoryUpdatePersonResponse = PersonPublic;
+
+export type DirectoryUpdatePersonError = HTTPValidationError;
+
+export type DirectoryDeletePersonData = {
+	path: {
+		id: string;
+	};
+};
+
+export type DirectoryDeletePersonResponse = Message;
+
+export type DirectoryDeletePersonError = HTTPValidationError;

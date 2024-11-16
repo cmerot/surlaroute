@@ -1,7 +1,7 @@
 services:
 
   db:
-    image: postgres:12
+    image: postgis/postgis:17-3.5
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -111,7 +111,7 @@ services:
       - STACK_NAME=${STACK_NAME}
 
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/utils/health-check/"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/utils/health-check/"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -164,6 +164,7 @@ services:
 
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
+
 volumes:
   app-db-data:
 

@@ -212,6 +212,99 @@ export const NewPasswordSchema = {
 	title: 'NewPassword'
 } as const;
 
+export const PeoplePublicSchema = {
+	properties: {
+		data: {
+			items: {
+				$ref: '#/components/schemas/PersonPublic'
+			},
+			type: 'array',
+			title: 'Data'
+		},
+		count: {
+			type: 'integer',
+			title: 'Count'
+		}
+	},
+	type: 'object',
+	required: ['data', 'count'],
+	title: 'PeoplePublic'
+} as const;
+
+export const PersonCreateSchema = {
+	properties: {
+		email: {
+			type: 'string',
+			maxLength: 255,
+			format: 'email',
+			title: 'Email'
+		},
+		name: {
+			type: 'string',
+			maxLength: 40,
+			minLength: 3,
+			title: 'Name'
+		}
+	},
+	type: 'object',
+	required: ['email', 'name'],
+	title: 'PersonCreate'
+} as const;
+
+export const PersonPublicSchema = {
+	properties: {
+		email: {
+			type: 'string',
+			title: 'Email'
+		},
+		name: {
+			type: 'string',
+			title: 'Name'
+		},
+		id: {
+			type: 'string',
+			format: 'uuid',
+			title: 'Id'
+		}
+	},
+	type: 'object',
+	required: ['email', 'name', 'id'],
+	title: 'PersonPublic'
+} as const;
+
+export const PersonUpdateSchema = {
+	properties: {
+		email: {
+			anyOf: [
+				{
+					type: 'string',
+					maxLength: 255,
+					minLength: 1
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Email'
+		},
+		name: {
+			anyOf: [
+				{
+					type: 'string',
+					maxLength: 40,
+					minLength: 3
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Name'
+		}
+	},
+	type: 'object',
+	title: 'PersonUpdate'
+} as const;
+
 export const TokenSchema = {
 	properties: {
 		access_token: {

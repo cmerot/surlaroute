@@ -2,7 +2,7 @@
 	"openapi": "3.1.0",
 	"info": { "title": "Full Stack FastAPI Project", "version": "0.1.0" },
 	"paths": {
-		"/api/v1/login/access-token": {
+		"/login/access-token": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Login Access Token",
@@ -34,7 +34,7 @@
 				}
 			}
 		},
-		"/api/v1/login/test-token": {
+		"/login/test-token": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Test Token",
@@ -51,7 +51,7 @@
 				"security": [{ "OAuth2PasswordBearer": [] }]
 			}
 		},
-		"/api/v1/password-recovery/{email}": {
+		"/password-recovery/{email}": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Recover Password",
@@ -83,7 +83,7 @@
 				}
 			}
 		},
-		"/api/v1/reset-password/": {
+		"/reset-password/": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Reset Password",
@@ -113,7 +113,7 @@
 				}
 			}
 		},
-		"/api/v1/password-recovery-html-content/{email}": {
+		"/password-recovery-html-content/{email}": {
 			"post": {
 				"tags": ["login"],
 				"summary": "Recover Password Html Content",
@@ -144,7 +144,7 @@
 				}
 			}
 		},
-		"/api/v1/users/": {
+		"/users/": {
 			"get": {
 				"tags": ["users"],
 				"summary": "Read Users",
@@ -212,7 +212,7 @@
 				}
 			}
 		},
-		"/api/v1/users/me": {
+		"/users/me": {
 			"get": {
 				"tags": ["users"],
 				"summary": "Read User Me",
@@ -273,7 +273,7 @@
 				"security": [{ "OAuth2PasswordBearer": [] }]
 			}
 		},
-		"/api/v1/users/me/password": {
+		"/users/me/password": {
 			"patch": {
 				"tags": ["users"],
 				"summary": "Update Password Me",
@@ -304,7 +304,7 @@
 				"security": [{ "OAuth2PasswordBearer": [] }]
 			}
 		},
-		"/api/v1/users/signup": {
+		"/users/signup": {
 			"post": {
 				"tags": ["users"],
 				"summary": "Register User",
@@ -334,7 +334,7 @@
 				}
 			}
 		},
-		"/api/v1/users/{user_id}": {
+		"/users/{user_id}": {
 			"get": {
 				"tags": ["users"],
 				"summary": "Read User By Id",
@@ -435,7 +435,7 @@
 				}
 			}
 		},
-		"/api/v1/utils/test-email/": {
+		"/utils/test-email/": {
 			"post": {
 				"tags": ["utils"],
 				"summary": "Test Email",
@@ -468,7 +468,7 @@
 				}
 			}
 		},
-		"/api/v1/utils/health-check/": {
+		"/utils/health-check/": {
 			"get": {
 				"tags": ["utils"],
 				"summary": "Health Check",
@@ -485,7 +485,7 @@
 				}
 			}
 		},
-		"/api/v1/items/": {
+		"/items/": {
 			"get": {
 				"tags": ["items"],
 				"summary": "Read Items",
@@ -553,7 +553,7 @@
 				}
 			}
 		},
-		"/api/v1/items/{id}": {
+		"/items/{id}": {
 			"get": {
 				"tags": ["items"],
 				"summary": "Read Item",
@@ -628,6 +628,170 @@
 				"description": "Delete an item.",
 				"operationId": "items-delete_item",
 				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/directory/people": {
+			"get": {
+				"tags": ["directory"],
+				"summary": "Read People",
+				"description": "Retrieve people.",
+				"operationId": "directory-read_people",
+				"parameters": [
+					{
+						"name": "skip",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "integer", "default": 0, "title": "Skip" }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "integer", "default": 100, "title": "Limit" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/PeoplePublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": ["directory"],
+				"summary": "Create Person",
+				"description": "Create new person.",
+				"operationId": "directory-create_person",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/PersonCreate" } }
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/directory/people/{id}": {
+			"get": {
+				"tags": ["directory"],
+				"summary": "Read Person By Id",
+				"description": "Get person by ID.",
+				"operationId": "directory-read_person_by_id",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"put": {
+				"tags": ["directory"],
+				"summary": "Update Person",
+				"description": "Update a person.",
+				"operationId": "directory-update_person",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": { "schema": { "$ref": "#/components/schemas/PersonUpdate" } }
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			},
+			"delete": {
+				"tags": ["directory"],
+				"summary": "Delete Person",
+				"description": "Delete a person.",
+				"operationId": "directory-delete_person",
 				"parameters": [
 					{
 						"name": "id",
@@ -762,6 +926,52 @@
 				"type": "object",
 				"required": ["token", "new_password"],
 				"title": "NewPassword"
+			},
+			"PeoplePublic": {
+				"properties": {
+					"data": {
+						"items": { "$ref": "#/components/schemas/PersonPublic" },
+						"type": "array",
+						"title": "Data"
+					},
+					"count": { "type": "integer", "title": "Count" }
+				},
+				"type": "object",
+				"required": ["data", "count"],
+				"title": "PeoplePublic"
+			},
+			"PersonCreate": {
+				"properties": {
+					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
+					"name": { "type": "string", "maxLength": 40, "minLength": 3, "title": "Name" }
+				},
+				"type": "object",
+				"required": ["email", "name"],
+				"title": "PersonCreate"
+			},
+			"PersonPublic": {
+				"properties": {
+					"email": { "type": "string", "title": "Email" },
+					"name": { "type": "string", "title": "Name" },
+					"id": { "type": "string", "format": "uuid", "title": "Id" }
+				},
+				"type": "object",
+				"required": ["email", "name", "id"],
+				"title": "PersonPublic"
+			},
+			"PersonUpdate": {
+				"properties": {
+					"email": {
+						"anyOf": [{ "type": "string", "maxLength": 255, "minLength": 1 }, { "type": "null" }],
+						"title": "Email"
+					},
+					"name": {
+						"anyOf": [{ "type": "string", "maxLength": 40, "minLength": 3 }, { "type": "null" }],
+						"title": "Name"
+					}
+				},
+				"type": "object",
+				"title": "PersonUpdate"
 			},
 			"Token": {
 				"properties": {
@@ -905,7 +1115,7 @@
 		"securitySchemes": {
 			"OAuth2PasswordBearer": {
 				"type": "oauth2",
-				"flows": { "password": { "scopes": {}, "tokenUrl": "/api/v1/login/access-token" } }
+				"flows": { "password": { "scopes": {}, "tokenUrl": "/login/access-token" } }
 			}
 		}
 	}
