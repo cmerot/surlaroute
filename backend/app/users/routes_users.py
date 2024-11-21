@@ -6,6 +6,7 @@ from sqlmodel import func, select
 
 from app.core.config import settings
 from app.core.db.session import SessionDep
+from app.core.email.utils import generate_new_account_email, send_email
 from app.core.security import (
     CurrentUser,
     get_current_active_superuser,
@@ -23,7 +24,6 @@ from app.users.models import (
     UserUpdate,
     UserUpdateMe,
 )
-from app.utils import generate_new_account_email, send_email
 from app.utils.schemas import Message
 
 router = APIRouter()

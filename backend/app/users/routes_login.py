@@ -8,6 +8,10 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.core import security
 from app.core.config import settings
 from app.core.db.session import SessionDep
+from app.core.email.utils import (
+    generate_reset_password_email,
+    send_email,
+)
 from app.core.security import (
     CurrentUser,
     generate_password_reset_token,
@@ -17,10 +21,6 @@ from app.core.security import (
 )
 from app.users import crud
 from app.users.models import NewPassword, Token, UserPublic
-from app.utils import (
-    generate_reset_password_email,
-    send_email,
-)
 from app.utils.schemas import Message
 
 router = APIRouter()

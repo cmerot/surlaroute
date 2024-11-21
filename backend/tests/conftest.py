@@ -12,9 +12,6 @@ from app.core.config import settings
 from app.core.db.base_class import Base
 from app.core.db.session import get_db
 from app.core.routes import api_router
-from app.directory.models import (  # type: ignore[attr-defined]
-    Base as Base2,  # noqa: F401
-)
 from scripts.run_pre_start import create_db_extensions, create_first_superuser
 from tests.directory.fixtures import (
     activity_fixtures,

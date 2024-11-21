@@ -62,7 +62,6 @@ def get_path(relative_path: str) -> str:
 
 
 def upgrade_to_head() -> None:
-    os.chdir(get_path("../"))
     alembic_cfg = Config(get_path("../alembic.ini"))
 
     # Perform the upgrade to the head revision
