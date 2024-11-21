@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from fastapi.staticfiles import StaticFiles
@@ -29,6 +31,5 @@ if settings.all_cors_origins:
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
-if settings.ENVIRONMENT == "loclal":
-    # if os.path.isdir(directory_path)
-    app.mount("/htmlcov", StaticFiles(directory="htmlcov", html=True), name="htmlcov")
+if os.path.isdir("./htmlcov"):
+    app.mount("/htmlcov", StaticFiles(directory="./htmlcov", html=True), name="htmlcov")
