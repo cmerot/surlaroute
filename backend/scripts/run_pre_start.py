@@ -83,5 +83,3 @@ if __name__ == "__main__":
 
     logger.info("Creating first superuser")
     create_first_superuser(session=session)
-
-    print(settings.ENVIRONMENT)

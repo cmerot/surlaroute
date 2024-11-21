@@ -27,7 +27,7 @@ jobs:
       - run: docker compose down -v --remove-orphans
       - run: docker compose up -d db mailcatcher
       - name: Migrate DB
-        run: uv run scripts/run_pre_start.sh
+        run: uv run scripts/run_pre_start.py
         working-directory: backend
       - name: Run tests
         run: uv run scripts/run_tests.sh "Coverage for ${{ github.sha }}"
