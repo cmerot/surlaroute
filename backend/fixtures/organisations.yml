@@ -1,0 +1,66 @@
+organisations:
+  - name: Slowfest
+    activity: association
+
+  - name: Armodo
+    activity: association
+
+  - name: Festival des Arts Vivants
+    activity: evenementiel.festival.arts_vivants
+
+  - name: Centre Culturel Métropolis
+    activity: culturel.centre.polyvalent
+
+  - name: Bibliothèque Urbaine Moderne
+    activity: culturel.bibliotheque.publique
+
+  - name: Théâtre du Nouveau Monde
+    activity: culturel.theatre.creation
+
+  - name: Salon du Livre Contemporain
+    activity: evenementiel.salon.litterature
+
+  - name: Galerie d'Art Contemporain
+    activity: culturel.galerie.exposition
+
+  - name: Cinéma Art et Essai
+    activity: culturel.cinema.independant
+
+  - name: Festival International de Musique
+    activity: evenementiel.festival.musique
+
+  - name: Centre des Métiers d'Art
+    activity: culturel.formation.artisanat
+
+  - name: Plateforme Numérique Culturelle
+    activity: culturel.numerique.diffusion
+
+  - name: Espace Création Multimédia
+    activity: culturel.multimedia.innovation
+
+  - name: Réseau des Scènes Nationales
+    activity: culturel.scene.nationale
+
+  - name: Événements Patrimoine Vivant
+    activity: evenementiel.patrimoine.valorisation
+
+  - name: Collectif Arts de la Rue
+    activity: culturel.arts.urbain
+
+  - name: Laboratoire Création Numérique
+    activity: culturel.recherche.innovation
+
+  - name: Événementiel Culturel Inclusif
+    activity: evenementiel.social.diversite
+
+  - name: Académie des Arts Émergents
+    activity: culturel.formation.artistique
+
+  - name: Média Culturel Indépendant
+    activity: culturel.media.alternatif
+
+  - name: Réseau Européen Culturel
+    activity: culturel.international.cooperation
+
+  - name: Événements Patrimoine Local
+    activity: evenementiel.patrimoine.regional

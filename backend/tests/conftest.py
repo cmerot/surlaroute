@@ -16,8 +16,6 @@ from scripts.run_pre_start import create_db_extensions, create_first_superuser
 from tests.directory.fixtures import (
     activity_fixtures,
     om_fixtures,
-    organisation_fixtures,
-    person_fixtures,
 )
 from tests.users.user import (
     authentication_token_from_email,
@@ -54,8 +52,6 @@ def session(engine: Engine) -> Generator[Session, Any, None]:
 @pytest.fixture(scope="session", autouse=True)
 def populated_db(session: Session) -> None:
     session.add_all(activity_fixtures)
-    session.add_all(person_fixtures)
-    session.add_all(organisation_fixtures)
     session.add_all(om_fixtures)
     session.commit()
 

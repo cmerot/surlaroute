@@ -10,7 +10,6 @@ from app.directory.organisation_schemas import (
     OrganisationUpdate,
 )
 from app.directory.schemas import PageParams
-from tests.directory.test_models import print_actor
 
 
 def create_organisation(
@@ -41,15 +40,13 @@ def read_organisations(
 
     if page_params.q:
         where_clause = or_(
-            Organisation.name.contains(page_params.q),
+            Organisation.name.icontains(page_params.q),
         )
         count_statement = count_statement.where(where_clause)
         statement = statement.where(where_clause)
 
     count = session.scalars(count_statement).one()
     orgs = session.scalars(statement).all()
-    for o in orgs:
-        print_actor(o)
     return orgs, count
 
 

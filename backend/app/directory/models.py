@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import re
 import uuid
 from dataclasses import dataclass
@@ -29,32 +31,52 @@ class TimestampMixin:
 
 
 @dataclass
-class OrganisationMembers(Base, TimestampMixin):
+class AssociationOrganisationActivity(Base):
     organisation_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("organisation.id"), primary_key=True
     )
-    actor_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("actor.id"), primary_key=True
-    )
-    membership_data: Mapped[str] = mapped_column(default="")
-    actor: Mapped["Actor"] = relationship(
-        back_populates="memberships", foreign_keys=[actor_id]
-    )
-    organisation: Mapped["Organisation"] = relationship(
-        back_populates="members", foreign_keys=[organisation_id]
+    activity_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("activity.id"), primary_key=True
     )
 
+
+@dataclass
+class AssociationOrganisationActor(Base):
+    organisation_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("organisation.id"),
+        primary_key=True,
+    )
+    actor_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("actor.id"),
+        primary_key=True,
+    )
+    actor: Mapped[Actor] = relationship(
+        back_populates="memberships",
+        foreign_keys=[actor_id],
+    )
+    organisation: Mapped[Organisation] = relationship(
+        back_populates="members",
+        foreign_keys=[organisation_id],
+    )
+    membership_data: Mapped[str] = mapped_column(default="")
+
     def __repr__(self) -> str:
-        return f"OrganisationMembers({self.actor} in {self.organisation})"
+        return f"AssociationOrganisationActor({self.actor} in {self.organisation})"
 
 
 @dataclass
 class Actor(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
-    memberships: Mapped[list["OrganisationMembers"]] = relationship(
+    type: Mapped[str] = mapped_column()
+    memberships: Mapped[list[AssociationOrganisationActor]] = relationship(
+        # note: raises ValueError with back_populates="organisation"
+        # ValueError: Bidirectional attribute conflict detected:
+        # Passing object <Person at 0x7f89b57d4eb0> to attribute "AssociationOrganisationActor.actor"
+        # triggers a modify event on attribute "AssociationOrganisationActor.organisation"
+        # via the backref "Actor.memberships".
+        # back_populates="organisation",
         cascade="all, delete-orphan",
     )
-    type: Mapped[str] = mapped_column()
 
     @declared_attr.directive
     def __mapper_args__(cls) -> dict[str, Any]:
@@ -82,13 +104,18 @@ class Actor(Base):
         super().__init__(**kwargs)
 
 
+@dataclass
 class Organisation(Actor, TimestampMixin):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
     )
-    name: Mapped[str]
-    members: Mapped[list["OrganisationMembers"]] = relationship(
+    name: Mapped[str] = mapped_column()
+    activities: Mapped[list[Activity]] = relationship(
+        secondary=AssociationOrganisationActivity.__tablename__,
+        back_populates="organisations",
+    )
+    members: Mapped[list[AssociationOrganisationActor]] = relationship(
         back_populates="organisation",
         cascade="all, delete-orphan",
     )
@@ -113,26 +140,30 @@ class Activity(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
     path: Mapped[Ltree] = mapped_column(LtreeType, unique=True)
-    parent: Mapped["Activity"] = relationship(
+    parent: Mapped[Activity] = relationship(
         "Activity",
         primaryjoin=(remote(path) == foreign(func.subpath(path, 0, -1))),
-        backref="children",
         viewonly=True,
+    )
+    organisations: Mapped[list[Organisation]] = relationship(
+        secondary=AssociationOrganisationActivity.__tablename__,
+        back_populates="activities",
     )
 
     def __init__(
         self,
+        name: str,
         parent_path: str | Ltree | None = None,
         **kwargs: Any,
     ) -> None:
         if "id" not in kwargs:
             kwargs["id"] = uuid.uuid4()
-        super().__init__(**kwargs)
+        super().__init__(**kwargs, name=name)
 
         if parent_path is not None:
             parent_path = Ltree(parent_path)
 
-        path: Ltree = Ltree(self.name)
+        path: Ltree = Ltree(Activity.slugify(self.name))
         self.path: Ltree = path if parent_path is None else parent_path + path
 
     def __setattr__(self, name: str, value: Any) -> None:

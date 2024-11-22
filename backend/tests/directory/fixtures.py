@@ -1,7 +1,12 @@
 import hashlib
 import uuid
 
-from app.directory.models import Activity, Organisation, OrganisationMembers, Person
+from app.directory.models import (
+    Activity,
+    AssociationOrganisationActor,
+    Organisation,
+    Person,
+)
 
 
 def get_fixture_uuid(seed: str) -> uuid.UUID:
@@ -41,7 +46,7 @@ armodo = Organisation(name="armodo", id=get_fixture_uuid("armodo"))
 slowfest = Organisation(name="slowfest", id=get_fixture_uuid("slowfest"))
 organisation_fixtures = [armodo, slowfest]
 
-om1 = OrganisationMembers(organisation=armodo, actor=robert)
-om2 = OrganisationMembers(organisation=armodo, actor=slowfest)
-om3 = OrganisationMembers(organisation=slowfest, actor=mitchum)
+om1 = AssociationOrganisationActor(organisation=armodo, actor=robert)
+om2 = AssociationOrganisationActor(organisation=armodo, actor=slowfest)
+om3 = AssociationOrganisationActor(organisation=slowfest, actor=mitchum)
 om_fixtures = [om1, om2, om3]
