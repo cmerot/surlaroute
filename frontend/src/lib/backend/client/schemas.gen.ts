@@ -250,7 +250,7 @@ export const NewPasswordSchema = {
 	title: 'NewPassword'
 } as const;
 
-export const OrganisationCreateSchema = {
+export const OrgCreateSchema = {
 	properties: {
 		name: {
 			type: 'string',
@@ -259,10 +259,10 @@ export const OrganisationCreateSchema = {
 	},
 	type: 'object',
 	required: ['name'],
-	title: 'OrganisationCreate'
+	title: 'OrgCreate'
 } as const;
 
-export const OrganisationPublicSchema = {
+export const OrgPublicSchema = {
 	properties: {
 		id: {
 			type: 'string',
@@ -276,10 +276,10 @@ export const OrganisationPublicSchema = {
 	},
 	type: 'object',
 	required: ['id', 'name'],
-	title: 'OrganisationPublic'
+	title: 'OrgPublic'
 } as const;
 
-export const OrganisationUpdateSchema = {
+export const OrgUpdateSchema = {
 	properties: {
 		name: {
 			anyOf: [
@@ -294,10 +294,10 @@ export const OrganisationUpdateSchema = {
 		}
 	},
 	type: 'object',
-	title: 'OrganisationUpdate'
+	title: 'OrgUpdate'
 } as const;
 
-export const PagedResponse_OrganisationPublic_Schema = {
+export const PagedResponse_OrgPublic_Schema = {
 	properties: {
 		total: {
 			type: 'integer',
@@ -313,7 +313,7 @@ export const PagedResponse_OrganisationPublic_Schema = {
 		},
 		results: {
 			items: {
-				$ref: '#/components/schemas/OrganisationPublic'
+				$ref: '#/components/schemas/OrgPublic'
 			},
 			type: 'array',
 			title: 'Results'
@@ -321,7 +321,7 @@ export const PagedResponse_OrganisationPublic_Schema = {
 	},
 	type: 'object',
 	required: ['total', 'limit', 'offset', 'results'],
-	title: 'PagedResponse[OrganisationPublic]'
+	title: 'PagedResponse[OrgPublic]'
 } as const;
 
 export const PagedResponse_PersonPublic_Schema = {
@@ -435,7 +435,7 @@ export const UpdatePasswordSchema = {
 	title: 'UpdatePassword'
 } as const;
 
-export const UpdateResponse_OrganisationPublic_Schema = {
+export const UpdateResponse_OrgPublic_Schema = {
 	properties: {
 		success: {
 			type: 'boolean',
@@ -444,7 +444,7 @@ export const UpdateResponse_OrganisationPublic_Schema = {
 		data: {
 			anyOf: [
 				{
-					$ref: '#/components/schemas/OrganisationPublic'
+					$ref: '#/components/schemas/OrgPublic'
 				},
 				{
 					type: 'null'
@@ -465,7 +465,7 @@ export const UpdateResponse_OrganisationPublic_Schema = {
 	},
 	type: 'object',
 	required: ['success'],
-	title: 'UpdateResponse[OrganisationPublic]'
+	title: 'UpdateResponse[OrgPublic]'
 } as const;
 
 export const UpdateResponse_PersonPublic_Schema = {

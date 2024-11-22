@@ -16,8 +16,8 @@
 						url: '/admin/directory/people'
 					},
 					{
-						title: 'Organisations',
-						url: '/admin/directory/organisations',
+						title: 'Orgs',
+						url: '/admin/directory/orgs',
 						isActive: true
 					}
 				]

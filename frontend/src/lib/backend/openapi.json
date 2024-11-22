@@ -485,21 +485,6 @@
 				}
 			}
 		},
-		"/api/utils/load-fixtures": {
-			"get": {
-				"tags": ["utils"],
-				"summary": "Load Fixtures",
-				"operationId": "utils-load_fixtures",
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "title": "Response Utils-Load Fixtures" } }
-						}
-					}
-				}
-			}
-		},
 		"/api/directory/activities/": {
 			"get": {
 				"tags": ["activities"],
@@ -840,25 +825,23 @@
 				}
 			}
 		},
-		"/api/directory/organisations/": {
+		"/api/directory/orgs/": {
 			"post": {
-				"tags": ["organisations"],
-				"summary": "Create Organisation",
-				"description": "Create an organisation.",
-				"operationId": "organisations-create_organisation",
+				"tags": ["orgs"],
+				"summary": "Create Org",
+				"description": "Create an org.",
+				"operationId": "orgs-create_org",
 				"requestBody": {
 					"required": true,
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/OrganisationCreate" } }
+						"application/json": { "schema": { "$ref": "#/components/schemas/OrgCreate" } }
 					}
 				},
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/OrganisationPublic" }
-							}
+							"application/json": { "schema": { "$ref": "#/components/schemas/OrgPublic" } }
 						}
 					},
 					"422": {
@@ -872,10 +855,10 @@
 				}
 			},
 			"get": {
-				"tags": ["organisations"],
-				"summary": "Read Organisations",
-				"description": "Read paginated organisations.",
-				"operationId": "organisations-read_organisations",
+				"tags": ["orgs"],
+				"summary": "Read Orgs",
+				"description": "Read paginated orgs.",
+				"operationId": "orgs-read_orgs",
 				"parameters": [
 					{
 						"name": "q",
@@ -907,7 +890,7 @@
 						"description": "Successful Response",
 						"content": {
 							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_OrganisationPublic_" }
+								"schema": { "$ref": "#/components/schemas/PagedResponse_OrgPublic_" }
 							}
 						}
 					},
@@ -922,12 +905,12 @@
 				}
 			}
 		},
-		"/api/directory/organisations/{id}": {
+		"/api/directory/orgs/{id}": {
 			"get": {
-				"tags": ["organisations"],
-				"summary": "Read Organisation By Id",
-				"description": "Read an organisation by its id.",
-				"operationId": "organisations-read_organisation_by_id",
+				"tags": ["orgs"],
+				"summary": "Read Org By Id",
+				"description": "Read an org by its id.",
+				"operationId": "orgs-read_org_by_id",
 				"parameters": [
 					{
 						"name": "id",
@@ -940,9 +923,7 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/OrganisationPublic" }
-							}
+							"application/json": { "schema": { "$ref": "#/components/schemas/OrgPublic" } }
 						}
 					},
 					"422": {
@@ -956,10 +937,10 @@
 				}
 			},
 			"patch": {
-				"tags": ["organisations"],
-				"summary": "Update Organisation",
-				"description": "Update an organisation.",
-				"operationId": "organisations-update_organisation",
+				"tags": ["orgs"],
+				"summary": "Update Org",
+				"description": "Update an org.",
+				"operationId": "orgs-update_org",
 				"parameters": [
 					{
 						"name": "id",
@@ -971,7 +952,7 @@
 				"requestBody": {
 					"required": true,
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/OrganisationUpdate" } }
+						"application/json": { "schema": { "$ref": "#/components/schemas/OrgUpdate" } }
 					}
 				},
 				"responses": {
@@ -979,7 +960,7 @@
 						"description": "Successful Response",
 						"content": {
 							"application/json": {
-								"schema": { "$ref": "#/components/schemas/UpdateResponse_OrganisationPublic_" }
+								"schema": { "$ref": "#/components/schemas/UpdateResponse_OrgPublic_" }
 							}
 						}
 					},
@@ -994,10 +975,10 @@
 				}
 			},
 			"delete": {
-				"tags": ["organisations"],
-				"summary": "Delete Organisation",
-				"description": "Delete an organisation.",
-				"operationId": "organisations-delete_organisation",
+				"tags": ["orgs"],
+				"summary": "Delete Org",
+				"description": "Delete an org.",
+				"operationId": "orgs-delete_org",
 				"parameters": [
 					{
 						"name": "id",
@@ -1153,42 +1134,42 @@
 				"required": ["token", "new_password"],
 				"title": "NewPassword"
 			},
-			"OrganisationCreate": {
+			"OrgCreate": {
 				"properties": { "name": { "type": "string", "title": "Name" } },
 				"type": "object",
 				"required": ["name"],
-				"title": "OrganisationCreate"
+				"title": "OrgCreate"
 			},
-			"OrganisationPublic": {
+			"OrgPublic": {
 				"properties": {
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"name": { "type": "string", "title": "Name" }
 				},
 				"type": "object",
 				"required": ["id", "name"],
-				"title": "OrganisationPublic"
+				"title": "OrgPublic"
 			},
-			"OrganisationUpdate": {
+			"OrgUpdate": {
 				"properties": {
 					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" }
 				},
 				"type": "object",
-				"title": "OrganisationUpdate"
+				"title": "OrgUpdate"
 			},
-			"PagedResponse_OrganisationPublic_": {
+			"PagedResponse_OrgPublic_": {
 				"properties": {
 					"total": { "type": "integer", "title": "Total" },
 					"limit": { "type": "integer", "title": "Limit" },
 					"offset": { "type": "integer", "title": "Offset" },
 					"results": {
-						"items": { "$ref": "#/components/schemas/OrganisationPublic" },
+						"items": { "$ref": "#/components/schemas/OrgPublic" },
 						"type": "array",
 						"title": "Results"
 					}
 				},
 				"type": "object",
 				"required": ["total", "limit", "offset", "results"],
-				"title": "PagedResponse[OrganisationPublic]"
+				"title": "PagedResponse[OrgPublic]"
 			},
 			"PagedResponse_PersonPublic_": {
 				"properties": {
@@ -1255,17 +1236,15 @@
 				"required": ["current_password", "new_password"],
 				"title": "UpdatePassword"
 			},
-			"UpdateResponse_OrganisationPublic_": {
+			"UpdateResponse_OrgPublic_": {
 				"properties": {
 					"success": { "type": "boolean", "title": "Success" },
-					"data": {
-						"anyOf": [{ "$ref": "#/components/schemas/OrganisationPublic" }, { "type": "null" }]
-					},
+					"data": { "anyOf": [{ "$ref": "#/components/schemas/OrgPublic" }, { "type": "null" }] },
 					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
 				},
 				"type": "object",
 				"required": ["success"],
-				"title": "UpdateResponse[OrganisationPublic]"
+				"title": "UpdateResponse[OrgPublic]"
 			},
 			"UpdateResponse_PersonPublic_": {
 				"properties": {

@@ -3,7 +3,7 @@
 	import type { Snippet } from 'svelte';
 
 	let { children }: { children: Snippet } = $props();
-	addCrumb('/admin/directory/organisations', 'Organisations');
+	addCrumb('/admin/directory/orgs', 'Orgs');
 </script>
 
 {@render children()}

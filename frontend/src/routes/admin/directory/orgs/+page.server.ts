@@ -1,6 +1,6 @@
-import { organisationsReadOrganisations } from '$lib/backend/client/services.gen';
+import { orgsReadOrgs } from '$lib/backend/client/services.gen';
 
 export async function load() {
-	const { data } = await organisationsReadOrganisations();
+	const { data } = await orgsReadOrgs();
 	return data;
 }

@@ -59,24 +59,24 @@ export type NewPassword = {
 	new_password: string;
 };
 
-export type OrganisationCreate = {
+export type OrgCreate = {
 	name: string;
 };
 
-export type OrganisationPublic = {
+export type OrgPublic = {
 	id: string;
 	name: string;
 };
 
-export type OrganisationUpdate = {
+export type OrgUpdate = {
 	name?: string | null;
 };
 
-export type PagedResponse_OrganisationPublic_ = {
+export type PagedResponse_OrgPublic_ = {
 	total: number;
 	limit: number;
 	offset: number;
-	results: Array<OrganisationPublic>;
+	results: Array<OrgPublic>;
 };
 
 export type PagedResponse_PersonPublic_ = {
@@ -109,9 +109,9 @@ export type UpdatePassword = {
 	new_password: string;
 };
 
-export type UpdateResponse_OrganisationPublic_ = {
+export type UpdateResponse_OrgPublic_ = {
 	success: boolean;
-	data?: OrganisationPublic | null;
+	data?: OrgPublic | null;
 	message?: string | null;
 };
 
@@ -303,10 +303,6 @@ export type UtilsHealthCheckResponse = boolean;
 
 export type UtilsHealthCheckError = unknown;
 
-export type UtilsLoadFixturesResponse = unknown;
-
-export type UtilsLoadFixturesError = unknown;
-
 export type ActivitiesReadActivitiesResponse = ActivitiesPublic;
 
 export type ActivitiesReadActivitiesError = unknown;
@@ -404,15 +400,15 @@ export type PeopleDeletePersonResponse = DeleteResponse;
 
 export type PeopleDeletePersonError = HTTPValidationError;
 
-export type OrganisationsCreateOrganisationData = {
-	body: OrganisationCreate;
+export type OrgsCreateOrgData = {
+	body: OrgCreate;
 };
 
-export type OrganisationsCreateOrganisationResponse = OrganisationPublic;
+export type OrgsCreateOrgResponse = OrgPublic;
 
-export type OrganisationsCreateOrganisationError = HTTPValidationError;
+export type OrgsCreateOrgError = HTTPValidationError;
 
-export type OrganisationsReadOrganisationsData = {
+export type OrgsReadOrgsData = {
 	query?: {
 		limit?: number;
 		offset?: number;
@@ -420,37 +416,37 @@ export type OrganisationsReadOrganisationsData = {
 	};
 };
 
-export type OrganisationsReadOrganisationsResponse = PagedResponse_OrganisationPublic_;
+export type OrgsReadOrgsResponse = PagedResponse_OrgPublic_;
 
-export type OrganisationsReadOrganisationsError = HTTPValidationError;
+export type OrgsReadOrgsError = HTTPValidationError;
 
-export type OrganisationsReadOrganisationByIdData = {
+export type OrgsReadOrgByIdData = {
 	path: {
 		id: string;
 	};
 };
 
-export type OrganisationsReadOrganisationByIdResponse = OrganisationPublic;
+export type OrgsReadOrgByIdResponse = OrgPublic;
 
-export type OrganisationsReadOrganisationByIdError = HTTPValidationError;
+export type OrgsReadOrgByIdError = HTTPValidationError;
 
-export type OrganisationsUpdateOrganisationData = {
-	body: OrganisationUpdate;
+export type OrgsUpdateOrgData = {
+	body: OrgUpdate;
 	path: {
 		id: string;
 	};
 };
 
-export type OrganisationsUpdateOrganisationResponse = UpdateResponse_OrganisationPublic_;
+export type OrgsUpdateOrgResponse = UpdateResponse_OrgPublic_;
 
-export type OrganisationsUpdateOrganisationError = HTTPValidationError;
+export type OrgsUpdateOrgError = HTTPValidationError;
 
-export type OrganisationsDeleteOrganisationData = {
+export type OrgsDeleteOrgData = {
 	path: {
 		id: string;
 	};
 };
 
-export type OrganisationsDeleteOrganisationResponse = DeleteResponse;
+export type OrgsDeleteOrgResponse = DeleteResponse;
 
-export type OrganisationsDeleteOrganisationError = HTTPValidationError;
+export type OrgsDeleteOrgError = HTTPValidationError;

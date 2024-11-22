@@ -54,8 +54,6 @@ import type {
 	UtilsTestEmailResponse,
 	UtilsHealthCheckError,
 	UtilsHealthCheckResponse,
-	UtilsLoadFixturesError,
-	UtilsLoadFixturesResponse,
 	ActivitiesReadActivitiesError,
 	ActivitiesReadActivitiesResponse,
 	ActivitiesCreateActivityData,
@@ -85,22 +83,22 @@ import type {
 	PeopleDeletePersonData,
 	PeopleDeletePersonError,
 	PeopleDeletePersonResponse,
-	OrganisationsCreateOrganisationData,
-	OrganisationsCreateOrganisationError,
-	OrganisationsCreateOrganisationResponse,
-	OrganisationsReadOrganisationsData,
-	OrganisationsReadOrganisationsError,
-	OrganisationsReadOrganisationsResponse,
-	OrganisationsReadOrganisationByIdData,
-	OrganisationsReadOrganisationByIdError,
-	OrganisationsReadOrganisationByIdResponse,
-	OrganisationsUpdateOrganisationData,
-	OrganisationsUpdateOrganisationError,
-	OrganisationsUpdateOrganisationResponse,
-	OrganisationsDeleteOrganisationData,
-	OrganisationsDeleteOrganisationError,
-	OrganisationsDeleteOrganisationResponse
-} from './types.gen.ts';
+	OrgsCreateOrgData,
+	OrgsCreateOrgError,
+	OrgsCreateOrgResponse,
+	OrgsReadOrgsData,
+	OrgsReadOrgsError,
+	OrgsReadOrgsResponse,
+	OrgsReadOrgByIdData,
+	OrgsReadOrgByIdError,
+	OrgsReadOrgByIdResponse,
+	OrgsUpdateOrgData,
+	OrgsUpdateOrgError,
+	OrgsUpdateOrgResponse,
+	OrgsDeleteOrgData,
+	OrgsDeleteOrgError,
+	OrgsDeleteOrgResponse
+} from './types.gen';
 
 export const client = createClient(createConfig());
 
@@ -368,22 +366,6 @@ export const utilsHealthCheck = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Load Fixtures
- */
-export const utilsLoadFixtures = <ThrowOnError extends boolean = false>(
-	options?: Options<unknown, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		UtilsLoadFixturesResponse,
-		UtilsLoadFixturesError,
-		ThrowOnError
-	>({
-		...options,
-		url: '/api/utils/load-fixtures'
-	});
-};
-
-/**
  * Read Activities
  * Read all activities.
  */
@@ -556,86 +538,76 @@ export const peopleDeletePerson = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Create Organisation
- * Create an organisation.
+ * Create Org
+ * Create an org.
  */
-export const organisationsCreateOrganisation = <ThrowOnError extends boolean = false>(
-	options: Options<OrganisationsCreateOrganisationData, ThrowOnError>
+export const orgsCreateOrg = <ThrowOnError extends boolean = false>(
+	options: Options<OrgsCreateOrgData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).post<
-		OrganisationsCreateOrganisationResponse,
-		OrganisationsCreateOrganisationError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).post<OrgsCreateOrgResponse, OrgsCreateOrgError, ThrowOnError>({
 		...options,
-		url: '/api/directory/organisations/'
+		url: '/api/directory/orgs/'
 	});
 };
 
 /**
- * Read Organisations
- * Read paginated organisations.
+ * Read Orgs
+ * Read paginated orgs.
  */
-export const organisationsReadOrganisations = <ThrowOnError extends boolean = false>(
-	options?: Options<OrganisationsReadOrganisationsData, ThrowOnError>
+export const orgsReadOrgs = <ThrowOnError extends boolean = false>(
+	options?: Options<OrgsReadOrgsData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).get<
-		OrganisationsReadOrganisationsResponse,
-		OrganisationsReadOrganisationsError,
-		ThrowOnError
-	>({
+	return (options?.client ?? client).get<OrgsReadOrgsResponse, OrgsReadOrgsError, ThrowOnError>({
 		...options,
-		url: '/api/directory/organisations/'
+		url: '/api/directory/orgs/'
 	});
 };
 
 /**
- * Read Organisation By Id
- * Read an organisation by its id.
+ * Read Org By Id
+ * Read an org by its id.
  */
-export const organisationsReadOrganisationById = <ThrowOnError extends boolean = false>(
-	options: Options<OrganisationsReadOrganisationByIdData, ThrowOnError>
+export const orgsReadOrgById = <ThrowOnError extends boolean = false>(
+	options: Options<OrgsReadOrgByIdData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).get<
-		OrganisationsReadOrganisationByIdResponse,
-		OrganisationsReadOrganisationByIdError,
+		OrgsReadOrgByIdResponse,
+		OrgsReadOrgByIdError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/directory/organisations/{id}'
+		url: '/api/directory/orgs/{id}'
 	});
 };
 
 /**
- * Update Organisation
- * Update an organisation.
+ * Update Org
+ * Update an org.
  */
-export const organisationsUpdateOrganisation = <ThrowOnError extends boolean = false>(
-	options: Options<OrganisationsUpdateOrganisationData, ThrowOnError>
+export const orgsUpdateOrg = <ThrowOnError extends boolean = false>(
+	options: Options<OrgsUpdateOrgData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).patch<
-		OrganisationsUpdateOrganisationResponse,
-		OrganisationsUpdateOrganisationError,
-		ThrowOnError
-	>({
-		...options,
-		url: '/api/directory/organisations/{id}'
-	});
+	return (options?.client ?? client).patch<OrgsUpdateOrgResponse, OrgsUpdateOrgError, ThrowOnError>(
+		{
+			...options,
+			url: '/api/directory/orgs/{id}'
+		}
+	);
 };
 
 /**
- * Delete Organisation
- * Delete an organisation.
+ * Delete Org
+ * Delete an org.
  */
-export const organisationsDeleteOrganisation = <ThrowOnError extends boolean = false>(
-	options: Options<OrganisationsDeleteOrganisationData, ThrowOnError>
+export const orgsDeleteOrg = <ThrowOnError extends boolean = false>(
+	options: Options<OrgsDeleteOrgData, ThrowOnError>
 ) => {
 	return (options?.client ?? client).delete<
-		OrganisationsDeleteOrganisationResponse,
-		OrganisationsDeleteOrganisationError,
+		OrgsDeleteOrgResponse,
+		OrgsDeleteOrgError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/directory/organisations/{id}'
+		url: '/api/directory/orgs/{id}'
 	});
 };
