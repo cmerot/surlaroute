@@ -17,7 +17,7 @@ def create_activity(*, session: Session, activity_create: ActivityCreate) -> Act
     return db_obj
 
 
-def read_activity(*, session: Session, path: str) -> Activity:
+def read_activity(*, session: Session, path: str | Ltree) -> Activity:
     statement = select(Activity).where(Activity.path == Ltree(path))
     return session.scalars(statement).one()
 

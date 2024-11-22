@@ -148,7 +148,7 @@ def test_activity_init() -> None:
 
 def test_activity_init_without_name() -> None:
     with pytest.raises(TypeError):
-        Activity(name="a")
+        Activity()  # type: ignore[call-arg]
 
 
 def test_activity_init_with_parent_path() -> None:
