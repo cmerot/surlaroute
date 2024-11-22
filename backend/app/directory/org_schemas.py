@@ -3,16 +3,16 @@ import uuid
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class OrganisationPublic(BaseModel):
+class OrgPublic(BaseModel):
     id: uuid.UUID
     name: str
 
     model_config = ConfigDict(from_attributes=True)
 
 
-class OrganisationCreate(BaseModel):
+class OrgCreate(BaseModel):
     name: str
 
 
-class OrganisationUpdate(BaseModel):
+class OrgUpdate(BaseModel):
     name: str | None = Field(default=None)

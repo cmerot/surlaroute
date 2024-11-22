@@ -7,7 +7,7 @@ from sqlalchemy_utils import Ltree
 
 from app.core.db.session import SessionLocal
 from app.directory import activity_crud
-from app.directory.models import Activity, Organisation
+from app.directory.models import Activity, Org
 
 
 def get_path(relative_path: str) -> str:
@@ -19,15 +19,15 @@ def get_path(relative_path: str) -> str:
     return full_path
 
 
-def load_organisations(db: Session) -> None:
-    with open(get_path("../fixtures/organisations.yml")) as f:
-        organisations = yaml.safe_load(f)["organisations"]
+def load_orgs(db: Session) -> None:
+    with open(get_path("../fixtures/orgs.yml")) as f:
+        orgs = yaml.safe_load(f)["orgs"]
     print("-" * 80)
     my_list = [1, 2, 3, 4, 5]
     last_element = my_list[-1]
     print(last_element)
-    for entity in organisations:
-        org = Organisation(name=entity["name"])
+    for entity in orgs:
+        org = Org(name=entity["name"])
 
         activity_path = Ltree(entity["activity"])
         try:
@@ -50,5 +50,5 @@ def load_organisations(db: Session) -> None:
 
 if __name__ == "__main__":
     db = SessionLocal()
-    load_organisations(db)
+    load_orgs(db)
     db.commit()

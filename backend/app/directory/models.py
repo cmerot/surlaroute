@@ -31,19 +31,17 @@ class TimestampMixin:
 
 
 @dataclass
-class AssociationOrganisationActivity(Base):
-    organisation_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("organisation.id"), primary_key=True
-    )
+class AssociationOrgActivity(Base):
+    org_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("org.id"), primary_key=True)
     activity_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("activity.id"), primary_key=True
     )
 
 
 @dataclass
-class AssociationOrganisationActor(Base):
-    organisation_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("organisation.id"),
+class AssociationOrgActor(Base):
+    org_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("org.id"),
         primary_key=True,
     )
     actor_id: Mapped[uuid.UUID] = mapped_column(
@@ -54,27 +52,27 @@ class AssociationOrganisationActor(Base):
         back_populates="memberships",
         foreign_keys=[actor_id],
     )
-    organisation: Mapped[Organisation] = relationship(
+    org: Mapped[Org] = relationship(
         back_populates="members",
-        foreign_keys=[organisation_id],
+        foreign_keys=[org_id],
     )
     membership_data: Mapped[str] = mapped_column(default="")
 
     def __repr__(self) -> str:
-        return f"AssociationOrganisationActor({self.actor} in {self.organisation})"
+        return f"AssociationOrgActor({self.actor} in {self.org})"
 
 
 @dataclass
 class Actor(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column()
-    memberships: Mapped[list[AssociationOrganisationActor]] = relationship(
-        # note: raises ValueError with back_populates="organisation"
+    memberships: Mapped[list[AssociationOrgActor]] = relationship(
+        # note: raises ValueError with back_populates="org"
         # ValueError: Bidirectional attribute conflict detected:
-        # Passing object <Person at 0x7f89b57d4eb0> to attribute "AssociationOrganisationActor.actor"
-        # triggers a modify event on attribute "AssociationOrganisationActor.organisation"
+        # Passing object <Person at 0x7f89b57d4eb0> to attribute "AssociationOrgActor.actor"
+        # triggers a modify event on attribute "AssociationOrgActor.org"
         # via the backref "Actor.memberships".
-        # back_populates="organisation",
+        # back_populates="org",
         cascade="all, delete-orphan",
     )
 
@@ -105,18 +103,18 @@ class Actor(Base):
 
 
 @dataclass
-class Organisation(Actor, TimestampMixin):
+class Org(Actor, TimestampMixin):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
     )
     name: Mapped[str] = mapped_column()
     activities: Mapped[list[Activity]] = relationship(
-        secondary=AssociationOrganisationActivity.__tablename__,
-        back_populates="organisations",
+        secondary=AssociationOrgActivity.__tablename__,
+        back_populates="orgs",
     )
-    members: Mapped[list[AssociationOrganisationActor]] = relationship(
-        back_populates="organisation",
+    members: Mapped[list[AssociationOrgActor]] = relationship(
+        back_populates="org",
         cascade="all, delete-orphan",
     )
 
@@ -145,8 +143,8 @@ class Activity(Base):
         primaryjoin=(remote(path) == foreign(func.subpath(path, 0, -1))),
         viewonly=True,
     )
-    organisations: Mapped[list[Organisation]] = relationship(
-        secondary=AssociationOrganisationActivity.__tablename__,
+    orgs: Mapped[list[Org]] = relationship(
+        secondary=AssociationOrgActivity.__tablename__,
         back_populates="activities",
     )
 
