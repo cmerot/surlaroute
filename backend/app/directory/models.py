@@ -49,11 +49,11 @@ class AssociationOrgActor(Base):
         primary_key=True,
     )
     actor: Mapped[Actor] = relationship(
-        back_populates="memberships",
+        back_populates="membership_assocs",
         foreign_keys=[actor_id],
     )
     org: Mapped[Org] = relationship(
-        back_populates="members",
+        back_populates="member_assocs",
         foreign_keys=[org_id],
     )
     membership_data: Mapped[str] = mapped_column(default="")
@@ -66,7 +66,7 @@ class AssociationOrgActor(Base):
 class Actor(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     type: Mapped[str] = mapped_column()
-    memberships: Mapped[list[AssociationOrgActor]] = relationship(
+    membership_assocs: Mapped[list[AssociationOrgActor]] = relationship(
         # note: raises ValueError with back_populates="org"
         # ValueError: Bidirectional attribute conflict detected:
         # Passing object <Person at 0x7f89b57d4eb0> to attribute "AssociationOrgActor.actor"
@@ -113,7 +113,7 @@ class Org(Actor, TimestampMixin):
         secondary=AssociationOrgActivity.__tablename__,
         back_populates="orgs",
     )
-    members: Mapped[list[AssociationOrgActor]] = relationship(
+    member_assocs: Mapped[list[AssociationOrgActor]] = relationship(
         back_populates="org",
         cascade="all, delete-orphan",
     )

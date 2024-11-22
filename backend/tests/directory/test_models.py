@@ -15,13 +15,13 @@ from tests.directory.fixtures import get_fixture_uuid
 
 def print_actor(actor: Actor) -> None:
     print(f"{actor}:")
-    if len(actor.memberships) > 0:
+    if len(actor.membership_assocs) > 0:
         print("  - memberships:")
-        for om in actor.memberships:
+        for om in actor.membership_assocs:
             print(f"    - {om.org!r}")
-    if isinstance(actor, Org) and actor.members:
+    if isinstance(actor, Org) and actor.member_assocs:
         print("  - members:")
-        for om in actor.members:
+        for om in actor.member_assocs:
             print(f"    - {om.actor!r}")
 
 
@@ -40,24 +40,24 @@ def test_directory_preloaded_fixtures(session: Session) -> None:
     om3 = session.get_one(AssociationOrgActor, (slowfest_id, mitchum_id))
 
     print_actor(robert)
-    assert robert.memberships[0].org is armodo
-    assert robert.memberships[0] is om1
+    assert robert.membership_assocs[0].org is armodo
+    assert robert.membership_assocs[0] is om1
 
     print_actor(mitchum)
-    assert mitchum.memberships[0].org is slowfest
-    assert mitchum.memberships[0] is om3
+    assert mitchum.membership_assocs[0].org is slowfest
+    assert mitchum.membership_assocs[0] is om3
 
     print_actor(armodo)
-    assert armodo.members[0].actor is robert
-    assert armodo.members[0] is om1
-    assert armodo.members[1].actor is slowfest
-    assert armodo.members[1] is om2
+    assert armodo.member_assocs[0].actor is robert
+    assert armodo.member_assocs[0] is om1
+    assert armodo.member_assocs[1].actor is slowfest
+    assert armodo.member_assocs[1] is om2
 
     print_actor(slowfest)
-    assert slowfest.memberships[0].org is armodo
-    assert slowfest.memberships[0] is om2
-    assert slowfest.members[0].actor is mitchum
-    assert slowfest.members[0] is om3
+    assert slowfest.membership_assocs[0].org is armodo
+    assert slowfest.membership_assocs[0] is om2
+    assert slowfest.member_assocs[0].actor is mitchum
+    assert slowfest.member_assocs[0] is om3
 
 
 def test_directory_delete_om(session: Session) -> None:
@@ -73,14 +73,14 @@ def test_directory_delete_om(session: Session) -> None:
     session.flush()
 
     print_actor(o1)
-    assert len(o1.members) == 2
+    assert len(o1.member_assocs) == 2
 
     session.delete(om1)
     session.flush()
 
     session.refresh(o1)
     print_actor(o1)
-    assert len(o1.members) == 1
+    assert len(o1.member_assocs) == 1
 
     with pytest.raises(NoResultFound):
         session.get_one(AssociationOrgActor, (o1_id, p1_id))
@@ -101,14 +101,14 @@ def test_directory_delete_actor(session: Session) -> None:
     session.flush()
 
     print_actor(o1)
-    assert len(o1.members) == 2
+    assert len(o1.member_assocs) == 2
 
     session.delete(p2)
     session.flush()
 
     session.refresh(o1)
     print_actor(o1)
-    assert len(o1.members) == 1
+    assert len(o1.member_assocs) == 1
 
     with pytest.raises(NoResultFound):
         session.get_one(Person, p2_id)
@@ -131,11 +131,11 @@ def test_association_org_activity() -> None:
 
 
 def test_association_org_actor() -> None:
-    assert isinstance(Org().members, InstrumentedList)
-    assert isinstance(Org().memberships, InstrumentedList)
-    assert isinstance(Actor().memberships, InstrumentedList)
+    assert isinstance(Org().member_assocs, InstrumentedList)
+    assert isinstance(Org().membership_assocs, InstrumentedList)
+    assert isinstance(Actor().membership_assocs, InstrumentedList)
     assert hasattr(Actor(), "members") is False
-    assert isinstance(Person().memberships, InstrumentedList)
+    assert isinstance(Person().membership_assocs, InstrumentedList)
     assert hasattr(Person(), "members") is False
     pass
 
