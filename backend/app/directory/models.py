@@ -7,7 +7,9 @@ from datetime import datetime
 from typing import Any
 
 import unidecode
+from geoalchemy2 import Geometry
 from sqlalchemy import DateTime, ForeignKey, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import (
     Mapped,
@@ -19,6 +21,7 @@ from sqlalchemy.orm import (
 from sqlalchemy_utils import Ltree, LtreeType
 
 from app.core.db.base_class import Base
+from app.tour.models import AssociationEventActor, AssociationTourActor
 
 
 class TimestampMixin:
@@ -28,6 +31,16 @@ class TimestampMixin:
     updated_at: Mapped[datetime] = mapped_column(
         DateTime, default=func.now(), onupdate=func.now(), nullable=False
     )
+
+
+class PermissionsMixin:
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
+    group_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("org.id"), nullable=False)
+    group_read: Mapped[bool] = mapped_column(default=True, nullable=False)
+    group_write: Mapped[bool] = mapped_column(default=True, nullable=False)
+    member_read: Mapped[bool] = mapped_column(default=True, nullable=False)
+    member_write: Mapped[bool] = mapped_column(default=False, nullable=False)
+    other_read: Mapped[bool] = mapped_column(default=False, nullable=False)
 
 
 @dataclass
@@ -56,7 +69,7 @@ class AssociationOrgActor(Base):
         back_populates="member_assocs",
         foreign_keys=[org_id],
     )
-    membership_data: Mapped[str] = mapped_column(default="")
+    data: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
 
     def __repr__(self) -> str:
         return f"AssociationOrgActor({self.actor} in {self.org})"
@@ -75,6 +88,17 @@ class Actor(Base):
         # back_populates="org",
         cascade="all, delete-orphan",
     )
+    event_assocs: Mapped[list[AssociationEventActor]] = relationship(
+        cascade="all, delete-orphan",
+    )
+    tour_assocs: Mapped[list[AssociationTourActor]] = relationship(
+        cascade="all, delete-orphan",
+    )
+    contact_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("contact.id"),
+        default=None,
+    )
+    contact: Mapped[Contact] = relationship()
 
     @declared_attr.directive
     def __mapper_args__(cls) -> dict[str, Any]:
@@ -103,7 +127,7 @@ class Actor(Base):
 
 
 @dataclass
-class Org(Actor, TimestampMixin):
+class Org(Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
@@ -122,7 +146,7 @@ class Org(Actor, TimestampMixin):
         return f"{self.__class__.__name__}({self.name})"
 
 
-class Person(Actor, TimestampMixin):
+class Person(Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
@@ -137,6 +161,8 @@ class Person(Actor, TimestampMixin):
 class Activity(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
+    schema: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
+    label: Mapped[str | None] = mapped_column(default=None)
     path: Mapped[Ltree] = mapped_column(LtreeType, unique=True)
     parent: Mapped[Activity] = relationship(
         "Activity",
@@ -182,3 +208,40 @@ class Activity(Base):
         s = re.sub(r"_+", "_", s)
         s = re.sub(r"\.(?=[\w_])", ".", s)
         return s
+
+
+@dataclass
+class Contact(Base):
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    email_address: Mapped[str | None] = mapped_column(default=None)
+    phone_number: Mapped[str | None] = mapped_column(default=None)
+    website: Mapped[str | None] = mapped_column(default=None)
+    address_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("addressgeo.id"),
+        default=None,
+    )
+    address: Mapped[AddressGeo] = relationship()
+
+
+@dataclass
+class AddressGeo(Base):
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    street: Mapped[str | None] = mapped_column(default=None)
+    postal_code: Mapped[str | None] = mapped_column(default=None)
+    city: Mapped[str | None] = mapped_column(default=None)
+    country: Mapped[str | None] = mapped_column(default=None)
+
+    administrative_area_1: Mapped[str | None] = mapped_column(default=None)
+    administrative_area_2: Mapped[str | None] = mapped_column(default=None)
+    administrative_area_3: Mapped[str | None] = mapped_column(default=None)
+
+    geo_location: Mapped[Geometry | None] = mapped_column(
+        "geo_location",
+        Geometry("POINT", srid=4326),
+        default=None,
+    )
+    geo_shape: Mapped[Geometry | None] = mapped_column(
+        "geo_shape",
+        Geometry("POLYGON", srid=4326),
+        default=None,
+    )

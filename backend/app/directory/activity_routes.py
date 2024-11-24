@@ -14,6 +14,7 @@ from app.directory.activity_schemas import (
     ActivityUpdateResponse,
 )
 from app.directory.models import Activity
+from app.directory.schemas import PagedResponse
 
 router = APIRouter()
 
@@ -44,28 +45,7 @@ def create_activity(
     return activity
 
 
-@router.patch("/{path}", response_model=ActivityUpdateResponse)
-def update_activity(
-    *, session: SessionDep, path: str, activity_update: ActivityUpdate
-) -> ActivityUpdateResponse:
-    """
-    Update an activity.
-
-    If the name or the parent path is patched, it will also update children.
-    """
-    try:
-        lca, rowcount = crud.update_activity(
-            session=session, path=path, activity_update=activity_update
-        )
-        session.commit()
-    except NoResultFound:
-        session.rollback()
-        raise HTTPException(status_code=404, detail="Activity not found")
-
-    return ActivityUpdateResponse(lca=lca, rowcount=rowcount)
-
-
-@router.get("/{path}", response_model=ActivitiesPublic | ActivityPublic)
+@router.get("/{path}", response_model=PagedResponse[ActivityPublic])
 def read_activities_by_path(
     session: SessionDep, path: str, descendant: bool = False
 ) -> Any:
@@ -93,6 +73,27 @@ def read_activities(session: SessionDep) -> Any:
     """
     activities = crud.read_activities(session=session)
     return ActivitiesPublic.model_validate({"data": activities})
+
+
+@router.patch("/{path}", response_model=ActivityUpdateResponse)
+def update_activity(
+    *, session: SessionDep, path: str, activity_update: ActivityUpdate
+) -> ActivityUpdateResponse:
+    """
+    Update an activity.
+
+    If the name or the parent path is patched, it will also update children.
+    """
+    try:
+        lca, rowcount = crud.update_activity(
+            session=session, path=path, activity_update=activity_update
+        )
+        session.commit()
+    except NoResultFound:
+        session.rollback()
+        raise HTTPException(status_code=404, detail="Activity not found")
+
+    return ActivityUpdateResponse(lca=lca, rowcount=rowcount)
 
 
 @router.delete("/{path}", response_model=ActivityDeleteResponse)

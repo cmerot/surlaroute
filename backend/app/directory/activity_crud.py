@@ -9,20 +9,34 @@ from app.directory.activity_schemas import (
     ActivityUpdate,
 )
 from app.directory.models import Activity
+from app.directory.schemas import PageParams
 
 
-def create_activity(*, session: Session, activity_create: ActivityCreate) -> Activity:
+def create_activity(
+    *,
+    session: Session,
+    activity_create: ActivityCreate,
+) -> Activity:
     db_obj = Activity(**activity_create.model_dump())
     session.add(db_obj)
     return db_obj
 
 
-def read_activity(*, session: Session, path: str | Ltree) -> Activity:
+def read_activity(
+    *,
+    session: Session,
+    path: str | Ltree,
+) -> Activity:
     statement = select(Activity).where(Activity.path == Ltree(path))
     return session.scalars(statement).one()
 
 
-def read_activities(*, session: Session, path: str | None = None) -> Sequence[Activity]:
+def read_activities(
+    *,
+    session: Session,
+    path: str | None = None,
+    page_params: PageParams = PageParams(),  # noqa: ARG001
+) -> tuple[Sequence[Activity], int]:
     statement = select(Activity).order_by(Activity.path.asc())
     if path is not None and path != "":
         statement = statement.filter(Activity.path.descendant_of(Ltree(path)))
@@ -31,7 +45,10 @@ def read_activities(*, session: Session, path: str | None = None) -> Sequence[Ac
 
 
 def update_activity(
-    *, session: Session, path: str, activity_update: ActivityUpdate
+    *,
+    session: Session,
+    path: str,
+    activity_update: ActivityUpdate,
 ) -> tuple[Ltree | None, int]:
     """
     Update activity. Updating parent_path and/or name will update children.

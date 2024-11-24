@@ -27,6 +27,7 @@ dependencies = [
     "pytest-watch>=4.2.0",
     "pytest-watcher>=0.4.3",
     "types-pyyaml>=6.0.12.20240917",
+    "geoalchemy2>=0.16.0",
 ]
 
 [tool.uv]

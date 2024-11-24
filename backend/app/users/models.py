@@ -3,7 +3,7 @@ import uuid
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
-from app.directory.models import Person
+import app.directory.models
 
 
 # Shared properties
@@ -46,7 +46,7 @@ class User(UserBase, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     hashed_password: str
     person_id: uuid.UUID | None = Field(default=None, foreign_key="person.id")
-    person: Person | None = Relationship()
+    person: app.directory.models.Person | None = Relationship()
 
 
 # Properties to return via API, id is always required
