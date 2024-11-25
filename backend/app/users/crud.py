@@ -1,30 +1,46 @@
-from typing import Any
+from collections.abc import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.security import get_password_hash, verify_password
-from app.users.models import User, UserCreate, UserUpdate
+from app.directory.schemas import PageParams
+from app.users.models import User
+from app.users.schemas import UserCreate, UserUpdate
 
 
 def create_user(*, session: Session, user_create: UserCreate) -> User:
-    db_obj = User.model_validate(
-        user_create, update={"hashed_password": get_password_hash(user_create.password)}
-    )
+    db_obj = User(**user_create.model_dump(exclude={"password"}))
+    db_obj.hashed_password = get_password_hash(user_create.password)
     session.add(db_obj)
     session.commit()
     session.refresh(db_obj)
     return db_obj
 
 
-def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
-    user_data = user_in.model_dump(exclude_unset=True)
-    extra_data = {}
-    if "password" in user_data:
-        password = user_data["password"]
-        hashed_password = get_password_hash(password)
-        extra_data["hashed_password"] = hashed_password
-    db_user.sqlmodel_update(user_data, update=extra_data)
+def read_users(
+    *,
+    session: Session,
+    page_params: PageParams = PageParams(),
+) -> tuple[Sequence[User], int]:
+    count_statement = select(func.count()).select_from(User)
+    statement = select(User).offset(page_params.offset).limit(page_params.limit)
+    count = session.scalars(count_statement).one()
+    users = session.scalars(statement).all()
+    return users, count
+
+
+def update_user(
+    *,
+    session: Session,
+    db_user: User,
+    user_in: UserUpdate,
+) -> User:
+    for key, value in user_in.model_dump(exclude_unset=True).items():
+        if key == "password":
+            db_user.hashed_password = get_password_hash(value)
+        else:
+            setattr(db_user, key, value)
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
@@ -32,7 +48,7 @@ def update_user(*, session: Session, db_user: User, user_in: UserUpdate) -> Any:
 
 
 def get_user_by_email(*, session: Session, email: str) -> User | None:
-    statement = select(User).filter(User.email == email)  # type: ignore
+    statement = select(User).filter(User.email == email)
     session_user = session.scalar(statement)
     return session_user
 

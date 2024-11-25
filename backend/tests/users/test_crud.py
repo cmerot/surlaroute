@@ -3,7 +3,8 @@ from sqlmodel import Session
 
 from app.core.security import verify_password
 from app.users import crud
-from app.users.models import User, UserCreate, UserUpdate
+from app.users.models import User
+from app.users.schemas import UserCreate, UserUpdate
 from tests.utils import random_email, random_lower_string
 
 
@@ -46,7 +47,7 @@ def test_check_if_user_is_active(session: Session) -> None:
 def test_check_if_user_is_active_inactive(session: Session) -> None:
     email = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=email, password=password, disabled=True)
+    user_in = UserCreate(email=email, password=password)
     user = crud.create_user(session=session, user_create=user_in)
     assert user.is_active
 
@@ -85,8 +86,7 @@ def test_update_user(session: Session) -> None:
     user = crud.create_user(session=session, user_create=user_in)
     new_password = random_lower_string()
     user_in_update = UserUpdate(password=new_password, is_superuser=True)
-    if user.id is not None:
-        crud.update_user(session=session, db_user=user, user_in=user_in_update)
+    crud.update_user(session=session, db_user=user, user_in=user_in_update)
     user_2 = session.get(User, user.id)
     assert user_2
     assert user.email == user_2.email

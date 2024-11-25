@@ -12,7 +12,7 @@ from alembic.config import Config
 from app.core.config import settings
 from app.core.db.session import get_db
 from app.users import crud
-from app.users.models import UserCreate
+from app.users.schemas import UserCreate
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(" prestart ")

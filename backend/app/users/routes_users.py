@@ -2,27 +2,27 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import func, select
 
 from app.core.config import settings
 from app.core.db.session import SessionDep
 from app.core.email.utils import generate_new_account_email, send_email
 from app.core.security import (
-    CurrentUser,
+    CurrentUserDep,
     get_current_active_superuser,
-    get_password_hash,
-    verify_password,
+)
+from app.directory.schemas import (
+    PagedResponse,
+    PageParamsDep,
 )
 from app.users import crud
 from app.users.models import (
-    UpdatePassword,
     User,
+)
+from app.users.schemas import (
     UserCreate,
     UserPublic,
     UserRegister,
-    UsersPublic,
     UserUpdate,
-    UserUpdateMe,
 )
 from app.utils.schemas import Message
 
@@ -32,26 +32,35 @@ router = APIRouter()
 @router.get(
     "/",
     dependencies=[Depends(get_current_active_superuser)],
-    response_model=UsersPublic,
+    response_model=PagedResponse[UserPublic],
 )
-def read(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
+def read(
+    session: SessionDep,
+    page_params: PageParamsDep,
+) -> PagedResponse[UserPublic]:
     """
     Read users.
     """
-
-    count_statement = select(func.count()).select_from(User)
-    count = session.scalar(count_statement)
-
-    statement = select(User).offset(skip).limit(limit)
-    users = session.scalars(statement).all()
-
-    return UsersPublic(data=users, count=count)
+    users, count = crud.read_users(
+        session=session,
+        page_params=page_params,
+    )
+    return PagedResponse[UserPublic].model_validate(
+        {
+            "total": count,
+            "limit": page_params.limit,
+            "offset": page_params.offset,
+            "results": users,
+        }
+    )
 
 
 @router.post(
-    "/", dependencies=[Depends(get_current_active_superuser)], response_model=UserPublic
+    "/",
+    dependencies=[Depends(get_current_active_superuser)],
+    response_model=UserPublic,
 )
-def create(*, session: SessionDep, user_in: UserCreate) -> Any:
+def create(*, session: SessionDep, user_in: UserCreate) -> UserPublic:
     """
     Create new user.
     """
@@ -72,71 +81,7 @@ def create(*, session: SessionDep, user_in: UserCreate) -> Any:
             subject=email_data.subject,
             html_content=email_data.html_content,
         )
-    return user
-
-
-@router.patch("/me", response_model=UserPublic)
-def update_me(
-    *, session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser
-) -> Any:
-    """
-    Update own user.
-    """
-
-    if user_in.email:
-        existing_user = crud.get_user_by_email(session=session, email=user_in.email)
-        if existing_user and existing_user.id != current_user.id:
-            raise HTTPException(
-                status_code=409, detail="User with this email already exists"
-            )
-    user_data = user_in.model_dump(exclude_unset=True)
-    current_user.sqlmodel_update(user_data)
-    session.add(current_user)
-    session.commit()
-    session.refresh(current_user)
-    return current_user
-
-
-@router.patch("/me/password", response_model=Message)
-def update_password_me(
-    *, session: SessionDep, body: UpdatePassword, current_user: CurrentUser
-) -> Any:
-    """
-    Update own password.
-    """
-    if not verify_password(body.current_password, current_user.hashed_password):
-        raise HTTPException(status_code=400, detail="Incorrect password")
-    if body.current_password == body.new_password:
-        raise HTTPException(
-            status_code=400, detail="New password cannot be the same as the current one"
-        )
-    hashed_password = get_password_hash(body.new_password)
-    current_user.hashed_password = hashed_password
-    session.add(current_user)
-    session.commit()
-    return Message(message="Password updated successfully")
-
-
-@router.get("/me", response_model=UserPublic)
-def read_me(current_user: CurrentUser) -> Any:
-    """
-    Get current user.
-    """
-    return current_user
-
-
-@router.delete("/me", response_model=Message)
-def delete_me(session: SessionDep, current_user: CurrentUser) -> Any:
-    """
-    Delete own user.
-    """
-    if current_user.is_superuser:
-        raise HTTPException(
-            status_code=403, detail="Super users are not allowed to delete themselves"
-        )
-    session.delete(current_user)
-    session.commit()
-    return Message(message="User deleted successfully")
+    return UserPublic.model_validate(user)
 
 
 @router.post("/signup", response_model=UserPublic)
@@ -157,7 +102,7 @@ def register(session: SessionDep, user_in: UserRegister) -> Any:
 
 @router.get("/{user_id}", response_model=UserPublic)
 def read_by_id(
-    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUser
+    user_id: uuid.UUID, session: SessionDep, current_user: CurrentUserDep
 ) -> Any:
     """
     Get a specific user by id.
@@ -201,13 +146,12 @@ def update(
                 status_code=409, detail="User with this email already exists"
             )
 
-    db_user = crud.update_user(session=session, db_user=db_user, user_in=user_in)
-    return db_user
+    return crud.update_user(session=session, db_user=db_user, user_in=user_in)
 
 
 @router.delete("/{user_id}", dependencies=[Depends(get_current_active_superuser)])
 def delete(
-    session: SessionDep, current_user: CurrentUser, user_id: uuid.UUID
+    session: SessionDep, current_user: CurrentUserDep, user_id: uuid.UUID
 ) -> Message:
     """
     Delete a user.

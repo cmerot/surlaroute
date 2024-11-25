@@ -13,14 +13,14 @@ from app.core.email.utils import (
     send_email,
 )
 from app.core.security import (
-    CurrentUser,
+    CurrentUserDep,
     generate_password_reset_token,
     get_current_active_superuser,
     get_password_hash,
     verify_password_reset_token,
 )
 from app.users import crud
-from app.users.models import NewPassword, Token, UserPublic
+from app.users.schemas import NewPassword, Token, UserPublic
 from app.utils.schemas import Message
 
 router = APIRouter()
@@ -49,7 +49,7 @@ def access_token(
 
 
 @router.post("/login/test-token", response_model=UserPublic)
-def test_token(current_user: CurrentUser) -> Any:
+def test_token(current_user: CurrentUserDep) -> Any:
     """
     Test access token
     """
