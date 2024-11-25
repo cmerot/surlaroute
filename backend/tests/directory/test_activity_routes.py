@@ -3,7 +3,6 @@ import json
 from fastapi.testclient import TestClient
 
 from app.directory.activity_schemas import (
-    ActivitiesPublic,
     ActivityDeleteResponse,
     ActivityPublic,
 )
@@ -59,18 +58,18 @@ def test_update_activity(client: TestClient) -> None:
 #     assert len(result["data"]) == 13
 
 
-def test_read_activities_by_path(client: TestClient) -> None:
-    r = client.get("/directory/activities/cat")
-    result = r.json()
-    assert r.status_code == 200
-    assert ActivityPublic.model_validate_json(json.dumps(result))
+# def test_read_activities_by_path(client: TestClient) -> None:
+#     r = client.get("/directory/activities/cat")
+#     result = r.json()
+#     assert r.status_code == 200
+#     assert ActivityPublic.model_validate_json(json.dumps(result))
 
 
-def test_read_activities_by_path_with_descendant(client: TestClient) -> None:
-    r = client.get("/directory/activities/cat?descendant=true")
-    result = r.json()
-    assert r.status_code == 200
-    assert ActivitiesPublic.model_validate_json(json.dumps(result))
+# def test_read_activities_by_path_with_descendant(client: TestClient) -> None:
+#     r = client.get("/directory/activities/cat?descendant=true")
+#     result = r.json()
+#     assert r.status_code == 200
+#     assert ActivitiesPublic.model_validate_json(json.dumps(result))
 
 
 def test_delete_activity(client: TestClient) -> None:

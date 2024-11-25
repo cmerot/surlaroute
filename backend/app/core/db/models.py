@@ -21,7 +21,6 @@ from sqlalchemy.orm import (
 from sqlalchemy_utils import Ltree, LtreeType
 
 from app.core.db.base_class import Base
-from app.tour.models import AssociationEventActor, AssociationTourActor
 
 
 class TimestampMixin:
@@ -33,51 +32,50 @@ class TimestampMixin:
     )
 
 
-class PermissionsMixin:
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("user.id"), nullable=False)
-    group_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("org.id"), nullable=False)
-    group_read: Mapped[bool] = mapped_column(default=True, nullable=False)
-    group_write: Mapped[bool] = mapped_column(default=True, nullable=False)
-    member_read: Mapped[bool] = mapped_column(default=True, nullable=False)
-    member_write: Mapped[bool] = mapped_column(default=False, nullable=False)
-    other_read: Mapped[bool] = mapped_column(default=False, nullable=False)
+@dataclass
+class User(Base):
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    email: Mapped[str] = mapped_column()
+    full_name: Mapped[str | None] = mapped_column(default=None)
+    is_superuser: Mapped[bool] = mapped_column(default=False)
+    is_member: Mapped[bool] = mapped_column(default=False)
+    is_active: Mapped[bool] = mapped_column(default=False)
+    hashed_password: Mapped[str] = mapped_column()
 
 
 @dataclass
-class AssociationOrgActivity(Base):
-    org_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("org.id"), primary_key=True)
-    activity_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("activity.id"), primary_key=True
+class Permissions:
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
+        if "owner" in kwargs:
+            pass
+        super().__init__(*args, **kwargs)
+
+    owner_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("user.id"), default=None
     )
 
+    @declared_attr
+    def owner(self) -> Mapped[User]:
+        return relationship(foreign_keys=self.owner_id)  # type: ignore[arg-type]
 
-@dataclass
-class AssociationOrgActor(Base):
-    org_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("org.id"),
-        primary_key=True,
+    group_owner_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("org.id"), default=None
     )
-    actor_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("actor.id"),
-        primary_key=True,
-    )
-    actor: Mapped[Actor] = relationship(
-        back_populates="membership_assocs",
-        foreign_keys=[actor_id],
-    )
-    org: Mapped[Org] = relationship(
-        back_populates="member_assocs",
-        foreign_keys=[org_id],
-    )
-    data: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
 
-    def __repr__(self) -> str:
-        return f"AssociationOrgActor({self.actor} in {self.org})"
+    @declared_attr
+    def group_owner(self) -> Mapped[Org]:
+        return relationship(foreign_keys=self.group_owner_id)  # type: ignore[arg-type]
+
+    group_read: Mapped[bool] = mapped_column(default=True)
+    group_write: Mapped[bool] = mapped_column(default=True)
+    member_read: Mapped[bool] = mapped_column(default=True)
+    member_write: Mapped[bool] = mapped_column(default=False)
+    other_read: Mapped[bool] = mapped_column(default=False)
 
 
 @dataclass
 class Actor(Base):
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     type: Mapped[str] = mapped_column()
     membership_assocs: Mapped[list[AssociationOrgActor]] = relationship(
         # note: raises ValueError with back_populates="org"
@@ -109,32 +107,20 @@ class Actor(Base):
                 "confirm_deleted_rows": False,
             }
         else:
-            return {"polymorphic_identity": cls.__name__}
-
-    def __str__(self) -> str:
-        if self.__class__.__name__ == "Actor":
-            return super().__str__()
-        else:
-            return f"{self.name}"  # type: ignore[attr-defined]
-
-    def __init__(
-        self,
-        **kwargs: Any,
-    ) -> None:
-        if "id" not in kwargs:
-            kwargs["id"] = uuid.uuid4()
-        super().__init__(**kwargs)
+            return {
+                "polymorphic_identity": cls.__name__,
+            }
 
 
 @dataclass
-class Org(Actor):
+class Org(Permissions, Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
     )
     name: Mapped[str] = mapped_column()
     activities: Mapped[list[Activity]] = relationship(
-        secondary=AssociationOrgActivity.__tablename__,
+        secondary="associationorgactivity",
         back_populates="orgs",
     )
     member_assocs: Mapped[list[AssociationOrgActor]] = relationship(
@@ -146,15 +132,61 @@ class Org(Actor):
         return f"{self.__class__.__name__}({self.name})"
 
 
-class Person(Actor):
+@dataclass
+class Person(Permissions, Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
     )
-    name: Mapped[str]
+    firstname: Mapped[str] = mapped_column()
+    lastname: Mapped[str] = mapped_column()
+    user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("user.id"), default=None
+    )
+    user: Mapped[User] = relationship(foreign_keys=user_id)
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.name})"
+        return f"{self.__class__.__name__}({self.firstname} {self.lastname})"
+
+
+@dataclass
+class AssociationOrgActivity(Base):
+    """
+    Activities of an org
+    """
+
+    org_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("org.id"), primary_key=True)
+    activity_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("activity.id"), primary_key=True
+    )
+
+
+@dataclass
+class AssociationOrgActor(Base):
+    """
+    Members of an org
+    """
+
+    org_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("org.id"),
+        primary_key=True,
+    )
+    org: Mapped[Org] = relationship(
+        back_populates="member_assocs",
+        foreign_keys=[org_id],
+    )
+    actor_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("actor.id"),
+        primary_key=True,
+    )
+    actor: Mapped[Actor] = relationship(
+        back_populates="membership_assocs",
+        foreign_keys=[actor_id],
+    )
+    data: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
+
+    def __repr__(self) -> str:
+        return f"AssociationOrgActor({self.actor} in {self.org})"
 
 
 @dataclass
@@ -170,7 +202,7 @@ class Activity(Base):
         viewonly=True,
     )
     orgs: Mapped[list[Org]] = relationship(
-        secondary=AssociationOrgActivity.__tablename__,
+        secondary="associationorgactivity",
         back_populates="activities",
     )
 
@@ -245,3 +277,79 @@ class AddressGeo(Base):
         Geometry("POLYGON", srid=4326),
         default=None,
     )
+
+
+@dataclass
+class Tour(Base, Permissions):
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column()
+    description: Mapped[str] = mapped_column()
+    actor_assocs: Mapped[list[AssociationTourActor]] = relationship(
+        cascade="all, delete-orphan",
+    )
+    events: Mapped[list[Event]] = relationship(back_populates="tour")
+
+
+@dataclass
+class Event(Base, Permissions):
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    title: Mapped[str] = mapped_column()
+    description: Mapped[str] = mapped_column()
+    tour_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tour.id"))
+    tour: Mapped[Tour] = relationship(back_populates="events")
+    actor_assocs: Mapped[list[AssociationEventActor]] = relationship(
+        cascade="all, delete-orphan",
+    )
+    start_dt: Mapped[datetime | None] = mapped_column(
+        DateTime, default=None, nullable=True
+    )
+    end_dt: Mapped[datetime | None] = mapped_column(
+        DateTime, default=None, nullable=True
+    )
+    event_venue_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("org.id"),
+        default=None,
+    )
+    event_venue: Mapped[Org] = relationship(foreign_keys=event_venue_id)
+
+
+@dataclass
+class AssociationTourActor(Base):
+    tour_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("tour.id"),
+        primary_key=True,
+    )
+    tour: Mapped[Tour] = relationship(
+        back_populates="actor_assocs",
+        foreign_keys=[tour_id],
+    )
+    actor_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("actor.id"),
+        primary_key=True,
+    )
+    actor: Mapped[Actor] = relationship(
+        back_populates="tour_assocs",
+        foreign_keys=[actor_id],
+    )
+    data: Mapped[dict[str, Any]] = mapped_column(JSONB)
+
+
+@dataclass
+class AssociationEventActor(Base):
+    event_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("event.id"),
+        primary_key=True,
+    )
+    event: Mapped[Event] = relationship(
+        back_populates="actor_assocs",
+        foreign_keys=[event_id],
+    )
+    actor_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("actor.id"),
+        primary_key=True,
+    )
+    actor: Mapped[Actor] = relationship(
+        back_populates="event_assocs",
+        foreign_keys=[actor_id],
+    )
+    data: Mapped[dict[str, Any]] = mapped_column(JSONB)

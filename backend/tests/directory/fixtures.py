@@ -1,7 +1,7 @@
 import hashlib
 import uuid
 
-from app.directory.models import (
+from app.core.db.models import (
     Activity,
     AssociationOrgActor,
     Org,
@@ -38,9 +38,9 @@ activity_fixtures = [
     Activity(name="shorthair", parent_path="cat.small.domestic"),
 ]
 
-robert = Person(name="robert", id=get_fixture_uuid("robert"))
-mitchum = Person(name="mitchum", id=get_fixture_uuid("mitchum"))
-person_fixtures = [robert, mitchum]
+robert = Person(firstname="Robert", lastname="Mitchum", id=get_fixture_uuid("robert"))
+eddie = Person(firstname="Eddie", lastname="Coyle", id=get_fixture_uuid("eddie"))
+person_fixtures = [robert, eddie]
 
 armodo = Org(name="armodo", id=get_fixture_uuid("armodo"))
 slowfest = Org(name="slowfest", id=get_fixture_uuid("slowfest"))
@@ -48,5 +48,5 @@ org_fixtures = [armodo, slowfest]
 
 om1 = AssociationOrgActor(org=armodo, actor=robert)
 om2 = AssociationOrgActor(org=armodo, actor=slowfest)
-om3 = AssociationOrgActor(org=slowfest, actor=mitchum)
+om3 = AssociationOrgActor(org=slowfest, actor=eddie)
 om_fixtures = [om1, om2, om3]

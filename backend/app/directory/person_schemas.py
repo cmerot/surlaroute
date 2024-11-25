@@ -5,14 +5,17 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class PersonPublic(BaseModel):
     id: uuid.UUID
-    name: str
+    firstname: str
+    lastname: str
 
     model_config = ConfigDict(from_attributes=True)
 
 
 class PersonCreate(BaseModel):
-    name: str
+    firstname: str
+    lastname: str
 
 
 class PersonUpdate(BaseModel):
-    name: str | None = Field(default=None)
+    firstname: str | None = Field(default=None)
+    lastname: str | None = Field(default=None)

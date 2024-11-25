@@ -10,8 +10,8 @@ from pydantic import ValidationError
 
 from app.core import security
 from app.core.config import settings
+from app.core.db.models import User
 from app.core.db.session import SessionDep
-from app.users.models import User
 from app.users.schemas import TokenPayload
 
 reusable_oauth2 = OAuth2PasswordBearer(

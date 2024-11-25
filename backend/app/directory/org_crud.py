@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
-from app.directory.models import Org
+from app.core.db.models import Org
 from app.directory.org_schemas import (
     OrgCreate,
     OrgUpdate,
@@ -19,6 +19,7 @@ def create_org(
 ) -> Org:
     db_obj = Org(**org_create.model_dump())
     session.add(db_obj)
+    session.flush()
     return db_obj
 
 
@@ -57,8 +58,10 @@ def update_org(
     org_update: OrgUpdate,
 ) -> Org:
     org = session.get_one(Org, id)
-    for key, value in org_update.model_dump().items():
+    for key, value in org_update.model_dump(exclude_unset=True).items():
         setattr(org, key, value)
+    session.add(org)
+    session.flush()
     return org
 
 

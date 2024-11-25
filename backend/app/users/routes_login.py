@@ -36,6 +36,8 @@ def access_token(
     user = crud.authenticate(
         session=session, email=form_data.username, password=form_data.password
     )
+    # user = crud.get_user_by_email(session=session, email="admin@example.com")
+    # print(user)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     elif not user.is_active:

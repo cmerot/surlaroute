@@ -5,8 +5,8 @@ import pytest
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
+from app.core.db.models import Activity, Person
 from app.directory import person_crud as crud
-from app.directory.models import Activity, Person
 from app.directory.person_schemas import PersonCreate, PersonUpdate
 from app.directory.schemas import (
     PageParams,
@@ -23,10 +23,10 @@ def print_activities(activities: Sequence[Activity]) -> None:
 
 
 def test_create_person(session: Session) -> None:
-    person_create = PersonCreate(name="dog")
+    person_create = PersonCreate(firstname="rob", lastname="mitch")
     person = crud.create_person(session=session, person_create=person_create)
     assert isinstance(person, Person)
-    assert person.name == "dog"
+    assert person.firstname == "rob"
 
     session.rollback()
 
@@ -52,19 +52,19 @@ def test_read_people(session: Session) -> None:
 
 
 def test_update_person(session: Session) -> None:
-    person_update = PersonUpdate(name="new name")
+    person_update = PersonUpdate(firstname="new name")
     person = crud.update_person(
         session=session,
         id=person_fixtures[0].id,
         person_update=person_update,
     )
-    assert person.name == "new name"
+    assert person.firstname == "new name"
 
     session.rollback()
 
 
 def test_update_person_not_found(session: Session) -> None:
-    person_update = PersonUpdate(name="new name")
+    person_update = PersonUpdate(firstname="new name")
     with pytest.raises(NoResultFound):
         crud.update_person(
             session=session,
@@ -75,7 +75,7 @@ def test_update_person_not_found(session: Session) -> None:
 
 def test_delete_person(session: Session) -> None:
     org = crud.create_person(
-        session=session, person_create=PersonCreate(name="to delete")
+        session=session, person_create=PersonCreate(firstname="to", lastname="delete")
     )
     session.commit()
     crud.delete_person(session=session, id=org.id)

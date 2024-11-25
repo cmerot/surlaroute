@@ -11,6 +11,9 @@ from pydantic import (
 )
 from sqlalchemy_utils import Ltree
 
+from app.directory.org_schemas import OrgPublic
+from app.users.schemas import UserPublic
+
 T = TypeVar("T")
 
 
@@ -59,3 +62,13 @@ class DeleteResponse(BaseModel):
     message: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class PermissionsPublic(BaseModel):
+    owner: UserPublic | None
+    owner_group: OrgPublic | None
+    group_read: bool = Field(default=True)
+    group_write: bool = Field(default=True)
+    member_read: bool = Field(default=True)
+    member_write: bool = Field(default=False)
+    other_read: bool = Field(default=False)

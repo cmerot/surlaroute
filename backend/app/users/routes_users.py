@@ -4,6 +4,9 @@ from typing import Any
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.core.config import settings
+from app.core.db.models import (
+    User,
+)
 from app.core.db.session import SessionDep
 from app.core.email.utils import generate_new_account_email, send_email
 from app.core.security import (
@@ -15,9 +18,6 @@ from app.directory.schemas import (
     PageParamsDep,
 )
 from app.users import crud
-from app.users.models import (
-    User,
-)
 from app.users.schemas import (
     UserCreate,
     UserPublic,

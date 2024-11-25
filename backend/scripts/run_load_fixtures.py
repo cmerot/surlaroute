@@ -5,9 +5,9 @@ import yaml
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import Ltree
 
+from app.core.db.models import Activity, Org
 from app.core.db.session import SessionLocal
 from app.directory import activity_crud
-from app.directory.models import Activity, Org
 
 
 def get_path(relative_path: str) -> str:

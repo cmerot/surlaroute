@@ -2,8 +2,8 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.db.models import User
 from app.users import crud
-from app.users.models import User
 from app.users.schemas import UserCreate, UserUpdate
 from tests.utils import random_email, random_lower_string
 

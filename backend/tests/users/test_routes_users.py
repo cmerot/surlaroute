@@ -6,9 +6,9 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
+from app.core.db.models import User
 from app.core.security import verify_password
 from app.users import crud
-from app.users.models import User
 from app.users.schemas import UserCreate
 from tests.utils import random_email, random_lower_string
 

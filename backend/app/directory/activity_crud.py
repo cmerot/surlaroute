@@ -1,14 +1,14 @@
 from collections.abc import Sequence
 
-from sqlalchemy import delete, select, text
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.orm import Session
 from sqlalchemy_utils import Ltree
 
+from app.core.db.models import Activity
 from app.directory.activity_schemas import (
     ActivityCreate,
     ActivityUpdate,
 )
-from app.directory.models import Activity
 from app.directory.schemas import PageParams
 
 
@@ -35,13 +35,24 @@ def read_activities(
     *,
     session: Session,
     path: str | None = None,
-    page_params: PageParams = PageParams(),  # noqa: ARG001
+    page_params: PageParams = PageParams(),
 ) -> tuple[Sequence[Activity], int]:
-    statement = select(Activity).order_by(Activity.path.asc())
+    count_statement = select(func.count()).select_from(Activity)
+    statement = (
+        select(Activity)
+        .order_by(Activity.path.asc())
+        .offset(page_params.offset)
+        .limit(page_params.limit)
+    )
+
     if path is not None and path != "":
-        statement = statement.filter(Activity.path.descendant_of(Ltree(path)))
+        filter_clause = Activity.path.descendant_of(Ltree(path))
+        statement = statement.filter(filter_clause)
+        count_statement = count_statement.filter(filter_clause)
+
+    count = session.scalars(count_statement).one()
     activities = session.scalars(statement).all()
-    return activities
+    return activities, count
 
 
 def update_activity(
@@ -73,6 +84,7 @@ def update_activity(
 def delete_activity(*, session: Session, path: str) -> int:
     statement = delete(Activity).filter(Activity.path.descendant_of(Ltree(path)))
     cursor = session.execute(statement)
+    session.flush()
     return cursor.rowcount
 
 
@@ -95,6 +107,7 @@ def _rename_activity(
         f"WHERE {Activity.path.key} <@ '{source}'"
     )
     cursor = session.execute(statement)
+    session.flush()
 
     if dest == "":
         lca = None

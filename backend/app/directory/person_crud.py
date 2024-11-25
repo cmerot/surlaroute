@@ -4,7 +4,7 @@ from collections.abc import Sequence
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.directory.models import Person
+from app.core.db.models import Person
 from app.directory.person_schemas import PersonCreate, PersonUpdate
 from app.directory.schemas import PageParams
 
@@ -12,6 +12,7 @@ from app.directory.schemas import PageParams
 def create_person(*, session: Session, person_create: PersonCreate) -> Person:
     db_obj = Person(**person_create.model_dump())
     session.add(db_obj)
+    session.flush()
     return db_obj
 
 
@@ -32,15 +33,20 @@ def read_people(
 
 
 def update_person(
-    *, session: Session, id: uuid.UUID, person_update: PersonUpdate
+    *,
+    session: Session,
+    id: uuid.UUID,
+    person_update: PersonUpdate,
 ) -> Person:
-    org = session.get_one(Person, id)
-    for key, value in person_update.model_dump().items():
-        setattr(org, key, value)
-    return org
+    person = session.get_one(Person, id)
+    for key, value in person_update.model_dump(exclude_unset=True).items():
+        setattr(person, key, value)
+    session.add(person)
+    session.flush()
+    return person
 
 
 def delete_person(*, session: Session, id: uuid.UUID) -> None:
-    org = session.get_one(Person, id)
-    session.delete(org)
+    person = session.get_one(Person, id)
+    session.delete(person)
     session.flush()

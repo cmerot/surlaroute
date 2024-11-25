@@ -4,8 +4,8 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session, select
 
 from app.core.config import settings
+from app.core.db.models import User
 from app.core.security import generate_password_reset_token, verify_password
-from app.users.models import User
 
 
 def test_get_access_token(client: TestClient) -> None:

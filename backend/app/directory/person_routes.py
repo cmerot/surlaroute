@@ -5,6 +5,8 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import NoResultFound
 
 from app.core.db.session import SessionDep
+
+# from app.core.security import CurrentUserDep
 from app.directory import person_crud as crud
 from app.directory.person_schemas import (
     PersonCreate,
@@ -26,6 +28,7 @@ def create_person(
     *,
     session: SessionDep,
     person_create: PersonCreate,
+    # current_user: CurrentUserDep,
 ) -> Any:
     """Create a person."""
 

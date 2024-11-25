@@ -3,7 +3,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.collections import InstrumentedList
 
-from app.directory.models import (
+from app.core.db.models import (
     Activity,
     Actor,
     AssociationOrgActor,
@@ -27,17 +27,17 @@ def print_actor(actor: Actor) -> None:
 
 def test_directory_preloaded_fixtures(session: Session) -> None:
     robert_id = get_fixture_uuid("robert")
-    mitchum_id = get_fixture_uuid("mitchum")
+    eddie_id = get_fixture_uuid("eddie")
     armodo_id = get_fixture_uuid("armodo")
     slowfest_id = get_fixture_uuid("slowfest")
 
     robert = session.get_one(Person, robert_id)
-    mitchum = session.get_one(Person, mitchum_id)
+    mitchum = session.get_one(Person, eddie_id)
     armodo = session.get_one(Org, armodo_id)
     slowfest = session.get_one(Org, slowfest_id)
     om1 = session.get_one(AssociationOrgActor, (armodo_id, robert_id))
     om2 = session.get_one(AssociationOrgActor, (armodo_id, slowfest_id))
-    om3 = session.get_one(AssociationOrgActor, (slowfest_id, mitchum_id))
+    om3 = session.get_one(AssociationOrgActor, (slowfest_id, eddie_id))
 
     print_actor(robert)
     assert robert.membership_assocs[0].org is armodo
@@ -65,8 +65,8 @@ def test_directory_delete_om(session: Session) -> None:
     p1_id = get_fixture_uuid("p1")
     p2_id = get_fixture_uuid("p2")
     o1 = Org(id=o1_id, name="o1")
-    p1 = Person(id=p1_id, name="p1")
-    p2 = Person(id=p2_id, name="p2")
+    p1 = Person(id=p1_id, firstname="p", lastname="1")
+    p2 = Person(id=p2_id, firstname="p", lastname="2")
     om1 = AssociationOrgActor(org=o1, actor=p1)
     om2 = AssociationOrgActor(org=o1, actor=p2)
     session.add_all([o1, p1, p2, om1, om2])
@@ -93,8 +93,8 @@ def test_directory_delete_actor(session: Session) -> None:
     p1_id = get_fixture_uuid("p1")
     p2_id = get_fixture_uuid("p2")
     o1 = Org(id=o1_id, name="o1")
-    p1 = Person(id=p1_id, name="p1")
-    p2 = Person(id=p2_id, name="p2")
+    p1 = Person(id=p1_id, firstname="p", lastname="1")
+    p2 = Person(id=p2_id, firstname="p", lastname="2")
     om1 = AssociationOrgActor(org=o1, actor=p1)
     om2 = AssociationOrgActor(org=o1, actor=p2)
     session.add_all([o1, p1, p2, om1, om2])

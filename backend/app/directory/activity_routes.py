@@ -3,6 +3,7 @@ from typing import Any
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
+from app.core.db.models import Activity
 from app.core.db.session import SessionDep
 from app.directory import activity_crud as crud
 from app.directory.activity_schemas import (
@@ -13,7 +14,6 @@ from app.directory.activity_schemas import (
     ActivityUpdate,
     ActivityUpdateResponse,
 )
-from app.directory.models import Activity
 from app.directory.schemas import PagedResponse
 
 router = APIRouter()

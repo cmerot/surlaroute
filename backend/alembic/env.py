@@ -18,9 +18,7 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
-import app.directory.models
-import app.tour.models
-from app.users.models import SQLModel as Base # noqa
+from app.core.db.models import Base
 from app.core.config import settings
 
 target_metadata = Base.metadata
