@@ -4,8 +4,8 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.db.models import User
+from app.core.schemas import PageParams
 from app.core.security import get_password_hash, verify_password
-from app.directory.schemas import PageParams
 from app.users.schemas import UserCreate, UserUpdate
 
 

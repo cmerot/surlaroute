@@ -5,6 +5,7 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 
 from app.core.db.models import Activity
 from app.core.db.session import SessionDep
+from app.core.schemas import PagedResponse
 from app.directory import activity_crud as crud
 from app.directory.activity_schemas import (
     ActivitiesPublic,
@@ -14,14 +15,8 @@ from app.directory.activity_schemas import (
     ActivityUpdate,
     ActivityUpdateResponse,
 )
-from app.directory.schemas import PagedResponse
 
 router = APIRouter()
-
-
-#
-# Activity
-#
 
 
 @router.post("/", response_model=ActivityPublic)

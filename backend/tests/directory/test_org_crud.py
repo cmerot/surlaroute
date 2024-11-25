@@ -6,9 +6,9 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from app.core.db.models import Activity, Org
+from app.core.schemas import PageParams
 from app.directory import org_crud as crud
 from app.directory.org_schemas import OrgCreate, OrgUpdate
-from app.directory.schemas import PageParams
 from tests.directory.fixtures import (
     org_fixtures,
 )

@@ -5,11 +5,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy_utils import Ltree
 
 from app.core.db.models import Activity
+from app.core.schemas import PageParams
 from app.directory.activity_schemas import (
     ActivityCreate,
     ActivityUpdate,
 )
-from app.directory.schemas import PageParams
 
 
 def create_activity(

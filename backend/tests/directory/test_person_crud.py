@@ -6,11 +6,11 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from app.core.db.models import Activity, Person
-from app.directory import person_crud as crud
-from app.directory.person_schemas import PersonCreate, PersonUpdate
-from app.directory.schemas import (
+from app.core.schemas import (
     PageParams,
 )
+from app.directory import person_crud as crud
+from app.directory.person_schemas import PersonCreate, PersonUpdate
 from tests.directory.fixtures import (
     person_fixtures,
 )

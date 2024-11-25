@@ -3,10 +3,10 @@ import uuid
 
 from fastapi.testclient import TestClient
 
+from app.core.schemas import PagedResponse, UpdateResponse
 from app.directory.org_schemas import (
     OrgPublic,
 )
-from app.directory.schemas import PagedResponse, UpdateResponse
 from tests.directory.fixtures import org_fixtures
 
 

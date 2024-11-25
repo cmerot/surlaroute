@@ -5,17 +5,17 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import NoResultFound
 
 from app.core.db.session import SessionDep
+from app.core.schemas import (
+    DeleteResponse,
+    PagedResponse,
+    PageParamsDep,
+    UpdateResponse,
+)
 from app.directory import org_crud as crud
 from app.directory.org_schemas import (
     OrgCreate,
     OrgPublic,
     OrgUpdate,
-)
-from app.directory.schemas import (
-    DeleteResponse,
-    PagedResponse,
-    PageParamsDep,
-    UpdateResponse,
 )
 
 router = APIRouter()

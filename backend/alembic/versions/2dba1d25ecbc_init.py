@@ -1,8 +1,8 @@
 """init
 
-Revision ID: 6fd997284840
+Revision ID: 2dba1d25ecbc
 Revises:
-Create Date: 2024-11-25 19:44:17.964553
+Create Date: 2024-11-25 22:18:00.231184
 
 """
 from typing import Sequence, Union
@@ -14,7 +14,7 @@ import sqlalchemy_utils
 import geoalchemy2
 
 # revision identifiers, used by Alembic.
-revision: str = '6fd997284840'
+revision: str = '2dba1d25ecbc'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -104,7 +104,8 @@ def upgrade() -> None:
     )
     op.create_table('person',
     sa.Column('id', sa.Uuid(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('firstname', sa.String(), nullable=False),
+    sa.Column('lastname', sa.String(), nullable=False),
     sa.Column('user_id', sa.Uuid(), nullable=True),
     sa.Column('owner_id', sa.Uuid(), nullable=True),
     sa.Column('group_owner_id', sa.Uuid(), nullable=True),

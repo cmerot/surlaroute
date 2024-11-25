@@ -7,7 +7,7 @@ from pydantic import (
     Field,
 )
 
-from app.directory.schemas import LtreeField
+from app.core.schemas import LtreeField
 
 
 class ActivityCreate(BaseModel):

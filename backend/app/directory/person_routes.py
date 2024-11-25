@@ -5,6 +5,12 @@ from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import NoResultFound
 
 from app.core.db.session import SessionDep
+from app.core.schemas import (
+    DeleteResponse,
+    PagedResponse,
+    PageParamsDep,
+    UpdateResponse,
+)
 
 # from app.core.security import CurrentUserDep
 from app.directory import person_crud as crud
@@ -12,12 +18,6 @@ from app.directory.person_schemas import (
     PersonCreate,
     PersonPublic,
     PersonUpdate,
-)
-from app.directory.schemas import (
-    DeleteResponse,
-    PagedResponse,
-    PageParamsDep,
-    UpdateResponse,
 )
 
 router = APIRouter()

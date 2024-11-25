@@ -140,6 +140,7 @@ class Person(Permissions, Actor):
     )
     firstname: Mapped[str] = mapped_column()
     lastname: Mapped[str] = mapped_column()
+
     user_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("user.id"), default=None
     )

@@ -9,13 +9,13 @@ from app.core.db.models import (
 )
 from app.core.db.session import SessionDep
 from app.core.email.utils import generate_new_account_email, send_email
+from app.core.schemas import (
+    PagedResponse,
+    PageParamsDep,
+)
 from app.core.security import (
     CurrentUserDep,
     get_current_active_superuser,
-)
-from app.directory.schemas import (
-    PagedResponse,
-    PageParamsDep,
 )
 from app.users import crud
 from app.users.schemas import (

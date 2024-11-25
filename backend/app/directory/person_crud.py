@@ -5,8 +5,8 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.core.db.models import Person
+from app.core.schemas import PageParams
 from app.directory.person_schemas import PersonCreate, PersonUpdate
-from app.directory.schemas import PageParams
 
 
 def create_person(*, session: Session, person_create: PersonCreate) -> Person:

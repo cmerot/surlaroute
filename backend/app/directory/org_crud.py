@@ -5,11 +5,11 @@ from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
 from app.core.db.models import Org
+from app.core.schemas import PageParams
 from app.directory.org_schemas import (
     OrgCreate,
     OrgUpdate,
 )
-from app.directory.schemas import PageParams
 
 
 def create_org(
