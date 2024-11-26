@@ -42,9 +42,33 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(default=False)
     hashed_password: Mapped[str] = mapped_column()
 
+    # There is a dependency person -> user for the ownership
+    # This is another one to link a user to its very own Person.
+    # To avoid cycling dep, we need to tell SA how to generate the schema
+    # with use_alter
+    # see https://docs.sqlalchemy.org/en/20/core/constraints.html#use-alter
+    person_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("person.id", use_alter=True)
+    )
+    person: Mapped[Person | None] = relationship(foreign_keys=[person_id])
+
 
 @dataclass
 class Permissions:
+    """
+    Mixin for permissions applied at least to Person, Org, Tour and Event.
+    It must be declared first, eg `class Person(Permission, Actor)`
+    because it will extract and autofill its own keys, then call the
+    parent constructor.
+
+    The owner is a User and the owner group is an Org.
+
+    It defines read and write perms for:
+    - the group
+    - members
+    - other (read only)
+    """
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         if "owner" in kwargs:
             pass
@@ -56,7 +80,7 @@ class Permissions:
 
     @declared_attr
     def owner(self) -> Mapped[User]:
-        return relationship(foreign_keys=self.owner_id)  # type: ignore[arg-type]
+        return relationship(foreign_keys=[self.owner_id])  # type: ignore[arg-type]
 
     group_owner_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("org.id"), default=None
@@ -75,6 +99,15 @@ class Permissions:
 
 @dataclass
 class Actor(Base):
+    """
+    Base class for Person and Org, so each time we need to link either a
+    Person or an Org we can use an Actor.
+
+    The pattern is a *Joined Table Inheritance*.
+
+    See https://docs.sqlalchemy.org/en/20/orm/inheritance.html#joined-table-inheritance
+    """
+
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     type: Mapped[str] = mapped_column()
     membership_assocs: Mapped[list[AssociationOrgActor]] = relationship(
@@ -141,11 +174,6 @@ class Person(Permissions, Actor):
     firstname: Mapped[str] = mapped_column()
     lastname: Mapped[str] = mapped_column()
 
-    user_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("user.id"), default=None
-    )
-    user: Mapped[User] = relationship(foreign_keys=user_id)
-
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.firstname} {self.lastname})"
 
@@ -153,7 +181,9 @@ class Person(Permissions, Actor):
 @dataclass
 class AssociationOrgActivity(Base):
     """
-    Activities of an org
+    Activities of an org is a many-to-many relationship.
+
+    See https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#many-to-many
     """
 
     org_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("org.id"), primary_key=True)
@@ -165,7 +195,10 @@ class AssociationOrgActivity(Base):
 @dataclass
 class AssociationOrgActor(Base):
     """
-    Members of an org
+    Members of an org, it a many-to-many relationship with an Association Object,
+    ie. we need to attach data to the relationship, so members won't be accessible
+    directly, but will have the `member_assocs` and `membership_assocs` from
+    where we can reach the `data` and the org or the actor.
     """
 
     org_id: Mapped[uuid.UUID] = mapped_column(
@@ -192,6 +225,13 @@ class AssociationOrgActor(Base):
 
 @dataclass
 class Activity(Base):
+    """
+    Activity represent what does an Org. They are hierarchical and implemented
+    with Postgres LTree. The name attribute of an activity is closely tied to
+    its path.
+    LTree support comes from the `sqlalchemy_utils` package.
+    """
+
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
     schema: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
