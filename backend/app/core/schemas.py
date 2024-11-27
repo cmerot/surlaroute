@@ -5,13 +5,9 @@ from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
-    PlainSerializer,
-    PlainValidator,
-    WithJsonSchema,
 )
-from sqlalchemy_utils import Ltree
 
-from app.directory.org_schemas import OrgPublic
+from app.directory.crud_schemas import OrgPublic
 from app.users.schemas import UserPublic
 
 T = TypeVar("T")
@@ -27,13 +23,6 @@ class PageParams(BaseModel):
 
 # PageParamsDep = Annotated[dict, Depends(PageParams)]
 PageParamsDep = Annotated[PageParams, Depends()]
-
-LtreeField = Annotated[
-    str | Ltree,
-    PlainValidator(lambda o: Ltree(o)),
-    PlainSerializer(lambda o: o.path, return_type=str),
-    WithJsonSchema({"type": "string", "examples": ["some.path"]}),
-]
 
 
 class PagedResponse(BaseModel, Generic[T]):

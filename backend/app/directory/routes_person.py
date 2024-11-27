@@ -11,10 +11,8 @@ from app.core.schemas import (
     PageParamsDep,
     UpdateResponse,
 )
-
-# from app.core.security import CurrentUserDep
-from app.directory import person_crud as crud
-from app.directory.person_schemas import (
+from app.directory import crud
+from app.directory.crud_schemas import (
     PersonCreate,
     PersonPublic,
     PersonUpdate,
@@ -28,7 +26,6 @@ def create_person(
     *,
     session: SessionDep,
     person_create: PersonCreate,
-    # current_user: CurrentUserDep,
 ) -> Any:
     """Create a person."""
 

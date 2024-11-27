@@ -4,7 +4,7 @@ import uuid
 from fastapi.testclient import TestClient
 
 from app.core.schemas import PagedResponse
-from app.directory.person_schemas import (
+from app.directory.crud_schemas import (
     PersonPublic,
 )
 from tests.directory.fixtures import person_fixtures

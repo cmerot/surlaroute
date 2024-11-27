@@ -3,7 +3,7 @@ import json
 from fastapi.testclient import TestClient
 
 from app.core.schemas import DeleteResponse, PagedResponse
-from app.directory.activity_schemas import (
+from app.directory.crud_schemas import (
     ActivityPublic,
 )
 
@@ -38,7 +38,7 @@ def test_read_activities(client: TestClient) -> None:
     json_resp = r.json()
     assert PagedResponse[ActivityPublic].model_validate_json(json.dumps(json_resp))
     assert r.status_code == 200
-    assert len(json_resp["results"]) == 15
+    assert len(json_resp["results"]) == 13
 
 
 def test_read_activities_by_path(client: TestClient) -> None:

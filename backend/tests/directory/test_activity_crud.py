@@ -5,20 +5,14 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from app.core.db.models import Activity
-from app.directory import activity_crud as crud
-from app.directory.activity_schemas import (
+from app.directory import crud
+from app.directory.crud_schemas import (
     ActivityCreate,
     ActivityUpdate,
 )
 from tests.directory.fixtures import (
     activity_fixtures,
 )
-
-
-def print_activities(activities: Sequence[Activity]) -> None:
-    print("")
-    for activity in activities:
-        print(f"{activity.path} - {activity.name}")
 
 
 def test_create_activity(session: Session) -> None:

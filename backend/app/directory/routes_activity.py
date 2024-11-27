@@ -8,8 +8,8 @@ from app.core.schemas import (
     PageParamsDep,
     UpdateResponse,
 )
-from app.directory import activity_crud as crud
-from app.directory.activity_schemas import (
+from app.directory import crud
+from app.directory.crud_schemas import (
     ActivityCreate,
     ActivityPublic,
     ActivityUpdate,

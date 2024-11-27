@@ -61,6 +61,27 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
 CurrentUserDep = Annotated[User, Depends(get_current_user)]
 
 
+def get_current_permissions_user(session: SessionDep) -> Any:
+    token = str(
+        OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/login/access-token")
+    )
+    try:
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
+        )
+        token_data = TokenPayload(**payload)
+    except (InvalidTokenError, ValidationError):
+        user = None
+
+    if user is not None:
+        user = session.get(User, token_data.sub)
+
+    return user
+
+
+CurrentPermissionsUserDep = Annotated[User, Depends(get_current_permissions_user)]
+
+
 def get_current_active_superuser(current_user: CurrentUserDep) -> User:
     if not current_user.is_superuser:
         raise HTTPException(

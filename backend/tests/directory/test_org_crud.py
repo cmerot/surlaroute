@@ -1,28 +1,21 @@
 import uuid
-from collections.abc import Sequence
 
 import pytest
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from app.core.db.models import Activity, Org
+from app.core.db.models import Org
 from app.core.schemas import PageParams
-from app.directory import org_crud as crud
-from app.directory.org_schemas import OrgCreate, OrgUpdate
+from app.directory import crud
+from app.directory.crud_schemas import OrgCreate, OrgUpdate
 from tests.directory.fixtures import (
     org_fixtures,
 )
 
 
-def print_activities(activities: Sequence[Activity]) -> None:
-    print("")
-    for activity in activities:
-        print(f"{activity.path} - {activity.name}")
-
-
 def test_create_org(session: Session) -> None:
     org_create = OrgCreate(name="org")
-    org = crud.create_org(session=session, org_create=org_create)
+    org = crud.create_org(session=session, entity_in=org_create)
     assert isinstance(org, Org)
     assert org.name == "org"
 
@@ -72,7 +65,7 @@ def test_update_org_not_found(session: Session) -> None:
 
 
 def test_delete_org(session: Session) -> None:
-    org = crud.create_org(session=session, org_create=OrgCreate(name="to delete"))
+    org = crud.create_org(session=session, entity_in=OrgCreate(name="to delete"))
     session.commit()
     crud.delete_org(session=session, id=org.id)
     session.commit()

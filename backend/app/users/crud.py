@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 
 from sqlalchemy import func, select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, noload
 
 from app.core.db.models import User
 from app.core.schemas import PageParams
@@ -49,6 +49,21 @@ def update_user(
 
 def get_user_by_email(*, session: Session, email: str) -> User | None:
     statement = select(User).filter(User.email == email)
+    session_user = session.scalar(statement)
+    return session_user
+
+
+def get_user_by_email_import(*, session: Session, email: str) -> User | None:
+    statement = (
+        select(User)
+        .filter(User.email == email)
+        .options(
+            noload("*")
+            # joinedload(User.person)
+            # .joinedload(Person.contact)
+            # .joinedload(Contact.address)
+        )
+    )
     session_user = session.scalar(statement)
     return session_user
 

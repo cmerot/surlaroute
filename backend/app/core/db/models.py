@@ -29,7 +29,6 @@ def is_pydantic(obj: object) -> bool:
 
 class Base(DeclarativeBase):
     __name__: str  # type: ignore
-    # registry = default_registry
 
     @declared_attr.directive
     def __tablename__(cls) -> str:
@@ -44,8 +43,42 @@ class Base(DeclarativeBase):
         properties = dict(dto)
         for key, value in properties.items():
             try:
+                if isinstance(value, list):
+                    data = []
+                    for v in value:
+                        data.append(
+                            getattr(cls, key).property.mapper.class_.from_dto(v)
+                        )
+                    value = data
                 if is_pydantic(value):
                     value = getattr(cls, key).property.mapper.class_.from_dto(value)
+                setattr(obj, key, value)
+
+            except AttributeError as e:
+                raise AttributeError(e)
+        return obj
+
+    def from_dto2(self, dto: BaseModel) -> Base:
+        """
+        see: https://stackoverflow.com/questions/64414030/how-to-use-nested-pydantic-models-for-sqlalchemy-in-a-flexible-way/76133080#76133080
+        """
+        obj = self
+        properties = dict(dto)
+        for key, value in properties.items():
+            try:
+                if isinstance(value, list):
+                    data = []
+                    for v in value:
+                        data.append(
+                            getattr(
+                                self.__class__, key
+                            ).property.mapper.class_.from_dto(v)
+                        )
+                    value = data
+                if is_pydantic(value):
+                    value = getattr(
+                        self.__class__, key
+                    ).property.mapper.class_.from_dto(value)
                 setattr(obj, key, value)
             except AttributeError as e:
                 raise AttributeError(e)
@@ -270,13 +303,13 @@ class Activity(Base):
     orgs: Mapped[list[Org]] = relationship(
         secondary="associationorgactivity",
         back_populates="activities",
+        # cascade="all, delete-orphan",
     )
 
-    def __init__(self, path: str | Ltree, **kwargs: Any) -> None:
-        """
-        Here we just wrap the path in a Ltree before forwarding init to the parent
-        """
-        super().__init__(**kwargs, path=Ltree(path))
+    def __init__(self, **kwargs: Any) -> None:
+        if "path" in kwargs:
+            kwargs["path"] = Ltree(kwargs["path"])
+        super().__init__(**kwargs)
 
     @staticmethod
     def slugify(s: str) -> str:

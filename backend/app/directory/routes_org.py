@@ -11,8 +11,9 @@ from app.core.schemas import (
     PageParamsDep,
     UpdateResponse,
 )
-from app.directory import org_crud as crud
-from app.directory.org_schemas import (
+from app.core.security import CurrentPermissionsUserDep
+from app.directory import crud
+from app.directory.crud_schemas import (
     OrgCreate,
     OrgPublic,
     OrgUpdate,
@@ -25,13 +26,15 @@ router = APIRouter()
 def create_org(
     *,
     session: SessionDep,
+    user: CurrentPermissionsUserDep,
     org_create: OrgCreate,
 ) -> Any:
     """Create an org."""
-
+    print(f"user -> {user}")
+    print(f"user.person -> {user.person}")
     org = crud.create_org(
         session=session,
-        org_create=org_create,
+        entity_in=org_create,
     )
     return OrgPublic.model_validate(org)
 
