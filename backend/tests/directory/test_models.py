@@ -116,18 +116,9 @@ def test_directory_delete_actor(session: Session) -> None:
     session.rollback()
 
 
-# def test_my(session: Session):
-#     o1 = Org(name="o")
-#     p1 = Person(name="p")
-#     oa = AssociationOrgActor(org=o1, actor=p1)
-#     # o1.members.append()
-#     session.add_all([oa])
-#     session.commit()
-
-
 def test_association_org_activity() -> None:
     assert isinstance(Org().activities, InstrumentedList)
-    assert isinstance(Activity(name="a").orgs, InstrumentedList)
+    assert isinstance(Activity(path="a").orgs, InstrumentedList)
 
 
 def test_association_org_actor() -> None:
@@ -138,47 +129,3 @@ def test_association_org_actor() -> None:
     assert isinstance(Person().membership_assocs, InstrumentedList)
     assert hasattr(Person(), "members") is False
     pass
-
-
-def test_activity_init() -> None:
-    activity = Activity(name="a")
-    assert activity.name == "a"
-    assert str(activity.path) == "a"
-
-
-def test_activity_init_without_name() -> None:
-    with pytest.raises(TypeError):
-        Activity()  # type: ignore[call-arg]
-
-
-def test_activity_init_with_parent_path() -> None:
-    activity = Activity(name="b", parent_path="a")
-    assert activity.name == "b"
-    assert str(activity.path) == "a.b"
-
-
-def test_activity_init_with_deep_parent_path() -> None:
-    activity = Activity(name="c", parent_path="a.b")
-    assert activity.name == "c"
-    assert str(activity.path) == "a.b.c"
-
-
-def test_activity_change_name() -> None:
-    activity = Activity(name="a")
-    assert str(activity.path) == "a"
-    activity.name = "a2"
-    assert str(activity.path) == "a2"
-
-
-def test_activity_change_name_with_parent_path() -> None:
-    activity = Activity(name="b", parent_path="a")
-    assert str(activity.path) == "a.b"
-    activity.name = "b2"
-    assert str(activity.path) == "a.b2"
-
-
-def test_activity_change_name_with_deep_parent_path() -> None:
-    activity = Activity(name="c", parent_path="a.b")
-    activity.name = "c2"
-    assert activity.name == "c2"
-    assert str(activity.path) == "a.b.c2"

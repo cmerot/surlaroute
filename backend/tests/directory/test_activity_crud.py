@@ -22,20 +22,22 @@ def print_activities(activities: Sequence[Activity]) -> None:
 
 
 def test_create_activity(session: Session) -> None:
-    activity_create = ActivityCreate(name="dog")
-    activity = crud.create_activity(session=session, activity_create=activity_create)
+    entity_in = ActivityCreate(path="dog")
+    activity = crud.create_activity(session=session, entity_in=entity_in)
     assert isinstance(activity, Activity)
     assert activity.name == "dog"
     assert str(activity.path) == "dog"
 
-    session.rollback()
-
-
-def test_create_activity_parent_path(session: Session) -> None:
-    activity_create = ActivityCreate(name="small", parent_path="dog")
-    activity = crud.create_activity(session=session, activity_create=activity_create)
+    entity_in = ActivityCreate(path="dog", name="Dog")
+    activity = crud.create_activity(session=session, entity_in=entity_in)
     assert isinstance(activity, Activity)
-    assert activity.name == "small"
+    assert activity.name == "Dog"
+    assert str(activity.path) == "dog"
+
+    entity_in = ActivityCreate(path="dog.small", name="Small Dog")
+    activity = crud.create_activity(session=session, entity_in=entity_in)
+    assert isinstance(activity, Activity)
+    assert activity.name == "Small Dog"
     assert str(activity.path) == "dog.small"
 
     session.rollback()
@@ -47,14 +49,10 @@ def test_read_activity(session: Session) -> None:
     assert activity.name == "small"
     assert str(activity.path) == "cat.small"
 
-    session.rollback()
-
 
 def test_read_activity_not_found(session: Session) -> None:
     with pytest.raises(NoResultFound):
         crud.read_activity(session=session, path="do.not.exist")
-
-        session.rollback()
 
 
 def test_read_activities_no_path(session: Session) -> None:
@@ -65,8 +63,6 @@ def test_read_activities_no_path(session: Session) -> None:
     assert str(activities[0].path) == "cat"
     assert str(activities[-1].path) == "cat.small.wild.ocelot"
 
-    session.rollback()
-
 
 def test_read_activities_path_none(session: Session) -> None:
     activities, count = crud.read_activities(session=session, path=None)
@@ -75,8 +71,6 @@ def test_read_activities_path_none(session: Session) -> None:
     assert isinstance(activities[0], Activity)
     assert str(activities[0].path) == "cat"
     assert str(activities[-1].path) == "cat.small.wild.ocelot"
-
-    session.rollback()
 
 
 def test_read_activities_path_empty_string(session: Session) -> None:
@@ -87,8 +81,6 @@ def test_read_activities_path_empty_string(session: Session) -> None:
     assert str(activities[0].path) == "cat"
     assert str(activities[-1].path) == "cat.small.wild.ocelot"
 
-    session.rollback()
-
 
 def test_read_activities_deep(session: Session) -> None:
     activities, count = crud.read_activities(session=session, path="cat.big")
@@ -98,23 +90,18 @@ def test_read_activities_deep(session: Session) -> None:
     assert str(activities[0].path) == "cat.big"
     assert str(activities[-1].path) == "cat.big.tiger"
 
-    session.rollback()
-
 
 def test_read_activities_not_found(session: Session) -> None:
     activities, count = crud.read_activities(session=session, path="do.not.exist")
     assert isinstance(activities, Sequence)
     assert len(activities) == 0
 
-    session.rollback()
-
 
 def test_update_activity_name(session: Session) -> None:
     path = "cat.small"
-    activity_update = ActivityUpdate(name="small2")
-    crud.update_activity(session=session, path=path, activity_update=activity_update)
-    activities, count = crud.read_activities(session=session, path="cat.small2")
-    assert len(activities) == 8
+    entity_in = ActivityUpdate(name="small2")
+    crud.update_activity(session=session, path=path, entity_in=entity_in)
+    activities, count = crud.read_activities(session=session, path="cat.small")
     assert activities[0].name == "small2"
 
     session.rollback()
@@ -122,20 +109,27 @@ def test_update_activity_name(session: Session) -> None:
 
 def test_update_activity_path(session: Session) -> None:
     path = "cat.small"
-    activity_update = ActivityUpdate(parent_path="cat.big")
-    crud.update_activity(session=session, path=path, activity_update=activity_update)
+    entity_in = ActivityUpdate(dest_path="cat.big.small")
+    crud.update_activity(session=session, path=path, entity_in=entity_in)
     activities, count = crud.read_activities(session=session, path="cat.big.small")
     assert len(activities) == 8
+
+    path = "cat"
+    entity_in = ActivityUpdate(dest_path="cats")
+    crud.update_activity(session=session, path=path, entity_in=entity_in)
+    activities, count = crud.read_activities(session=session, path="cats")
+    assert len(activities) == 13
 
     session.rollback()
 
 
 def test_update_activity_path_and_name(session: Session) -> None:
     path = "cat.small"
-    activity_update = ActivityUpdate(parent_path="cat.big", name="small2")
-    crud.update_activity(session=session, path=path, activity_update=activity_update)
-    activities, count = crud.read_activities(session=session, path="cat.big.small2")
+    entity_in = ActivityUpdate(dest_path="cat.big.small", name="big small")
+    crud.update_activity(session=session, path=path, entity_in=entity_in)
+    activities, count = crud.read_activities(session=session, path="cat.big.small")
     assert len(activities) == 8
+    assert activities[0].name == "big small"
 
     session.rollback()
 

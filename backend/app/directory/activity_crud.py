@@ -15,9 +15,12 @@ from app.directory.activity_schemas import (
 def create_activity(
     *,
     session: Session,
-    activity_create: ActivityCreate,
+    entity_in: ActivityCreate,
 ) -> Activity:
-    db_obj = Activity(**activity_create.model_dump())
+    path = Ltree(entity_in.path)
+    if entity_in.name is None:
+        entity_in.name = str(path[-1:])
+    db_obj = Activity(**entity_in.model_dump())
     session.add(db_obj)
     return db_obj
 
@@ -59,26 +62,20 @@ def update_activity(
     *,
     session: Session,
     path: str,
-    activity_update: ActivityUpdate,
-) -> tuple[Ltree | None, int]:
+    entity_in: ActivityUpdate,
+) -> Activity:
     """
-    Update activity. Updating parent_path and/or name will update children.
+    Update activity. Updating path will move the node and its child to the new path
     """
 
     activity = read_activity(session=session, path=path)
-    source = activity.path
-    if activity_update.parent_path is not None:
-        dest = activity_update.parent_path + activity.path[-1]
-        activity.path = dest
-    if activity_update.name is not None:
-        try:
-            dest = dest[:-1] + activity_update.name
-            activity.path = dest
-        except UnboundLocalError:
-            activity.name = Activity.slugify(activity_update.name)
-            dest = activity.path
-
-    return _rename_activity(session=session, source=source, dest=dest)
+    if entity_in.name is not None:
+        activity.name = entity_in.name
+    if entity_in.dest_path is not None:
+        source = activity.path
+        dest = entity_in.dest_path
+        lca, rowcount = _move_activity(session=session, source=source, dest=dest)
+    return activity
 
 
 def delete_activity(*, session: Session, path: str) -> int:
@@ -88,15 +85,11 @@ def delete_activity(*, session: Session, path: str) -> int:
     return cursor.rowcount
 
 
-def _rename_activity(
+def _move_activity(
     *, session: Session, source: str | Ltree, dest: str | Ltree
 ) -> tuple[Ltree | None, int]:
     source = Ltree(source)
-
-    if dest == "":
-        pass
-    else:
-        dest = Ltree(dest)
+    dest = Ltree(dest)
 
     statement = text(
         f"UPDATE {Activity.__tablename__} "
@@ -107,11 +100,6 @@ def _rename_activity(
         f"WHERE {Activity.path.key} <@ '{source}'"
     )
     cursor = session.execute(statement)
-    session.flush()
-
-    if dest == "":
-        lca = None
-    else:
-        lca = source.lca(dest)  # type: ignore[arg-type]
+    lca = source.lca(dest)  # type: ignore[arg-type]
 
     return lca, cursor.rowcount  # type: ignore[attr-defined]

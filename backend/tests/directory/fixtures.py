@@ -23,19 +23,19 @@ def get_fixture_uuid(seed: str) -> uuid.UUID:
 
 
 activity_fixtures = [
-    Activity(name="cat"),
-    Activity(name="big", parent_path="cat"),
-    Activity(name="lion", parent_path="cat.big"),
-    Activity(name="tiger", parent_path="cat.big"),
-    Activity(name="jaguar", parent_path="cat.big"),
-    Activity(name="small", parent_path="cat"),
-    Activity(name="wild", parent_path="cat.small"),
-    Activity(name="ocelot", parent_path="cat.small.wild"),
-    Activity(name="bobcat", parent_path="cat.small.wild"),
-    Activity(name="domestic", parent_path="cat.small"),
-    Activity(name="persian", parent_path="cat.small.domestic"),
-    Activity(name="bengal", parent_path="cat.small.domestic"),
-    Activity(name="shorthair", parent_path="cat.small.domestic"),
+    Activity(name="cat", path="cat"),
+    Activity(name="big", path="cat.big"),
+    Activity(name="lion", path="cat.big.lion"),
+    Activity(name="tiger", path="cat.big.tiger"),
+    Activity(name="jaguar", path="cat.big.jaguar"),
+    Activity(name="small", path="cat.small"),
+    Activity(name="wild", path="cat.small.wild"),
+    Activity(name="ocelot", path="cat.small.wild.ocelot"),
+    Activity(name="bobcat", path="cat.small.wild.bobcat"),
+    Activity(name="domestic", path="cat.small.domestic"),
+    Activity(name="persian", path="cat.small.domestic.persian"),
+    Activity(name="bengal", path="cat.small.domestic.bengal"),
+    Activity(name="shorthair", path="cat.small.domestic.shorthair"),
 ]
 
 robert = Person(firstname="Robert", lastname="Mitchum", id=get_fixture_uuid("robert"))

@@ -18,8 +18,8 @@ fileConfig(config.config_file_name)
 # target_metadata = mymodel.Base.metadata
 # target_metadata = None
 
-from app.core.db.models import Base
 from app.core.config import settings
+from app.core.db.models import Base
 
 target_metadata = Base.metadata
 

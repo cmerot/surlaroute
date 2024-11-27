@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy_utils import create_database, database_exists, drop_database
 
 from app.core.config import settings
-from app.core.db.base_class import Base
+from app.core.db.models import Base
 from app.core.db.session import get_db
 from app.core.routes import api_router
 from scripts.run_pre_start import create_db_extensions, create_first_superuser
@@ -25,7 +25,7 @@ from tests.users.user import (
 
 @pytest.fixture(scope="session")
 def engine() -> Engine:
-    engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI) + "_tests")
+    engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI) + "_tests", echo=False)
 
     if database_exists(engine.url):
         drop_database(engine.url)
@@ -47,6 +47,12 @@ def session(engine: Engine) -> Generator[Session, Any, None]:
         yield session
     finally:
         session.close()
+
+
+@pytest.fixture(scope="session")
+def SessionLocal(engine: Engine) -> Generator[sessionmaker[Session], Any, None]:
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+    yield SessionLocal
 
 
 @pytest.fixture(scope="session", autouse=True)

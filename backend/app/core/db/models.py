@@ -2,17 +2,18 @@ from __future__ import annotations
 
 import re
 import uuid
-from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
 import unidecode
 from geoalchemy2 import Geometry
+from pydantic import BaseModel
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import (
+    DeclarativeBase,
     Mapped,
+    declared_attr,
     foreign,
     mapped_column,
     relationship,
@@ -20,7 +21,35 @@ from sqlalchemy.orm import (
 )
 from sqlalchemy_utils import Ltree, LtreeType
 
-from app.core.db.base_class import Base
+
+def is_pydantic(obj: object) -> bool:
+    """Checks whether an object is pydantic."""
+    return type(obj).__class__.__name__ == "ModelMetaclass"
+
+
+class Base(DeclarativeBase):
+    __name__: str  # type: ignore
+    # registry = default_registry
+
+    @declared_attr.directive
+    def __tablename__(cls) -> str:
+        return cls.__name__.lower()
+
+    @classmethod
+    def from_dto(cls, dto: BaseModel) -> Base:
+        """
+        see: https://stackoverflow.com/questions/64414030/how-to-use-nested-pydantic-models-for-sqlalchemy-in-a-flexible-way/76133080#76133080
+        """
+        obj = cls()
+        properties = dict(dto)
+        for key, value in properties.items():
+            try:
+                if is_pydantic(value):
+                    value = getattr(cls, key).property.mapper.class_.from_dto(value)
+                setattr(obj, key, value)
+            except AttributeError as e:
+                raise AttributeError(e)
+        return obj
 
 
 class TimestampMixin:
@@ -32,10 +61,9 @@ class TimestampMixin:
     )
 
 
-@dataclass
 class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
-    email: Mapped[str] = mapped_column()
+    email: Mapped[str] = mapped_column(unique=True)
     full_name: Mapped[str | None] = mapped_column(default=None)
     is_superuser: Mapped[bool] = mapped_column(default=False)
     is_member: Mapped[bool] = mapped_column(default=False)
@@ -50,10 +78,13 @@ class User(Base):
     person_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("person.id", use_alter=True)
     )
-    person: Mapped[Person | None] = relationship(foreign_keys=[person_id])
+    person: Mapped[Person | None] = relationship(
+        foreign_keys=[person_id],
+        cascade="all, delete-orphan",
+        single_parent=True,
+    )
 
 
-@dataclass
 class Permissions:
     """
     Mixin for permissions applied at least to Person, Org, Tour and Event.
@@ -80,7 +111,7 @@ class Permissions:
 
     @declared_attr
     def owner(self) -> Mapped[User]:
-        return relationship(foreign_keys=[self.owner_id])  # type: ignore[arg-type]
+        return relationship(foreign_keys=[self.owner_id])  # type: ignore[list-item]
 
     group_owner_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("org.id"), default=None
@@ -88,7 +119,7 @@ class Permissions:
 
     @declared_attr
     def group_owner(self) -> Mapped[Org]:
-        return relationship(foreign_keys=self.group_owner_id)  # type: ignore[arg-type]
+        return relationship(foreign_keys=[self.group_owner_id])  # type: ignore[list-item]
 
     group_read: Mapped[bool] = mapped_column(default=True)
     group_write: Mapped[bool] = mapped_column(default=True)
@@ -97,7 +128,6 @@ class Permissions:
     other_read: Mapped[bool] = mapped_column(default=False)
 
 
-@dataclass
 class Actor(Base):
     """
     Base class for Person and Org, so each time we need to link either a
@@ -110,6 +140,10 @@ class Actor(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     type: Mapped[str] = mapped_column()
+
+    """
+    Store the memberships of an actor, ie which Org it belongs to.
+    """
     membership_assocs: Mapped[list[AssociationOrgActor]] = relationship(
         # note: raises ValueError with back_populates="org"
         # ValueError: Bidirectional attribute conflict detected:
@@ -145,7 +179,6 @@ class Actor(Base):
             }
 
 
-@dataclass
 class Org(Permissions, Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
@@ -165,7 +198,6 @@ class Org(Permissions, Actor):
         return f"{self.__class__.__name__}({self.name})"
 
 
-@dataclass
 class Person(Permissions, Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
@@ -174,11 +206,7 @@ class Person(Permissions, Actor):
     firstname: Mapped[str] = mapped_column()
     lastname: Mapped[str] = mapped_column()
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self.firstname} {self.lastname})"
 
-
-@dataclass
 class AssociationOrgActivity(Base):
     """
     Activities of an org is a many-to-many relationship.
@@ -192,7 +220,6 @@ class AssociationOrgActivity(Base):
     )
 
 
-@dataclass
 class AssociationOrgActor(Base):
     """
     Members of an org, it a many-to-many relationship with an Association Object,
@@ -223,7 +250,6 @@ class AssociationOrgActor(Base):
         return f"AssociationOrgActor({self.actor} in {self.org})"
 
 
-@dataclass
 class Activity(Base):
     """
     Activity represent what does an Org. They are hierarchical and implemented
@@ -232,11 +258,10 @@ class Activity(Base):
     LTree support comes from the `sqlalchemy_utils` package.
     """
 
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    path: Mapped[Ltree] = mapped_column(LtreeType, unique=True)
     name: Mapped[str] = mapped_column()
     schema: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
-    label: Mapped[str | None] = mapped_column(default=None)
-    path: Mapped[Ltree] = mapped_column(LtreeType, unique=True)
     parent: Mapped[Activity] = relationship(
         "Activity",
         primaryjoin=(remote(path) == foreign(func.subpath(path, 0, -1))),
@@ -247,30 +272,11 @@ class Activity(Base):
         back_populates="activities",
     )
 
-    def __init__(
-        self,
-        name: str,
-        parent_path: str | Ltree | None = None,
-        **kwargs: Any,
-    ) -> None:
-        if "id" not in kwargs:
-            kwargs["id"] = uuid.uuid4()
-        super().__init__(**kwargs, name=name)
-
-        if parent_path is not None:
-            parent_path = Ltree(parent_path)
-
-        path: Ltree = Ltree(Activity.slugify(self.name))
-        self.path: Ltree = path if parent_path is None else parent_path + path
-
-    def __setattr__(self, name: str, value: Any) -> None:
-        super().__setattr__(name, value)
-        if name == "name":
-            path = Ltree(Activity.slugify(value))
-            if self.path is None:
-                self.path = path
-            parent_path = self.path.lca(self.path)  # type: ignore[arg-type]
-            self.path = path if parent_path is None else parent_path + path
+    def __init__(self, path: str | Ltree, **kwargs: Any) -> None:
+        """
+        Here we just wrap the path in a Ltree before forwarding init to the parent
+        """
+        super().__init__(**kwargs, path=Ltree(path))
 
     @staticmethod
     def slugify(s: str) -> str:
@@ -283,9 +289,8 @@ class Activity(Base):
         return s
 
 
-@dataclass
 class Contact(Base):
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email_address: Mapped[str | None] = mapped_column(default=None)
     phone_number: Mapped[str | None] = mapped_column(default=None)
     website: Mapped[str | None] = mapped_column(default=None)
@@ -296,9 +301,8 @@ class Contact(Base):
     address: Mapped[AddressGeo] = relationship()
 
 
-@dataclass
 class AddressGeo(Base):
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     street: Mapped[str | None] = mapped_column(default=None)
     postal_code: Mapped[str | None] = mapped_column(default=None)
     city: Mapped[str | None] = mapped_column(default=None)
@@ -320,9 +324,8 @@ class AddressGeo(Base):
     )
 
 
-@dataclass
 class Tour(Base, Permissions):
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
     actor_assocs: Mapped[list[AssociationTourActor]] = relationship(
@@ -331,9 +334,8 @@ class Tour(Base, Permissions):
     events: Mapped[list[Event]] = relationship(back_populates="tour")
 
 
-@dataclass
 class Event(Base, Permissions):
-    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column()
     description: Mapped[str] = mapped_column()
     tour_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tour.id"))
@@ -354,7 +356,6 @@ class Event(Base, Permissions):
     event_venue: Mapped[Org] = relationship(foreign_keys=event_venue_id)
 
 
-@dataclass
 class AssociationTourActor(Base):
     tour_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("tour.id"),
@@ -375,7 +376,6 @@ class AssociationTourActor(Base):
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
 
 
-@dataclass
 class AssociationEventActor(Base):
     event_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("event.id"),

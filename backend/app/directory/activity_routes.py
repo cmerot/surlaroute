@@ -1,19 +1,18 @@
-from typing import Any
-
 from fastapi import APIRouter, HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
 
-from app.core.db.models import Activity
 from app.core.db.session import SessionDep
-from app.core.schemas import PagedResponse
+from app.core.schemas import (
+    DeleteResponse,
+    PagedResponse,
+    PageParamsDep,
+    UpdateResponse,
+)
 from app.directory import activity_crud as crud
 from app.directory.activity_schemas import (
-    ActivitiesPublic,
     ActivityCreate,
-    ActivityDeleteResponse,
     ActivityPublic,
     ActivityUpdate,
-    ActivityUpdateResponse,
 )
 
 router = APIRouter()
@@ -22,14 +21,12 @@ router = APIRouter()
 @router.post("/", response_model=ActivityPublic)
 def create_activity(
     *, session: SessionDep, activity_create: ActivityCreate
-) -> Activity:
+) -> ActivityPublic:
     """
     Create an activity.
     """
     try:
-        activity = crud.create_activity(
-            session=session, activity_create=activity_create
-        )
+        activity = crud.create_activity(session=session, entity_in=activity_create)
         session.commit()
     except IntegrityError:
         session.rollback()
@@ -37,13 +34,16 @@ def create_activity(
             status_code=400,
             detail=f"Path '{activity.path}' already exists.",
         )
-    return activity
+    return ActivityPublic.model_validate(activity)
 
 
-@router.get("/{path}", response_model=PagedResponse[ActivityPublic])
+@router.get("/{path}", response_model=PagedResponse[ActivityPublic] | ActivityPublic)
 def read_activities_by_path(
-    session: SessionDep, path: str, descendant: bool = False
-) -> Any:
+    session: SessionDep,
+    path: str,
+    page_params: PageParamsDep,
+    descendant: bool = False,
+) -> PagedResponse[ActivityPublic] | ActivityPublic:
     """
     Read activities from a path.
     """
@@ -52,50 +52,79 @@ def read_activities_by_path(
             activity = crud.read_activity(session=session, path=path)
         except NoResultFound:
             raise HTTPException(status_code=404, detail="Activity not found")
-        return activity
+        return ActivityPublic.model_validate(activity)
     else:
         try:
-            result = crud.read_activities(session=session, path=path)
+            results, total = crud.read_activities(
+                session=session, path=path, page_params=page_params
+            )
         except NoResultFound:
             raise HTTPException(status_code=404, detail="Activity not found")
-        return {"data": result}
+
+        return PagedResponse[ActivityPublic].model_validate(
+            {
+                "total": total,
+                "limit": page_params.limit,
+                "offset": page_params.offset,
+                "results": results,
+            }
+        )
 
 
-@router.get("/", response_model=ActivitiesPublic)
-def read_activities(session: SessionDep) -> Any:
+@router.get("/", response_model=PagedResponse[ActivityPublic])
+def read_activities(
+    session: SessionDep, page_params: PageParamsDep
+) -> PagedResponse[ActivityPublic]:
     """
     Read all activities.
     """
-    activities = crud.read_activities(session=session)
-    return ActivitiesPublic.model_validate({"data": activities})
+    results, total = crud.read_activities(session=session)
+    return PagedResponse[ActivityPublic].model_validate(
+        {
+            "total": total,
+            "limit": page_params.limit,
+            "offset": page_params.offset,
+            "results": results,
+        }
+    )
 
 
-@router.patch("/{path}", response_model=ActivityUpdateResponse)
+@router.patch("/{path}", response_model=UpdateResponse[ActivityPublic])
 def update_activity(
-    *, session: SessionDep, path: str, activity_update: ActivityUpdate
-) -> ActivityUpdateResponse:
+    *, session: SessionDep, path: str, entity_in: ActivityUpdate
+) -> UpdateResponse[ActivityPublic]:
     """
     Update an activity.
 
     If the name or the parent path is patched, it will also update children.
     """
     try:
-        lca, rowcount = crud.update_activity(
-            session=session, path=path, activity_update=activity_update
-        )
+        data = crud.update_activity(session=session, path=path, entity_in=entity_in)
         session.commit()
     except NoResultFound:
         session.rollback()
         raise HTTPException(status_code=404, detail="Activity not found")
 
-    return ActivityUpdateResponse(lca=lca, rowcount=rowcount)
+    return UpdateResponse[ActivityPublic].model_validate(
+        {
+            "success": True,
+            "data": data,
+        }
+    )
 
 
-@router.delete("/{path}", response_model=ActivityDeleteResponse)
-def delete_activity(*, session: SessionDep, path: str) -> Any:
+@router.delete("/{path}", response_model=DeleteResponse)
+def delete_activity(*, session: SessionDep, path: str) -> DeleteResponse:
     """
     Delete an activity and its children.
     """
-    rowcount = crud.delete_activity(session=session, path=path)
+    total = crud.delete_activity(session=session, path=path)
     session.commit()
-    return {"rowcount": rowcount}
+
+    return DeleteResponse.model_validate(
+        {
+            "success": True,
+            "message": f"Activity {path} deleted",
+            "data": {"total": total},
+        }
+    )

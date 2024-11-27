@@ -1,4 +1,4 @@
-from typing import Annotated, Generic, TypeVar
+from typing import Annotated, Any, Generic, TypeVar
 
 from fastapi import Depends
 from pydantic import (
@@ -37,7 +37,7 @@ LtreeField = Annotated[
 
 
 class PagedResponse(BaseModel, Generic[T]):
-    """Response schema for any paged API."""
+    """Response schema for any paged read request."""
 
     total: int
     limit: int
@@ -46,7 +46,7 @@ class PagedResponse(BaseModel, Generic[T]):
 
 
 class UpdateResponse(BaseModel, Generic[T]):
-    """Response schema for any paged API."""
+    """Response schema for any update request."""
 
     success: bool
     data: T | None = None
@@ -56,9 +56,10 @@ class UpdateResponse(BaseModel, Generic[T]):
 
 
 class DeleteResponse(BaseModel):
-    """Response schema for any paged API."""
+    """Response schema for any delete request."""
 
     success: bool
+    data: Any | None = None
     message: str | None = None
 
     model_config = ConfigDict(from_attributes=True)
