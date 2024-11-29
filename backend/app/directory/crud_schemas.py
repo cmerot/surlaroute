@@ -114,6 +114,7 @@ class OrgUpdate(OrgBase):
 
 class OrgImport(OrgBase):
     id: uuid.UUID | None = None
+    name: str
     activities: list[TreeImport] | None = None
     member_assocs: list[ActorAssocImport] | None = None
     contact: ContactImport | None = None

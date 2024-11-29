@@ -51,8 +51,8 @@ def get_path(relative_path: str) -> str:
     return full_path
 
 
-input = get_path("../fixtures/data.ods")
-output = get_path("../fixtures/data.json")
+input = get_path("../fixtures/private/data.ods")
+output = get_path("../fixtures/private/data.json")
 
 if __name__ == "__main__":
     data = {}

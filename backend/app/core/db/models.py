@@ -197,9 +197,6 @@ class Org(PermissionsMixin, Actor):
         cascade="all, delete-orphan",
     )
 
-    # def __repr__(self) -> str:
-    #     return f"{self.__class__.__name__}({self.name})"
-
 
 class Person(PermissionsMixin, Actor):
     id: Mapped[uuid.UUID] = mapped_column(

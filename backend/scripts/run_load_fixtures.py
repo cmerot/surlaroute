@@ -185,7 +185,7 @@ def load_entities(
 cls_map = {"Person": Person}
 
 if __name__ == "__main__":
-    with open(get_path("../fixtures/data.json")) as f:
+    with open(get_path("../fixtures/private/data.json")) as f:
         data = json.load(f)
         load_entities(
             db=db,
