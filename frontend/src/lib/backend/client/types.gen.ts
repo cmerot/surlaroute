@@ -144,23 +144,20 @@ export type PagedResponse_UserPublic_ = {
 };
 
 export type PersonCreate = {
-	firstname?: string | null;
-	lastname?: string | null;
+	name: string;
 	role?: string | null;
 	contact?: ContactCreate | null;
 };
 
 export type PersonPublic = {
-	firstname?: string | null;
-	lastname?: string | null;
+	name: string;
 	role?: string | null;
 	id: string;
 	contact?: ContactPublic | null;
 };
 
 export type PersonUpdate = {
-	firstname?: string | null;
-	lastname?: string | null;
+	name: string;
 	role?: string | null;
 	contact?: ContactUpdate | null;
 };

@@ -859,27 +859,9 @@ export const PagedResponse_UserPublic_Schema = {
 
 export const PersonCreateSchema = {
 	properties: {
-		firstname: {
-			anyOf: [
-				{
-					type: 'string'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Firstname'
-		},
-		lastname: {
-			anyOf: [
-				{
-					type: 'string'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Lastname'
+		name: {
+			type: 'string',
+			title: 'Name'
 		},
 		role: {
 			anyOf: [
@@ -904,32 +886,15 @@ export const PersonCreateSchema = {
 		}
 	},
 	type: 'object',
+	required: ['name'],
 	title: 'PersonCreate'
 } as const;
 
 export const PersonPublicSchema = {
 	properties: {
-		firstname: {
-			anyOf: [
-				{
-					type: 'string'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Firstname'
-		},
-		lastname: {
-			anyOf: [
-				{
-					type: 'string'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Lastname'
+		name: {
+			type: 'string',
+			title: 'Name'
 		},
 		role: {
 			anyOf: [
@@ -959,33 +924,15 @@ export const PersonPublicSchema = {
 		}
 	},
 	type: 'object',
-	required: ['id'],
+	required: ['name', 'id'],
 	title: 'PersonPublic'
 } as const;
 
 export const PersonUpdateSchema = {
 	properties: {
-		firstname: {
-			anyOf: [
-				{
-					type: 'string'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Firstname'
-		},
-		lastname: {
-			anyOf: [
-				{
-					type: 'string'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Lastname'
+		name: {
+			type: 'string',
+			title: 'Name'
 		},
 		role: {
 			anyOf: [
@@ -1010,6 +957,7 @@ export const PersonUpdateSchema = {
 		}
 	},
 	type: 'object',
+	required: ['name'],
 	title: 'PersonUpdate'
 } as const;
 

@@ -2,6 +2,7 @@
 # mypy: ignore-errors
 import json
 import os
+import sys
 from collections.abc import Callable
 from typing import Any, TypeVar
 
@@ -170,7 +171,12 @@ def load_entities(
 ) -> None:
     for entity_obj in data:
         print(f"Processing {sql_cls.__name__}")
-        entity_in = pyd_cls.model_validate(entity_obj)
+        try:
+            entity_in = pyd_cls.model_validate(entity_obj)
+        except Exception:
+            print("Impossible d'importer cet élément:")
+            print(entity_obj)
+            sys.exit(1)
         entity = populate_model_from_dict(
             sql_cls=sql_cls,
             data=entity_in.model_dump(exclude_none=True),

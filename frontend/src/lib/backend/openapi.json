@@ -1361,26 +1361,19 @@
 			},
 			"PersonCreate": {
 				"properties": {
-					"firstname": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Firstname"
-					},
-					"lastname": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Lastname" },
+					"name": { "type": "string", "title": "Name" },
 					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"contact": {
 						"anyOf": [{ "$ref": "#/components/schemas/ContactCreate" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
+				"required": ["name"],
 				"title": "PersonCreate"
 			},
 			"PersonPublic": {
 				"properties": {
-					"firstname": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Firstname"
-					},
-					"lastname": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Lastname" },
+					"name": { "type": "string", "title": "Name" },
 					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"contact": {
@@ -1388,22 +1381,19 @@
 					}
 				},
 				"type": "object",
-				"required": ["id"],
+				"required": ["name", "id"],
 				"title": "PersonPublic"
 			},
 			"PersonUpdate": {
 				"properties": {
-					"firstname": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Firstname"
-					},
-					"lastname": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Lastname" },
+					"name": { "type": "string", "title": "Name" },
 					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"contact": {
 						"anyOf": [{ "$ref": "#/components/schemas/ContactUpdate" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
+				"required": ["name"],
 				"title": "PersonUpdate"
 			},
 			"Token": {

@@ -125,15 +125,8 @@ class OrgImport(OrgBase):
 
 
 class PersonBase(Base):
-    firstname: str | None = None
-    lastname: str | None = None
+    name: str
     role: str | None = None
-
-    # @model_validator(mode="after")
-    # def check_fields(self):
-    #     if not self.firstname and not self.lastname:
-    #         raise ValueError("At least one of firstname or lastname must be provided")
-    #     return self
 
 
 class PersonPublic(PersonBase):
@@ -146,9 +139,6 @@ class PersonCreate(PersonBase):
 
 
 class PersonUpdate(PersonBase):
-    firstname: str | None = None
-    lastname: str | None = None
-    role: str | None = None
     contact: ContactUpdate | None = None
 
 

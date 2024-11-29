@@ -203,8 +203,7 @@ class Person(PermissionsMixin, Actor):
         ForeignKey("actor.id"),
         primary_key=True,
     )
-    firstname: Mapped[str | None] = mapped_column(default=None)
-    lastname: Mapped[str | None] = mapped_column(default=None)
+    name: Mapped[str | None] = mapped_column(default=None)
     role: Mapped[str | None] = mapped_column(default=None)
 
 
