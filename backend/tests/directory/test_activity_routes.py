@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 
 from app.core.schemas import DeleteResponse, PagedResponse
 from app.directory.crud_schemas import (
-    ActivityPublic,
+    TreePublic,
 )
 
 
@@ -14,7 +14,7 @@ def test_create_activity(client: TestClient) -> None:
     r = client.post("/directory/activities", content=json.dumps(content))
     assert r.status_code == 200
 
-    activity = ActivityPublic.model_validate_json(json.dumps(r.json()))
+    activity = TreePublic.model_validate_json(json.dumps(r.json()))
     assert activity
     assert activity.path == "a1"
     assert activity.name == "a1"
@@ -28,7 +28,7 @@ def test_create_activity(client: TestClient) -> None:
     r = client.post("/directory/activities", content=json.dumps(content))
     assert r.status_code == 200
 
-    activity = ActivityPublic.model_validate_json(json.dumps(r.json()))
+    activity = TreePublic.model_validate_json(json.dumps(r.json()))
     assert activity.path == "a1.a2"
     assert activity.name == "a2"
 
@@ -36,22 +36,22 @@ def test_create_activity(client: TestClient) -> None:
 def test_read_activities(client: TestClient) -> None:
     r = client.get("/directory/activities")
     json_resp = r.json()
-    assert PagedResponse[ActivityPublic].model_validate_json(json.dumps(json_resp))
+    assert PagedResponse[TreePublic].model_validate_json(json.dumps(json_resp))
     assert r.status_code == 200
-    assert len(json_resp["results"]) == 13
+    assert len(json_resp["results"]) == 15
 
 
 def test_read_activities_by_path(client: TestClient) -> None:
     r = client.get("/directory/activities/cat")
     json_resp = r.json()
     assert r.status_code == 200
-    assert ActivityPublic.model_validate_json(json.dumps(json_resp))
+    assert TreePublic.model_validate_json(json.dumps(json_resp))
 
 
 def test_read_activities_by_path_with_descendant(client: TestClient) -> None:
     r = client.get("/directory/activities/cat?descendant=true")
     json_resp = r.json()
-    resp = PagedResponse[ActivityPublic].model_validate_json(json.dumps(json_resp))
+    resp = PagedResponse[TreePublic].model_validate_json(json.dumps(json_resp))
     assert r.status_code == 200
     assert len(resp.results) == 13
 

@@ -15,7 +15,7 @@ from app.users import crud
 from app.users.schemas import UserCreate
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(" prestart ")
+logger = logging.getLogger("prestart")
 
 
 max_tries = 60 * 5  # 5 minutes
@@ -47,6 +47,7 @@ def create_first_superuser(session: Session) -> None:
     )
     try:
         crud.create_user(session=session, user_create=user_in)
+        session.commit()
         logger.info("Superuser created")
     except IntegrityError:
         logger.info("Superuser already exists")
@@ -80,5 +81,9 @@ if __name__ == "__main__":
     logger.info("Running alembic upgrade")
     upgrade_to_head()
 
+    # For some reason (alembic.ini?) alembic changes the log level
+    # so this wont appear
     logger.info("Creating first superuser")
     create_first_superuser(session=session)
+
+    logging.shutdown()

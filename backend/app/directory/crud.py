@@ -8,12 +8,12 @@ from sqlalchemy_utils import Ltree
 from app.core.db.models import Activity, Org, Person
 from app.core.schemas import PageParams
 from app.directory.crud_schemas import (
-    ActivityCreate,
-    ActivityUpdate,
     OrgCreate,
     OrgUpdate,
     PersonCreate,
     PersonUpdate,
+    TreeCreate,
+    TreeUpdate,
 )
 
 #
@@ -24,7 +24,7 @@ from app.directory.crud_schemas import (
 def create_activity(
     *,
     session: Session,
-    entity_in: ActivityCreate,
+    entity_in: TreeCreate,
 ) -> Activity:
     path = Ltree(entity_in.path)
     if entity_in.name is None:
@@ -71,7 +71,7 @@ def update_activity(
     *,
     session: Session,
     path: str,
-    entity_in: ActivityUpdate,
+    entity_in: TreeUpdate,
 ) -> Activity:
     """
     Update activity. Updating path will move the node and its child to the new path

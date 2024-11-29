@@ -6,8 +6,8 @@ from sqlalchemy.orm.collections import InstrumentedList
 from app.core.db.models import (
     Activity,
     Actor,
-    AssociationOrgActor,
     Org,
+    OrgActorAssoc,
     Person,
 )
 from tests.directory.fixtures import get_fixture_uuid
@@ -35,9 +35,9 @@ def test_directory_preloaded_fixtures(session: Session) -> None:
     mitchum = session.get_one(Person, eddie_id)
     armodo = session.get_one(Org, armodo_id)
     slowfest = session.get_one(Org, slowfest_id)
-    om1 = session.get_one(AssociationOrgActor, (armodo_id, robert_id))
-    om2 = session.get_one(AssociationOrgActor, (armodo_id, slowfest_id))
-    om3 = session.get_one(AssociationOrgActor, (slowfest_id, eddie_id))
+    om1 = session.get_one(OrgActorAssoc, (armodo_id, robert_id))
+    om2 = session.get_one(OrgActorAssoc, (armodo_id, slowfest_id))
+    om3 = session.get_one(OrgActorAssoc, (slowfest_id, eddie_id))
 
     print_actor(robert)
     assert robert.membership_assocs[0].org is armodo
@@ -67,8 +67,8 @@ def test_directory_delete_om(session: Session) -> None:
     o1 = Org(id=o1_id, name="o1")
     p1 = Person(id=p1_id, firstname="p", lastname="1")
     p2 = Person(id=p2_id, firstname="p", lastname="2")
-    om1 = AssociationOrgActor(org=o1, actor=p1)
-    om2 = AssociationOrgActor(org=o1, actor=p2)
+    om1 = OrgActorAssoc(org=o1, actor=p1)
+    om2 = OrgActorAssoc(org=o1, actor=p2)
     session.add_all([o1, p1, p2, om1, om2])
     session.flush()
 
@@ -83,7 +83,7 @@ def test_directory_delete_om(session: Session) -> None:
     assert len(o1.member_assocs) == 1
 
     with pytest.raises(NoResultFound):
-        session.get_one(AssociationOrgActor, (o1_id, p1_id))
+        session.get_one(OrgActorAssoc, (o1_id, p1_id))
 
     session.rollback()
 
@@ -95,8 +95,8 @@ def test_directory_delete_actor(session: Session) -> None:
     o1 = Org(id=o1_id, name="o1")
     p1 = Person(id=p1_id, firstname="p", lastname="1")
     p2 = Person(id=p2_id, firstname="p", lastname="2")
-    om1 = AssociationOrgActor(org=o1, actor=p1)
-    om2 = AssociationOrgActor(org=o1, actor=p2)
+    om1 = OrgActorAssoc(org=o1, actor=p1)
+    om2 = OrgActorAssoc(org=o1, actor=p2)
     session.add_all([o1, p1, p2, om1, om2])
     session.flush()
 

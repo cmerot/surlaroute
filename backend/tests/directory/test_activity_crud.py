@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 from app.core.db.models import Activity
 from app.directory import crud
 from app.directory.crud_schemas import (
-    ActivityCreate,
-    ActivityUpdate,
+    TreeCreate,
+    TreeUpdate,
 )
 from tests.directory.fixtures import (
     activity_fixtures,
@@ -16,19 +16,19 @@ from tests.directory.fixtures import (
 
 
 def test_create_activity(session: Session) -> None:
-    entity_in = ActivityCreate(path="dog")
+    entity_in = TreeCreate(path="dog")
     activity = crud.create_activity(session=session, entity_in=entity_in)
     assert isinstance(activity, Activity)
     assert activity.name == "dog"
     assert str(activity.path) == "dog"
 
-    entity_in = ActivityCreate(path="dog", name="Dog")
+    entity_in = TreeCreate(path="dog", name="Dog")
     activity = crud.create_activity(session=session, entity_in=entity_in)
     assert isinstance(activity, Activity)
     assert activity.name == "Dog"
     assert str(activity.path) == "dog"
 
-    entity_in = ActivityCreate(path="dog.small", name="Small Dog")
+    entity_in = TreeCreate(path="dog.small", name="Small Dog")
     activity = crud.create_activity(session=session, entity_in=entity_in)
     assert isinstance(activity, Activity)
     assert activity.name == "Small Dog"
@@ -93,7 +93,7 @@ def test_read_activities_not_found(session: Session) -> None:
 
 def test_update_activity_name(session: Session) -> None:
     path = "cat.small"
-    entity_in = ActivityUpdate(name="small2")
+    entity_in = TreeUpdate(name="small2")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
     activities, count = crud.read_activities(session=session, path="cat.small")
     assert activities[0].name == "small2"
@@ -103,13 +103,13 @@ def test_update_activity_name(session: Session) -> None:
 
 def test_update_activity_path(session: Session) -> None:
     path = "cat.small"
-    entity_in = ActivityUpdate(dest_path="cat.big.small")
+    entity_in = TreeUpdate(dest_path="cat.big.small")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
     activities, count = crud.read_activities(session=session, path="cat.big.small")
     assert len(activities) == 8
 
     path = "cat"
-    entity_in = ActivityUpdate(dest_path="cats")
+    entity_in = TreeUpdate(dest_path="cats")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
     activities, count = crud.read_activities(session=session, path="cats")
     assert len(activities) == 13
@@ -119,7 +119,7 @@ def test_update_activity_path(session: Session) -> None:
 
 def test_update_activity_path_and_name(session: Session) -> None:
     path = "cat.small"
-    entity_in = ActivityUpdate(dest_path="cat.big.small", name="big small")
+    entity_in = TreeUpdate(dest_path="cat.big.small", name="big small")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
     activities, count = crud.read_activities(session=session, path="cat.big.small")
     assert len(activities) == 8

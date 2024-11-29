@@ -3,8 +3,8 @@ import uuid
 
 from app.core.db.models import (
     Activity,
-    AssociationOrgActor,
     Org,
+    OrgActorAssoc,
     Person,
 )
 
@@ -46,7 +46,7 @@ armodo = Org(name="armodo", id=get_fixture_uuid("armodo"))
 slowfest = Org(name="slowfest", id=get_fixture_uuid("slowfest"))
 org_fixtures = [armodo, slowfest]
 
-om1 = AssociationOrgActor(org=armodo, actor=robert)
-om2 = AssociationOrgActor(org=armodo, actor=slowfest)
-om3 = AssociationOrgActor(org=slowfest, actor=eddie)
+om1 = OrgActorAssoc(org=armodo, actor=robert)
+om2 = OrgActorAssoc(org=armodo, actor=slowfest)
+om3 = OrgActorAssoc(org=slowfest, actor=eddie)
 om_fixtures = [om1, om2, om3]

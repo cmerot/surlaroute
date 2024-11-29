@@ -10,18 +10,16 @@ from app.core.schemas import (
 )
 from app.directory import crud
 from app.directory.crud_schemas import (
-    ActivityCreate,
-    ActivityPublic,
-    ActivityUpdate,
+    TreeCreate,
+    TreePublic,
+    TreeUpdate,
 )
 
 router = APIRouter()
 
 
-@router.post("/", response_model=ActivityPublic)
-def create_activity(
-    *, session: SessionDep, activity_create: ActivityCreate
-) -> ActivityPublic:
+@router.post("/", response_model=TreePublic)
+def create_activity(*, session: SessionDep, activity_create: TreeCreate) -> TreePublic:
     """
     Create an activity.
     """
@@ -34,16 +32,16 @@ def create_activity(
             status_code=400,
             detail=f"Path '{activity.path}' already exists.",
         )
-    return ActivityPublic.model_validate(activity)
+    return TreePublic.model_validate(activity)
 
 
-@router.get("/{path}", response_model=PagedResponse[ActivityPublic] | ActivityPublic)
+@router.get("/{path}", response_model=PagedResponse[TreePublic] | TreePublic)
 def read_activities_by_path(
     session: SessionDep,
     path: str,
     page_params: PageParamsDep,
     descendant: bool = False,
-) -> PagedResponse[ActivityPublic] | ActivityPublic:
+) -> PagedResponse[TreePublic] | TreePublic:
     """
     Read activities from a path.
     """
@@ -52,7 +50,7 @@ def read_activities_by_path(
             activity = crud.read_activity(session=session, path=path)
         except NoResultFound:
             raise HTTPException(status_code=404, detail="Activity not found")
-        return ActivityPublic.model_validate(activity)
+        return TreePublic.model_validate(activity)
     else:
         try:
             results, total = crud.read_activities(
@@ -61,7 +59,7 @@ def read_activities_by_path(
         except NoResultFound:
             raise HTTPException(status_code=404, detail="Activity not found")
 
-        return PagedResponse[ActivityPublic].model_validate(
+        return PagedResponse[TreePublic].model_validate(
             {
                 "total": total,
                 "limit": page_params.limit,
@@ -71,15 +69,15 @@ def read_activities_by_path(
         )
 
 
-@router.get("/", response_model=PagedResponse[ActivityPublic])
+@router.get("/", response_model=PagedResponse[TreePublic])
 def read_activities(
     session: SessionDep, page_params: PageParamsDep
-) -> PagedResponse[ActivityPublic]:
+) -> PagedResponse[TreePublic]:
     """
     Read all activities.
     """
     results, total = crud.read_activities(session=session)
-    return PagedResponse[ActivityPublic].model_validate(
+    return PagedResponse[TreePublic].model_validate(
         {
             "total": total,
             "limit": page_params.limit,
@@ -89,10 +87,10 @@ def read_activities(
     )
 
 
-@router.patch("/{path}", response_model=UpdateResponse[ActivityPublic])
+@router.patch("/{path}", response_model=UpdateResponse[TreePublic])
 def update_activity(
-    *, session: SessionDep, path: str, entity_in: ActivityUpdate
-) -> UpdateResponse[ActivityPublic]:
+    *, session: SessionDep, path: str, entity_in: TreeUpdate
+) -> UpdateResponse[TreePublic]:
     """
     Update an activity.
 
@@ -105,7 +103,7 @@ def update_activity(
         session.rollback()
         raise HTTPException(status_code=404, detail="Activity not found")
 
-    return UpdateResponse[ActivityPublic].model_validate(
+    return UpdateResponse[TreePublic].model_validate(
         {
             "success": True,
             "data": data,

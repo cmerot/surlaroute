@@ -60,6 +60,8 @@ dependencies = [
     { name = "psycopg", extra = ["binary"] },
     { name = "pydantic" },
     { name = "pydantic-settings" },
+    { name = "pyexcel" },
+    { name = "pyexcel-odsr" },
     { name = "pyjwt" },
     { name = "pytest-watch" },
     { name = "pytest-watcher" },
@@ -97,6 +99,8 @@ requires-dist = [
     { name = "psycopg", extras = ["binary"], specifier = ">=3.1.13,<4.0.0" },
     { name = "pydantic", specifier = ">2.0" },
     { name = "pydantic-settings", specifier = ">=2.2.1,<3.0.0" },
+    { name = "pyexcel", specifier = ">=0.7.1" },
+    { name = "pyexcel-odsr", specifier = ">=0.6.0" },
     { name = "pyjwt", specifier = ">=2.8.0,<3.0.0" },
     { name = "pytest-watch", specifier = ">=4.2.0" },
     { name = "pytest-watcher", specifier = ">=0.4.3" },
@@ -637,6 +641,15 @@ wheels = [
 ]
 
 [[package]]
+name = "lml"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/c5/5a/006d93401d382f82584711c848826ac24bce9d79eb19d25da9cf1d783815/lml-0.1.0.tar.gz", hash = "sha256:57a085a29bb7991d70d41c6c3144c560a8e35b4c1030ffb36d85fa058773bcc5", size = 42010 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/10/76/b0967eae4af4b7ea22e8b8ece6f7655fb6a3f4f49428f41910f53a552e1e/lml-0.1.0-py2.py3-none-any.whl", hash = "sha256:ec06e850019942a485639c8c2a26bdb99eae24505bee7492b649df98a0bed101", size = 10869 },
+]
+
+[[package]]
 name = "lxml"
 version = "5.3.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1107,6 +1120,45 @@ wheels = [
 ]
 
 [[package]]
+name = "pyexcel"
+version = "0.7.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "lml" },
+    { name = "pyexcel-io" },
+    { name = "texttable" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/9a/d5/c2438b59cc1a61e72dba86aabaa3e5dcbb1489aef24a43ed17304ec322c2/pyexcel-0.7.1.tar.gz", hash = "sha256:c875991c1de901406345d13c7dde6c4acfd5f08b16af6c4a881a52c6c3c3ab06", size = 819405 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a9/39/72a95e9327fe27d0597adce3c317d23e45ca899df335313e6ba20464b8fc/pyexcel-0.7.1-py2.py3-none-any.whl", hash = "sha256:3306e66e24ef24e34399d329a508d669884a3577a557679c94edda9efc88b834", size = 88746 },
+]
+
+[[package]]
+name = "pyexcel-io"
+version = "0.6.7"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "lml" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ea/0e/2d8c933d560d290113cc8e6a354260758cdd356308f6fd3be5be5898784b/pyexcel_io-0.6.7.tar.gz", hash = "sha256:2c33d8df505e21a13bed585ac6ab7d30ec826a9f156b758394af5d22359bddb9", size = 75856 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7d/95/44376fb9c5a8200167fc7beac640be3522f85c07297a810865c5ad3fe440/pyexcel_io-0.6.7-py2.py3-none-any.whl", hash = "sha256:add9f3c1489070ab0a3226bab7d23d4b84a364f5b44f3a14e2ce785ede88fcb3", size = 44476 },
+]
+
+[[package]]
+name = "pyexcel-odsr"
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "lxml" },
+    { name = "pyexcel-io" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c2/77/588a2561d133e7c6b089126031c613b3592c11dea66e855189d44f2c9baa/pyexcel-odsr-0.6.0.tar.gz", hash = "sha256:1e7c6bba796ad20bdb4e999f8740055ba0235372e5afb78c90f75614e3f0c502", size = 16256 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/60/cc/447b38791bec0653b17c9931f8b68617cdc16528c18c53841b606b1686b7/pyexcel_odsr-0.6.0-py2.py3-none-any.whl", hash = "sha256:51650c71838a8026b851dc426f2beaced031b096cc3f30137850407d86c643d3", size = 11367 },
+]
+
+[[package]]
 name = "pygments"
 version = "2.18.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1428,6 +1480,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a3/4d/6a19536c50b849338fcbe9290d562b52cbdcf30d8963d3588a68a4107df1/tenacity-8.5.0.tar.gz", hash = "sha256:8bc6c0c8a09b31e6cad13c47afbed1a567518250a9a171418582ed8d9c20ca78", size = 47309 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/3f/8ba87d9e287b9d385a02a7114ddcef61b26f86411e121c9003eb509a1773/tenacity-8.5.0-py3-none-any.whl", hash = "sha256:b594c2a5945830c267ce6b79a166228323ed52718f30302c1359836112346687", size = 28165 },
+]
+
+[[package]]
+name = "texttable"
+version = "1.7.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/1c/dc/0aff23d6036a4d3bf4f1d8c8204c5c79c4437e25e0ae94ffe4bbb55ee3c2/texttable-1.7.0.tar.gz", hash = "sha256:2d2068fb55115807d3ac77a4ca68fa48803e84ebb0ee2340f858107a36522638", size = 12831 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/24/99/4772b8e00a136f3e01236de33b0efda31ee7077203ba5967fcc76da94d65/texttable-1.7.0-py2.py3-none-any.whl", hash = "sha256:72227d592c82b3d7f672731ae73e4d1f88cd8e2ef5b075a7a7f01a23a3743917", size = 10768 },
 ]
 
 [[package]]

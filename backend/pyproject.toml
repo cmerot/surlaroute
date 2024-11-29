@@ -28,6 +28,8 @@ dependencies = [
     "pytest-watcher>=0.4.3",
     "types-pyyaml>=6.0.12.20240917",
     "geoalchemy2>=0.16.0",
+    "pyexcel>=0.7.1",
+    "pyexcel-odsr>=0.6.0",
 ]
 
 [tool.uv]

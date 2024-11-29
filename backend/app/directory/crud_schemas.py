@@ -32,114 +32,207 @@ LtreeField = Annotated[
 
 
 #
-# Activity
+# Generic Tree and many to many
 #
 
-
-class ActivityCreate(Base):
-    path: LtreeField = Field(min_length=1)
-    name: str | None = None
+# Tree
 
 
-class ActivityUpdate(Base):
-    dest_path: LtreeField | None = Field(default=None, min_length=1)
-    name: str | None = None
-
-
-class ActivityPublic(Base):
-    id: uuid.UUID
+class TreePublic(Base):
+    id: uuid.UUID | None = None
     path: LtreeField
     name: str
 
 
+class TreeCreate(Base):
+    path: LtreeField = Field(min_length=1)
+    name: str | None = None
+
+
+class TreeUpdate(Base):
+    dest_path: LtreeField | None = Field(default=None, min_length=1)
+    name: str | None = None
+
+
+class TreeImport(Base):
+    id: uuid.UUID | None = None
+    path: LtreeField
+    name: str | None = None
+
+
+# Many to many relation tables
+
+
+class ActorAssocPublic(Base):
+    actor: PersonPublic | OrgPublic | None = None
+
+
+class ActorAssocCreate(Base):
+    actor: PersonCreate | OrgCreate | None = None
+
+
+class ActorAssocUpdate(Base):
+    actor: PersonUpdate | OrgUpdate | None = None
+
+
+class ActorAssocImport(Base):
+    actor: PersonImport | OrgImport | None = None
+
+
 #
+# Business classes
+#
+
 # Org
-#
 
 
-class OrgPublic(Base):
+class OrgBase(Base):
+    description: str | None = None
+
+
+class OrgPublic(OrgBase):
     id: uuid.UUID
     name: str
-    activities: list[ActivityPublic]
-    members: list[PersonPublic] | None = None
-    description: str | None = None
+    activities: list[TreePublic] | None = None
+    member_assocs: list[ActorAssocPublic] | None = None
     contact: ContactPublic | None = None
 
 
-class OrgCreate(Base):
+class OrgCreate(OrgBase):
     name: str
-    activities: list[ActivityCreate] | None = None
-    members: list[PersonCreate] | None = None
-    description: str | None = None
+    activities: list[TreeCreate] | None = None
+    member_assocs: list[ActorAssocCreate] | None = None
     contact: ContactCreate | None = None
 
 
-class OrgUpdate(Base):
+class OrgUpdate(OrgBase):
     name: str | None = None
-    activities: list[ActivityUpdate] | None = None
-    members: list[PersonUpdate] | None = None
-    description: str | None = None
+    activities: list[TreeUpdate] | None = None
+    member_assocs: list[ActorAssocUpdate] | None = None
     contact: ContactUpdate | None = None
 
 
-#
+class OrgImport(OrgBase):
+    id: uuid.UUID | None = None
+    activities: list[TreeImport] | None = None
+    member_assocs: list[ActorAssocImport] | None = None
+    contact: ContactImport | None = None
+    type_: str | None = None
+
+
 # Person
-#
 
 
-class PersonPublic(Base):
-    id: uuid.UUID
-    firstname: str
-    lastname: str
-
-
-class PersonCreate(Base):
-    firstname: str
-    lastname: str
-
-
-class PersonUpdate(Base):
+class PersonBase(Base):
     firstname: str | None = None
     lastname: str | None = None
+    role: str | None = None
+
+    # @model_validator(mode="after")
+    # def check_fields(self):
+    #     if not self.firstname and not self.lastname:
+    #         raise ValueError("At least one of firstname or lastname must be provided")
+    #     return self
 
 
-#
+class PersonPublic(PersonBase):
+    id: uuid.UUID
+    contact: ContactPublic | None = None
+
+
+class PersonCreate(PersonBase):
+    contact: ContactCreate | None = None
+
+
+class PersonUpdate(PersonBase):
+    firstname: str | None = None
+    lastname: str | None = None
+    role: str | None = None
+    contact: ContactUpdate | None = None
+
+
+class PersonImport(PersonBase):
+    id: uuid.UUID | None = None
+    contact: ContactImport | None = None
+    type_: str
+
+
 # Contact
-#
 
 
-class ContactPublic(Base):
+class ContactBase(Base):
     email_address: EmailStr | None = None
     phone_number: str | None = None
     website: HttpUrl | None = None
+
+
+class ContactPublic(ContactBase):
+    id: uuid.UUID
+    address: AddressGeoPublic | None = None
+
+
+class ContactCreate(ContactBase):
     address: AddressGeoCreate | None = None
 
 
-class ContactCreate(ContactPublic):
-    pass
+class ContactUpdate(ContactBase):
+    address: AddressGeoUpdate | None = None
 
 
-class ContactUpdate(ContactPublic):
-    pass
+class ContactImport(ContactBase):
+    id: uuid.UUID | None = None
+    address: AddressGeoImport | None = None
 
 
-#
-# Address
-#
+# AddressGeo
 
 
-class AddressGeoPublic(Base):
+class AddressGeoBase(Base):
     q: str | None = None
     street: str | None = None
     postal_code: str | None = None
     city: str | None = None
     country: str | None = None
-    geo_point: str | None = None
+    # geo_location: str | None = None
 
 
-class AddressGeoCreate(AddressGeoPublic):
+class AddressGeoPublic(AddressGeoBase):
+    id: uuid.UUID
+
+
+class AddressGeoCreate(AddressGeoBase):
     pass
 
 
-class AddressGeoUpdate(AddressGeoPublic):
+class AddressGeoUpdate(AddressGeoBase):
     pass
+
+
+class AddressGeoImport(AddressGeoBase):
+    pass
+
+
+# Tour
+
+
+class TourImport(Base):
+    id: uuid.UUID | None = None
+    name: str
+    description: str | None = None
+    events: list[EventImport] | None = None
+    disciplines: list[TreeImport] | None = None
+    mobilities: list[TreeImport] | None = None
+    actor_assocs: list[ActorAssocImport] | None = None
+
+
+# Event
+
+
+class EventImport(Base):
+    id: uuid.UUID | None = None
+    description: str | None = None
+    start_dt: str | None = None
+    end_dt: str | None = None
+    event_venue: OrgImport
+    tour: TourImport
+    actor_assocs: list[ActorAssocImport] | None = None

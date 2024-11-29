@@ -27,16 +27,6 @@ import type {
 	UsersCreateData,
 	UsersCreateError,
 	UsersCreateResponse,
-	UsersReadMeError,
-	UsersReadMeResponse,
-	UsersDeleteMeError,
-	UsersDeleteMeResponse,
-	UsersUpdateMeData,
-	UsersUpdateMeError,
-	UsersUpdateMeResponse,
-	UsersUpdatePasswordMeData,
-	UsersUpdatePasswordMeError,
-	UsersUpdatePasswordMeResponse,
 	UsersRegisterData,
 	UsersRegisterError,
 	UsersRegisterResponse,
@@ -54,17 +44,18 @@ import type {
 	UtilsTestEmailResponse,
 	UtilsHealthCheckError,
 	UtilsHealthCheckResponse,
-	ActivitiesReadActivitiesError,
-	ActivitiesReadActivitiesResponse,
 	ActivitiesCreateActivityData,
 	ActivitiesCreateActivityError,
 	ActivitiesCreateActivityResponse,
-	ActivitiesUpdateActivityData,
-	ActivitiesUpdateActivityError,
-	ActivitiesUpdateActivityResponse,
+	ActivitiesReadActivitiesData,
+	ActivitiesReadActivitiesError,
+	ActivitiesReadActivitiesResponse,
 	ActivitiesReadActivitiesByPathData,
 	ActivitiesReadActivitiesByPathError,
 	ActivitiesReadActivitiesByPathResponse,
+	ActivitiesUpdateActivityData,
+	ActivitiesUpdateActivityError,
+	ActivitiesUpdateActivityResponse,
 	ActivitiesDeleteActivityData,
 	ActivitiesDeleteActivityError,
 	ActivitiesDeleteActivityResponse,
@@ -219,68 +210,6 @@ export const usersCreate = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Read Me
- * Get current user.
- */
-export const usersReadMe = <ThrowOnError extends boolean = false>(
-	options?: Options<unknown, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<UsersReadMeResponse, UsersReadMeError, ThrowOnError>({
-		...options,
-		url: '/api/users/me'
-	});
-};
-
-/**
- * Delete Me
- * Delete own user.
- */
-export const usersDeleteMe = <ThrowOnError extends boolean = false>(
-	options?: Options<unknown, ThrowOnError>
-) => {
-	return (options?.client ?? client).delete<
-		UsersDeleteMeResponse,
-		UsersDeleteMeError,
-		ThrowOnError
-	>({
-		...options,
-		url: '/api/users/me'
-	});
-};
-
-/**
- * Update Me
- * Update own user.
- */
-export const usersUpdateMe = <ThrowOnError extends boolean = false>(
-	options: Options<UsersUpdateMeData, ThrowOnError>
-) => {
-	return (options?.client ?? client).patch<UsersUpdateMeResponse, UsersUpdateMeError, ThrowOnError>(
-		{
-			...options,
-			url: '/api/users/me'
-		}
-	);
-};
-
-/**
- * Update Password Me
- * Update own password.
- */
-export const usersUpdatePasswordMe = <ThrowOnError extends boolean = false>(
-	options: Options<UsersUpdatePasswordMeData, ThrowOnError>
-) => {
-	return (options?.client ?? client).patch<
-		UsersUpdatePasswordMeResponse,
-		UsersUpdatePasswordMeError,
-		ThrowOnError
-	>({
-		...options,
-		url: '/api/users/me/password'
-	});
-};
-
-/**
  * Register
  * Create new user without the need to be logged in.
  */
@@ -366,23 +295,6 @@ export const utilsHealthCheck = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Read Activities
- * Read all activities.
- */
-export const activitiesReadActivities = <ThrowOnError extends boolean = false>(
-	options?: Options<unknown, ThrowOnError>
-) => {
-	return (options?.client ?? client).get<
-		ActivitiesReadActivitiesResponse,
-		ActivitiesReadActivitiesError,
-		ThrowOnError
-	>({
-		...options,
-		url: '/api/directory/activities/'
-	});
-};
-
-/**
  * Create Activity
  * Create an activity.
  */
@@ -400,21 +312,19 @@ export const activitiesCreateActivity = <ThrowOnError extends boolean = false>(
 };
 
 /**
- * Update Activity
- * Update an activity.
- *
- * If the name or the parent path is patched, it will also update children.
+ * Read Activities
+ * Read all activities.
  */
-export const activitiesUpdateActivity = <ThrowOnError extends boolean = false>(
-	options: Options<ActivitiesUpdateActivityData, ThrowOnError>
+export const activitiesReadActivities = <ThrowOnError extends boolean = false>(
+	options?: Options<ActivitiesReadActivitiesData, ThrowOnError>
 ) => {
-	return (options?.client ?? client).patch<
-		ActivitiesUpdateActivityResponse,
-		ActivitiesUpdateActivityError,
+	return (options?.client ?? client).get<
+		ActivitiesReadActivitiesResponse,
+		ActivitiesReadActivitiesError,
 		ThrowOnError
 	>({
 		...options,
-		url: '/api/directory/activities/{path}'
+		url: '/api/directory/activities/'
 	});
 };
 
@@ -428,6 +338,25 @@ export const activitiesReadActivitiesByPath = <ThrowOnError extends boolean = fa
 	return (options?.client ?? client).get<
 		ActivitiesReadActivitiesByPathResponse,
 		ActivitiesReadActivitiesByPathError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/directory/activities/{path}'
+	});
+};
+
+/**
+ * Update Activity
+ * Update an activity.
+ *
+ * If the name or the parent path is patched, it will also update children.
+ */
+export const activitiesUpdateActivity = <ThrowOnError extends boolean = false>(
+	options: Options<ActivitiesUpdateActivityData, ThrowOnError>
+) => {
+	return (options?.client ?? client).patch<
+		ActivitiesUpdateActivityResponse,
+		ActivitiesUpdateActivityError,
 		ThrowOnError
 	>({
 		...options,
