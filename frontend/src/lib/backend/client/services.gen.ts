@@ -39,6 +39,9 @@ import type {
 	UsersDeleteData,
 	UsersDeleteError,
 	UsersDeleteResponse,
+	UsersRead1Data,
+	UsersRead1Error,
+	UsersRead1Response,
 	UtilsTestEmailData,
 	UtilsTestEmailError,
 	UtilsTestEmailResponse,
@@ -258,6 +261,19 @@ export const usersDelete = <ThrowOnError extends boolean = false>(
 	return (options?.client ?? client).delete<UsersDeleteResponse, UsersDeleteError, ThrowOnError>({
 		...options,
 		url: '/api/users/{user_id}'
+	});
+};
+
+/**
+ * Read
+ * Read users.
+ */
+export const usersRead1 = <ThrowOnError extends boolean = false>(
+	options?: Options<UsersRead1Data, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<UsersRead1Response, UsersRead1Error, ThrowOnError>({
+		...options,
+		url: '/api/dashboard/users/'
 	});
 };
 

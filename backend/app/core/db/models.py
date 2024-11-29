@@ -104,7 +104,6 @@ class TreeBase(Base):
 class User(Base):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(unique=True)
-    full_name: Mapped[str | None] = mapped_column(default=None)
     is_superuser: Mapped[bool] = mapped_column(default=False)
     is_member: Mapped[bool] = mapped_column(default=False)
     is_active: Mapped[bool] = mapped_column(default=False)
@@ -123,6 +122,9 @@ class User(Base):
         cascade="all, delete-orphan",
         single_parent=True,
     )
+
+    def __repr__(self) -> str:
+        return self.email
 
 
 #
@@ -197,14 +199,20 @@ class Org(PermissionsMixin, Actor):
         cascade="all, delete-orphan",
     )
 
+    def __repr__(self) -> str:
+        return self.name
+
 
 class Person(PermissionsMixin, Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
     )
-    name: Mapped[str | None] = mapped_column(default=None)
+    name: Mapped[str] = mapped_column()
     role: Mapped[str | None] = mapped_column(default=None)
+
+    def __repr__(self) -> str:
+        return self.name
 
 
 class Contact(Base):
@@ -242,6 +250,9 @@ class AddressGeo(Base):
         default=None,
     )
 
+    def __repr__(self) -> str:
+        return self.q if self.q else super().__repr__()
+
 
 class Tour(Base, PermissionsMixin):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
@@ -260,6 +271,9 @@ class Tour(Base, PermissionsMixin):
     actor_assocs: Mapped[list[TourActorAssoc]] = relationship(
         cascade="all, delete-orphan",
     )
+
+    def __repr__(self) -> str:
+        return self.name
 
 
 class Event(Base, PermissionsMixin):
@@ -284,6 +298,9 @@ class Event(Base, PermissionsMixin):
     actor_assocs: Mapped[list[EventActorAssoc]] = relationship(
         cascade="all, delete-orphan",
     )
+
+    def __repr__(self) -> str:
+        return f"{self.tour.name} {self.name if self.name else 'Événement'}"
 
 
 #

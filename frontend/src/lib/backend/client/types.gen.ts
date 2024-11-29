@@ -136,6 +136,13 @@ export type PagedResponse_TreePublic_ = {
 	results: Array<TreePublic>;
 };
 
+export type PagedResponse_UserDashboard_ = {
+	total: number;
+	limit: number;
+	offset: number;
+	results: Array<UserDashboard>;
+};
+
 export type PagedResponse_UserPublic_ = {
 	total: number;
 	limit: number;
@@ -206,8 +213,16 @@ export type UserCreate = {
 	is_active?: boolean;
 	is_superuser?: boolean;
 	is_member?: boolean;
-	full_name?: string | null;
 	password: string;
+};
+
+export type UserDashboard = {
+	email: string;
+	is_active?: boolean;
+	is_superuser?: boolean;
+	is_member?: boolean;
+	id: string;
+	person?: PersonPublic | null;
 };
 
 export type UserPublic = {
@@ -215,14 +230,12 @@ export type UserPublic = {
 	is_active?: boolean;
 	is_superuser?: boolean;
 	is_member?: boolean;
-	full_name?: string | null;
 	id: string;
 };
 
 export type UserRegister = {
 	email: string;
 	password: string;
-	full_name?: string | null;
 };
 
 export type UserUpdate = {
@@ -230,7 +243,6 @@ export type UserUpdate = {
 	is_active?: boolean;
 	is_superuser?: boolean;
 	is_member?: boolean;
-	full_name?: string | null;
 	password?: string | null;
 };
 
@@ -338,6 +350,18 @@ export type UsersDeleteData = {
 export type UsersDeleteResponse = Message;
 
 export type UsersDeleteError = HTTPValidationError;
+
+export type UsersRead1Data = {
+	query?: {
+		limit?: number;
+		offset?: number;
+		q?: string | null;
+	};
+};
+
+export type UsersRead1Response = PagedResponse_UserDashboard_;
+
+export type UsersRead1Error = HTTPValidationError;
 
 export type UtilsTestEmailData = {
 	query: {

@@ -6,15 +6,14 @@ import sys
 from collections.abc import Callable
 from typing import Any, TypeVar
 
-from pydantic import BaseModel
-from sqlalchemy import and_
+from pydantic import BaseModel, ValidationError
+from sqlalchemy import and_, inspect
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import (
     DeclarativeBase,
     Session,
     class_mapper,
 )
-from sqlalchemy.orm.attributes import InstrumentedAttribute
 from sqlalchemy_utils import Ltree
 
 from app.core.db.models import (
@@ -26,13 +25,16 @@ from app.core.db.models import (
     Person,
     Tour,
     TreeBase,
+    User,
 )
 from app.core.db.session import SessionLocal
+from app.core.security import get_password_hash
 from app.directory.crud_schemas import (
     EventImport,
     OrgImport,
     TourImport,
     TreeImport,
+    UserImport,
 )
 
 db = SessionLocal()
@@ -94,34 +96,31 @@ def populate_model_from_dict(
 
     for key, value in data.items():
         attr = getattr(sql_cls, key, None)
-        if attr and isinstance(attr, InstrumentedAttribute):
-            if isinstance(value, dict | list | set):
-                # For a collection
-                if isinstance(value, list) or isinstance(value, set):
-                    sub_instances = []
-                    for item in value:
-                        sub_instance = populate_model_from_dict(
-                            sql_cls=get_submodel_class(
-                                sql_cls=attr.property.mapper.class_, value=item
-                            ),
-                            data=item,
-                            cls_map=cls_map,
-                            get_db_instance=get_db_instance,
-                        )
-                        sub_instances.append(sub_instance)
-                # For a dict
-                else:
+        if isinstance(value, dict | list | set):
+            # For a collection
+            if isinstance(value, list) or isinstance(value, set):
+                sub_instances = []
+                for item in value:
                     sub_instance = populate_model_from_dict(
-                        sql_cls=get_submodel_class(attr.property.mapper.class_, value),
-                        data=value,
+                        sql_cls=get_submodel_class(
+                            sql_cls=attr.property.mapper.class_, value=item
+                        ),
+                        data=item,
                         cls_map=cls_map,
                         get_db_instance=get_db_instance,
                     )
-                    sub_instances = sub_instance
-
-                setattr(instance, key, sub_instances)
+                    sub_instances.append(sub_instance)
+            # For a dict
             else:
-                setattr(instance, key, value)
+                sub_instance = populate_model_from_dict(
+                    sql_cls=get_submodel_class(attr.property.mapper.class_, value),
+                    data=value,
+                    cls_map=cls_map,
+                    get_db_instance=get_db_instance,
+                )
+                sub_instances = sub_instance
+
+            setattr(instance, key, sub_instances)
         else:
             setattr(instance, key, value)
 
@@ -143,7 +142,7 @@ def create_filter(model, data):
         return None
 
 
-def get_db_instance(sql_cls: type, data: dict):
+def get_db_instance(sql_cls: type, data: dict[str, Any]):
     if issubclass(sql_cls, TreeBase):
         try:
             instance = (
@@ -151,14 +150,21 @@ def get_db_instance(sql_cls: type, data: dict):
             )
         except NoResultFound:
             instance = sql_cls()
-            db.add(instance)
+        db.add(instance)
         return instance
-
+    elif sql_cls is User:
+        try:
+            instance = db.query(sql_cls).filter(User.email == data["email"]).one()
+        except NoResultFound:
+            instance = sql_cls()
+            instance.hashed_password = get_password_hash("nopassword")
+        db.add(instance)
+        return instance
     try:
         instance = db.query(sql_cls).filter(create_filter(sql_cls, data)).one()
     except NoResultFound:
         instance = sql_cls()
-        db.add(instance)
+    db.add(instance)
     return instance
 
 
@@ -169,23 +175,32 @@ def load_entities(
     pyd_cls: type[BaseModel],
     cls_map: dict,
 ) -> None:
-    for entity_obj in data:
-        print(f"Processing {sql_cls.__name__}")
+    for instance_data in data:
+        print(f"Processing {sql_cls.__name__}", end="")
         try:
-            entity_in = pyd_cls.model_validate(entity_obj)
-        except Exception:
-            print("Impossible d'importer cet élément:")
-            print(entity_obj)
+            entity_in = pyd_cls.model_validate(instance_data)
+        except ValidationError as e:
+            print(f" - nok\n{e}")
+            print(json.dumps(instance_data))
             sys.exit(1)
-        entity = populate_model_from_dict(
+        instance = populate_model_from_dict(
             sql_cls=sql_cls,
             data=entity_in.model_dump(exclude_none=True),
             cls_map=cls_map,
             get_db_instance=get_db_instance,
         )
-        db.add(entity)
-        db.commit()
-        db.refresh(entity)
+        print(f" {instance}", end="")
+        inspector = inspect(instance)
+        if inspector.modified:
+            print(" => update")
+            try:
+                db.commit()
+            except Exception as e:
+                print(f"{e}")
+                sys.exit(1)
+            db.refresh(instance)
+        else:
+            print(" => skip")
 
 
 cls_map = {"Person": Person}
@@ -234,4 +249,11 @@ if __name__ == "__main__":
             pyd_cls=EventImport,
             cls_map=cls_map,
             data=data["events"],
+        )
+        load_entities(
+            db=db,
+            sql_cls=User,
+            pyd_cls=UserImport,
+            cls_map=cls_map,
+            data=data["users"],
         )

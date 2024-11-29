@@ -830,6 +830,33 @@ export const PagedResponse_TreePublic_Schema = {
 	title: 'PagedResponse[TreePublic]'
 } as const;
 
+export const PagedResponse_UserDashboard_Schema = {
+	properties: {
+		total: {
+			type: 'integer',
+			title: 'Total'
+		},
+		limit: {
+			type: 'integer',
+			title: 'Limit'
+		},
+		offset: {
+			type: 'integer',
+			title: 'Offset'
+		},
+		results: {
+			items: {
+				$ref: '#/components/schemas/UserDashboard'
+			},
+			type: 'array',
+			title: 'Results'
+		}
+	},
+	type: 'object',
+	required: ['total', 'limit', 'offset', 'results'],
+	title: 'PagedResponse[UserDashboard]'
+} as const;
+
 export const PagedResponse_UserPublic_Schema = {
 	properties: {
 		total: {
@@ -1185,18 +1212,6 @@ export const UserCreateSchema = {
 			title: 'Is Member',
 			default: false
 		},
-		full_name: {
-			anyOf: [
-				{
-					type: 'string',
-					maxLength: 255
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Full Name'
-		},
 		password: {
 			type: 'string',
 			maxLength: 40,
@@ -1207,6 +1222,50 @@ export const UserCreateSchema = {
 	type: 'object',
 	required: ['email', 'password'],
 	title: 'UserCreate'
+} as const;
+
+export const UserDashboardSchema = {
+	properties: {
+		email: {
+			type: 'string',
+			maxLength: 255,
+			format: 'email',
+			title: 'Email'
+		},
+		is_active: {
+			type: 'boolean',
+			title: 'Is Active',
+			default: true
+		},
+		is_superuser: {
+			type: 'boolean',
+			title: 'Is Superuser',
+			default: false
+		},
+		is_member: {
+			type: 'boolean',
+			title: 'Is Member',
+			default: false
+		},
+		id: {
+			type: 'string',
+			format: 'uuid',
+			title: 'Id'
+		},
+		person: {
+			anyOf: [
+				{
+					$ref: '#/components/schemas/PersonPublic'
+				},
+				{
+					type: 'null'
+				}
+			]
+		}
+	},
+	type: 'object',
+	required: ['email', 'id'],
+	title: 'UserDashboard'
 } as const;
 
 export const UserPublicSchema = {
@@ -1232,18 +1291,6 @@ export const UserPublicSchema = {
 			title: 'Is Member',
 			default: false
 		},
-		full_name: {
-			anyOf: [
-				{
-					type: 'string',
-					maxLength: 255
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Full Name'
-		},
 		id: {
 			type: 'string',
 			format: 'uuid',
@@ -1268,18 +1315,6 @@ export const UserRegisterSchema = {
 			maxLength: 40,
 			minLength: 8,
 			title: 'Password'
-		},
-		full_name: {
-			anyOf: [
-				{
-					type: 'string',
-					maxLength: 255
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Full Name'
 		}
 	},
 	type: 'object',
@@ -1316,18 +1351,6 @@ export const UserUpdateSchema = {
 			type: 'boolean',
 			title: 'Is Member',
 			default: false
-		},
-		full_name: {
-			anyOf: [
-				{
-					type: 'string',
-					maxLength: 255
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Full Name'
 		},
 		password: {
 			anyOf: [

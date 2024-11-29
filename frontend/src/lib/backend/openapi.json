@@ -357,6 +357,59 @@
 				}
 			}
 		},
+		"/api/dashboard/users/": {
+			"get": {
+				"tags": ["users"],
+				"summary": "Read",
+				"description": "Read users.",
+				"operationId": "users-read",
+				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": false,
+						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"maximum": 100,
+							"exclusiveMinimum": 0,
+							"default": 100,
+							"title": "Limit"
+						}
+					},
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/PagedResponse_UserDashboard_" }
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/utils/test-email/": {
 			"post": {
 				"tags": ["utils"],
@@ -1344,6 +1397,21 @@
 				"required": ["total", "limit", "offset", "results"],
 				"title": "PagedResponse[TreePublic]"
 			},
+			"PagedResponse_UserDashboard_": {
+				"properties": {
+					"total": { "type": "integer", "title": "Total" },
+					"limit": { "type": "integer", "title": "Limit" },
+					"offset": { "type": "integer", "title": "Offset" },
+					"results": {
+						"items": { "$ref": "#/components/schemas/UserDashboard" },
+						"type": "array",
+						"title": "Results"
+					}
+				},
+				"type": "object",
+				"required": ["total", "limit", "offset", "results"],
+				"title": "PagedResponse[UserDashboard]"
+			},
 			"PagedResponse_UserPublic_": {
 				"properties": {
 					"total": { "type": "integer", "title": "Total" },
@@ -1479,15 +1547,26 @@
 					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
 					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
 					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
-					"full_name": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Full Name"
-					},
 					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" }
 				},
 				"type": "object",
 				"required": ["email", "password"],
 				"title": "UserCreate"
+			},
+			"UserDashboard": {
+				"properties": {
+					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
+					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
+					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
+					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"person": {
+						"anyOf": [{ "$ref": "#/components/schemas/PersonPublic" }, { "type": "null" }]
+					}
+				},
+				"type": "object",
+				"required": ["email", "id"],
+				"title": "UserDashboard"
 			},
 			"UserPublic": {
 				"properties": {
@@ -1495,10 +1574,6 @@
 					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
 					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
 					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
-					"full_name": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Full Name"
-					},
 					"id": { "type": "string", "format": "uuid", "title": "Id" }
 				},
 				"type": "object",
@@ -1508,11 +1583,7 @@
 			"UserRegister": {
 				"properties": {
 					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" },
-					"full_name": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Full Name"
-					}
+					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" }
 				},
 				"type": "object",
 				"required": ["email", "password"],
@@ -1530,10 +1601,6 @@
 					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
 					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
 					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
-					"full_name": {
-						"anyOf": [{ "type": "string", "maxLength": 255 }, { "type": "null" }],
-						"title": "Full Name"
-					},
 					"password": {
 						"anyOf": [{ "type": "string", "maxLength": 40, "minLength": 8 }, { "type": "null" }],
 						"title": "Password"

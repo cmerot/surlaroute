@@ -38,8 +38,8 @@ activity_fixtures = [
     Activity(name="shorthair", path="cat.small.domestic.shorthair"),
 ]
 
-robert = Person(firstname="Robert", lastname="Mitchum", id=get_fixture_uuid("robert"))
-eddie = Person(firstname="Eddie", lastname="Coyle", id=get_fixture_uuid("eddie"))
+robert = Person(name="Robert Mitchum", id=get_fixture_uuid("robert"))
+eddie = Person(name="Eddie Coyle", id=get_fixture_uuid("eddie"))
 person_fixtures = [robert, eddie]
 
 armodo = Org(name="armodo", id=get_fixture_uuid("armodo"))

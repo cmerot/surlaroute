@@ -1,11 +1,10 @@
 import uuid
-from collections.abc import Sequence
 
 import pytest
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from app.core.db.models import Activity, Person
+from app.core.db.models import Person
 from app.core.schemas import (
     PageParams,
 )
@@ -16,17 +15,11 @@ from tests.directory.fixtures import (
 )
 
 
-def print_activities(activities: Sequence[Activity]) -> None:
-    print("")
-    for activity in activities:
-        print(f"{activity.path} - {activity.name}")
-
-
 def test_create_person(session: Session) -> None:
-    person_create = PersonCreate(firstname="rob", lastname="mitch")
+    person_create = PersonCreate(name="rob mitch")
     person = crud.create_person(session=session, person_create=person_create)
     assert isinstance(person, Person)
-    assert person.firstname == "rob"
+    assert person.name == "rob mitch"
 
     session.rollback()
 
@@ -52,19 +45,19 @@ def test_read_people(session: Session) -> None:
 
 
 def test_update_person(session: Session) -> None:
-    person_update = PersonUpdate(firstname="new name")
+    person_update = PersonUpdate(name="new name")
     person = crud.update_person(
         session=session,
         id=person_fixtures[0].id,
         person_update=person_update,
     )
-    assert person.firstname == "new name"
+    assert person.name == "new name"
 
     session.rollback()
 
 
 def test_update_person_not_found(session: Session) -> None:
-    person_update = PersonUpdate(firstname="new name")
+    person_update = PersonUpdate(name="new name")
     with pytest.raises(NoResultFound):
         crud.update_person(
             session=session,
@@ -75,7 +68,7 @@ def test_update_person_not_found(session: Session) -> None:
 
 def test_delete_person(session: Session) -> None:
     org = crud.create_person(
-        session=session, person_create=PersonCreate(firstname="to", lastname="delete")
+        session=session, person_create=PersonCreate(name="to delete")
     )
     session.commit()
     crud.delete_person(session=session, id=org.id)

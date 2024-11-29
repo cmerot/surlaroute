@@ -151,8 +151,7 @@ def test_read_users(
 def test_register_user(client: TestClient, session: Session) -> None:
     username = random_email()
     password = random_lower_string()
-    full_name = random_lower_string()
-    data = {"email": username, "password": password, "full_name": full_name}
+    data = {"email": username, "password": password}
     r = client.post(
         "/users/signup",
         json=data,
@@ -160,23 +159,19 @@ def test_register_user(client: TestClient, session: Session) -> None:
     assert r.status_code == 200
     created_user = r.json()
     assert created_user["email"] == username
-    assert created_user["full_name"] == full_name
 
     user_query = select(User).where(User.email == username)
     user_db = session.scalar(user_query)
     assert user_db
     assert user_db.email == username
-    assert user_db.full_name == full_name
     assert verify_password(password, user_db.hashed_password)
 
 
 def test_register_user_already_exists_error(client: TestClient) -> None:
     password = random_lower_string()
-    full_name = random_lower_string()
     data = {
         "email": settings.FIRST_SUPERUSER,
         "password": password,
-        "full_name": full_name,
     }
     r = client.post(
         "/users/signup",
@@ -194,7 +189,7 @@ def test_update_user(
     user_in = UserCreate(email=username, password=password)
     user = crud.create_user(session=session, user_create=user_in)
 
-    data = {"full_name": "Updated_full_name"}
+    data = {"is_member": True}
     r = client.patch(
         f"/users/{user.id}",
         headers=superuser_token_headers,
@@ -203,13 +198,13 @@ def test_update_user(
     assert r.status_code == 200
     updated_user = r.json()
 
-    assert updated_user["full_name"] == "Updated_full_name"
+    assert updated_user["is_member"] is True
 
     user_query = select(User).where(User.email == username)
     user_db = session.scalar(user_query)
     session.refresh(user_db)
     assert user_db
-    assert user_db.full_name == "Updated_full_name"
+    assert user_db.is_member is True
 
 
 def test_update_user_not_exists(
