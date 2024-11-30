@@ -25,15 +25,6 @@
 
 <form method="POST" action="?/update" use:enhance class="space-y-6">
 	<FormActionError {error} />
-	<Form.Field {form} name="full_name">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label>Nom complet</Form.Label>
-				<Input {...props} bind:value={$formData.full_name} />
-			{/snippet}
-		</Form.Control>
-		<Form.FieldErrors />
-	</Form.Field>
 	<Form.Field {form} name="email">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -49,6 +40,17 @@
 				<div class="flex items-center space-x-2">
 					<Switch {...props} bind:checked={$formData.is_superuser} />
 					<Form.Label>Admin</Form.Label>
+				</div>
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
+	<Form.Field {form} name="is_member">
+		<Form.Control>
+			{#snippet children({ props })}
+				<div class="flex items-center space-x-2">
+					<Switch {...props} bind:checked={$formData.is_member} />
+					<Form.Label>Membre</Form.Label>
 				</div>
 			{/snippet}
 		</Form.Control>

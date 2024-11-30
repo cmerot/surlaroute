@@ -27,4 +27,4 @@
 
 {@render children()}
 <Toaster richColors />
-<ModeWatcher />
+<ModeWatcher themeColors={{ dark: 'black', light: 'light' }} />
