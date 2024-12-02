@@ -1,19 +1,11 @@
 #!/usr/bin/env python
 # mypy: ignore-errors
 import json
-import os
-import sys
-from collections.abc import Callable
-from typing import Any, TypeVar
+import uuid
+from typing import Any
 
-from pydantic import BaseModel, ValidationError
-from sqlalchemy import and_, inspect
+from sqlalchemy import and_
 from sqlalchemy.exc import NoResultFound
-from sqlalchemy.orm import (
-    DeclarativeBase,
-    Session,
-    class_mapper,
-)
 from sqlalchemy_utils import Ltree
 
 from app.core.db.models import (
@@ -36,98 +28,16 @@ from app.directory.crud_schemas import (
     TreeImport,
     UserImport,
 )
+from scripts.lib import get_path, load_entities
 
 db = SessionLocal()
 
 
-def get_path(relative_path: str) -> str:
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Build the full path
-    full_path = os.path.join(script_dir, relative_path)
-    return full_path
-
-
-T = TypeVar("T")
-
-
-def populate_model_from_dict(
-    sql_cls: type[T],
-    data: dict,
-    cls_map: dict[str, type],
-    get_db_instance: Callable[[type, dict], T | None],
-) -> T:
-    """
-    Populates a model instance from a dictionary, retrieving data from the database first.
-    It handles some kind of relations and polymorphism. To handle polymorphism, a discriminator
-    is used in the data. Eg. {"actor": {"firstname": "rob", "type_": "Person"}}.
-
-    Args:
-        session: an sqlalchemy Session
-        model_class: The model class to instantiate.
-        data: The dictionary containing the data to populate the model.
-        model_map: Dictionary mapping model names to their corresponding child models.
-        get_db_obj_func: A function to retrieve an existing database object based on the model class and data.
-
-    Returns:
-        An instance of the model populated with the data.
-    """
-
-    def get_submodel_class(sql_cls: type, value: dict):
-        mapper = class_mapper(sql_cls)
-        if mapper.polymorphic_identity is None:
-            return sql_cls
-        try:
-            return cls_map.get(value["type_"], sql_cls)
-        except KeyError:
-            return sql_cls
-
-    instance = get_db_instance(sql_cls, data)
-
-    # Instance is not new
-    if instance.__dict__["_sa_instance_state"].key is not None:
-        # Remove keys from data that are already in db_instance
-        data = {
-            k: v
-            for k, v in data.items()
-            if hasattr(instance, k) and getattr(instance, k) != v
-        }
-
-    for key, value in data.items():
-        attr = getattr(sql_cls, key, None)
-        if isinstance(value, dict | list | set):
-            # For a collection
-            if isinstance(value, list) or isinstance(value, set):
-                sub_instances = []
-                for item in value:
-                    sub_instance = populate_model_from_dict(
-                        sql_cls=get_submodel_class(
-                            sql_cls=attr.property.mapper.class_, value=item
-                        ),
-                        data=item,
-                        cls_map=cls_map,
-                        get_db_instance=get_db_instance,
-                    )
-                    sub_instances.append(sub_instance)
-            # For a dict
-            else:
-                sub_instance = populate_model_from_dict(
-                    sql_cls=get_submodel_class(attr.property.mapper.class_, value),
-                    data=value,
-                    cls_map=cls_map,
-                    get_db_instance=get_db_instance,
-                )
-                sub_instances = sub_instance
-
-            setattr(instance, key, sub_instances)
-        else:
-            setattr(instance, key, value)
-
-    return instance
-
-
 def create_filter(model, data):
+    """
+    used by `get_db_instance` to look for an exact for all
+    provided attributes in data.
+    """
     filters = []
     for key, value in data.items():
         if hasattr(model, key) and not isinstance(value, dict | list | set):
@@ -143,6 +53,13 @@ def create_filter(model, data):
 
 
 def get_db_instance(sql_cls: type, data: dict[str, Any]):
+    """
+    function used by scripts.lib.load_entities to retrieve an
+    already existing instance from database or a new one.
+
+    It'll receive any classes used in the sqlalchemy model
+    with it's corresponding data from data.
+    """
     if issubclass(sql_cls, TreeBase):
         try:
             instance = (
@@ -157,7 +74,7 @@ def get_db_instance(sql_cls: type, data: dict[str, Any]):
             instance = db.query(sql_cls).filter(User.email == data["email"]).one()
         except NoResultFound:
             instance = sql_cls()
-            instance.hashed_password = get_password_hash("nopassword")
+            instance.hashed_password = get_password_hash(str(uuid.uuid4()))
         db.add(instance)
         return instance
     try:
@@ -168,92 +85,73 @@ def get_db_instance(sql_cls: type, data: dict[str, Any]):
     return instance
 
 
-def load_entities(
-    db: Session,
-    data: Any,
-    sql_cls: type[DeclarativeBase],
-    pyd_cls: type[BaseModel],
-    cls_map: dict,
-) -> None:
-    for instance_data in data:
-        print(f"Processing {sql_cls.__name__}", end="")
-        try:
-            entity_in = pyd_cls.model_validate(instance_data)
-        except ValidationError as e:
-            print(f" - nok\n{e}")
-            print(json.dumps(instance_data))
-            sys.exit(1)
-        instance = populate_model_from_dict(
-            sql_cls=sql_cls,
-            data=entity_in.model_dump(exclude_none=True),
-            cls_map=cls_map,
-            get_db_instance=get_db_instance,
-        )
-        print(f" {instance}", end="")
-        inspector = inspect(instance)
-        if inspector.modified:
-            print(" => update")
-            try:
-                db.commit()
-            except Exception as e:
-                print(f"{e}")
-                sys.exit(1)
-            db.refresh(instance)
-        else:
-            print(" => skip")
-
-
-cls_map = {"Person": Person}
-
 if __name__ == "__main__":
+    """
+    This is a map to handle polymorphism. To instantiate
+    the right subclass we need this mapping, the str part
+    being the discrimator in the json data, under the `type_` key.
+    In this example, an actor will be instanciated with the Person class:
+
+        { "actor": { "name": "robert", "type_": "Person" } }
+
+    """
+    cls_map = {"Person": Person}
+
     with open(get_path("../fixtures/private/data.json")) as f:
         data = json.load(f)
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=Activity,
             pyd_cls=TreeImport,
-            cls_map=cls_map,
             data=data["activities"],
         )
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=Discipline,
             pyd_cls=TreeImport,
-            cls_map=cls_map,
             data=data["disciplines"],
         )
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=Mobility,
             pyd_cls=TreeImport,
-            cls_map=cls_map,
             data=data["mobilities"],
         )
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=Org,
             pyd_cls=OrgImport,
-            cls_map=cls_map,
             data=data["orgs"],
         )
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=Tour,
             pyd_cls=TourImport,
-            cls_map=cls_map,
             data=data["tours"],
         )
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=Event,
             pyd_cls=EventImport,
-            cls_map=cls_map,
             data=data["events"],
         )
         load_entities(
             db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
             sql_cls=User,
             pyd_cls=UserImport,
-            cls_map=cls_map,
             data=data["users"],
         )

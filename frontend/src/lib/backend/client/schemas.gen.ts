@@ -21,27 +21,6 @@ export const ActorAssocCreateSchema = {
 	title: 'ActorAssocCreate'
 } as const;
 
-export const ActorAssocPublicSchema = {
-	properties: {
-		actor: {
-			anyOf: [
-				{
-					$ref: '#/components/schemas/PersonPublic'
-				},
-				{
-					$ref: '#/components/schemas/OrgPublic'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Actor'
-		}
-	},
-	type: 'object',
-	title: 'ActorAssocPublic'
-} as const;
-
 export const ActorAssocUpdateSchema = {
 	properties: {
 		actor: {
@@ -119,6 +98,20 @@ export const AddressGeoCreateSchema = {
 				}
 			],
 			title: 'Country'
+		},
+		geom_point: {
+			anyOf: [
+				{
+					type: 'string'
+				},
+				{
+					$ref: '#/components/schemas/Point'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Geom Point'
 		}
 	},
 	type: 'object',
@@ -181,6 +174,17 @@ export const AddressGeoPublicSchema = {
 				}
 			],
 			title: 'Country'
+		},
+		geom_point: {
+			anyOf: [
+				{
+					$ref: '#/components/schemas/Point'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Geom Point'
 		},
 		id: {
 			type: 'string',
@@ -249,6 +253,20 @@ export const AddressGeoUpdateSchema = {
 				}
 			],
 			title: 'Country'
+		},
+		geom_point: {
+			anyOf: [
+				{
+					type: 'string'
+				},
+				{
+					$ref: '#/components/schemas/Point'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Geom Point'
 		}
 	},
 	type: 'object',
@@ -555,6 +573,28 @@ export const NewPasswordSchema = {
 	title: 'NewPassword'
 } as const;
 
+export const OrgActorAssocPublicSchema = {
+	properties: {
+		org: {
+			$ref: '#/components/schemas/OrgPublic'
+		},
+		actor: {
+			anyOf: [
+				{
+					$ref: '#/components/schemas/OrgPublic'
+				},
+				{
+					$ref: '#/components/schemas/PersonPublic'
+				}
+			],
+			title: 'Actor'
+		}
+	},
+	type: 'object',
+	required: ['org', 'actor'],
+	title: 'OrgActorAssocPublic'
+} as const;
+
 export const OrgCreateSchema = {
 	properties: {
 		description: {
@@ -651,20 +691,6 @@ export const OrgPublicSchema = {
 				}
 			],
 			title: 'Activities'
-		},
-		member_assocs: {
-			anyOf: [
-				{
-					items: {
-						$ref: '#/components/schemas/ActorAssocPublic'
-					},
-					type: 'array'
-				},
-				{
-					type: 'null'
-				}
-			],
-			title: 'Member Assocs'
 		},
 		contact: {
 			anyOf: [
@@ -830,33 +856,6 @@ export const PagedResponse_TreePublic_Schema = {
 	title: 'PagedResponse[TreePublic]'
 } as const;
 
-export const PagedResponse_UserDashboard_Schema = {
-	properties: {
-		total: {
-			type: 'integer',
-			title: 'Total'
-		},
-		limit: {
-			type: 'integer',
-			title: 'Limit'
-		},
-		offset: {
-			type: 'integer',
-			title: 'Offset'
-		},
-		results: {
-			items: {
-				$ref: '#/components/schemas/UserDashboard'
-			},
-			type: 'array',
-			title: 'Results'
-		}
-	},
-	type: 'object',
-	required: ['total', 'limit', 'offset', 'results'],
-	title: 'PagedResponse[UserDashboard]'
-} as const;
-
 export const PagedResponse_UserPublic_Schema = {
 	properties: {
 		total: {
@@ -948,6 +947,20 @@ export const PersonPublicSchema = {
 					type: 'null'
 				}
 			]
+		},
+		membership_assocs: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/OrgActorAssocPublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Membership Assocs'
 		}
 	},
 	type: 'object',
@@ -986,6 +999,120 @@ export const PersonUpdateSchema = {
 	type: 'object',
 	required: ['name'],
 	title: 'PersonUpdate'
+} as const;
+
+export const PointSchema = {
+	properties: {
+		bbox: {
+			anyOf: [
+				{
+					prefixItems: [
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						}
+					],
+					type: 'array',
+					maxItems: 4,
+					minItems: 4
+				},
+				{
+					prefixItems: [
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						},
+						{
+							type: 'number'
+						}
+					],
+					type: 'array',
+					maxItems: 6,
+					minItems: 6
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Bbox'
+		},
+		type: {
+			type: 'string',
+			enum: ['Point'],
+			const: 'Point',
+			title: 'Type'
+		},
+		coordinates: {
+			anyOf: [
+				{
+					$ref: '#/components/schemas/Position2D'
+				},
+				{
+					$ref: '#/components/schemas/Position3D'
+				}
+			],
+			title: 'Coordinates'
+		}
+	},
+	type: 'object',
+	required: ['type', 'coordinates'],
+	title: 'Point',
+	description: 'Point Model'
+} as const;
+
+export const Position2DSchema = {
+	prefixItems: [
+		{
+			type: 'number',
+			title: 'Longitude'
+		},
+		{
+			type: 'number',
+			title: 'Latitude'
+		}
+	],
+	type: 'array',
+	maxItems: 2,
+	minItems: 2
+} as const;
+
+export const Position3DSchema = {
+	prefixItems: [
+		{
+			type: 'number',
+			title: 'Longitude'
+		},
+		{
+			type: 'number',
+			title: 'Latitude'
+		},
+		{
+			type: 'number',
+			title: 'Altitude'
+		}
+	],
+	type: 'array',
+	maxItems: 3,
+	minItems: 3
 } as const;
 
 export const TokenSchema = {
@@ -1224,7 +1351,7 @@ export const UserCreateSchema = {
 	title: 'UserCreate'
 } as const;
 
-export const UserDashboardSchema = {
+export const UserPublicSchema = {
 	properties: {
 		email: {
 			type: 'string',
@@ -1261,40 +1388,6 @@ export const UserDashboardSchema = {
 					type: 'null'
 				}
 			]
-		}
-	},
-	type: 'object',
-	required: ['email', 'id'],
-	title: 'UserDashboard'
-} as const;
-
-export const UserPublicSchema = {
-	properties: {
-		email: {
-			type: 'string',
-			maxLength: 255,
-			format: 'email',
-			title: 'Email'
-		},
-		is_active: {
-			type: 'boolean',
-			title: 'Is Active',
-			default: true
-		},
-		is_superuser: {
-			type: 'boolean',
-			title: 'Is Superuser',
-			default: false
-		},
-		is_member: {
-			type: 'boolean',
-			title: 'Is Member',
-			default: false
-		},
-		id: {
-			type: 'string',
-			format: 'uuid',
-			title: 'Id'
 		}
 	},
 	type: 'object',

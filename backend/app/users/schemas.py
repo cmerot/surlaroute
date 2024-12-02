@@ -3,6 +3,8 @@ import uuid
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
+from app.directory.crud_schemas import PersonPublic
+
 
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
@@ -34,11 +36,7 @@ class UpdatePassword(BaseModel):
 
 class UserPublic(UserBase):
     id: uuid.UUID
-
-
-class UsersPublic(BaseModel):
-    data: list[UserPublic]
-    count: int
+    person: PersonPublic | None = None
 
 
 # JSON payload containing access token

@@ -4,10 +4,6 @@ export type ActorAssocCreate = {
 	actor?: PersonCreate | OrgCreate | null;
 };
 
-export type ActorAssocPublic = {
-	actor?: PersonPublic | OrgPublic | null;
-};
-
 export type ActorAssocUpdate = {
 	actor?: PersonUpdate | OrgUpdate | null;
 };
@@ -18,6 +14,7 @@ export type AddressGeoCreate = {
 	postal_code?: string | null;
 	city?: string | null;
 	country?: string | null;
+	geom_point?: string | Point | null;
 };
 
 export type AddressGeoPublic = {
@@ -26,6 +23,7 @@ export type AddressGeoPublic = {
 	postal_code?: string | null;
 	city?: string | null;
 	country?: string | null;
+	geom_point?: Point | null;
 	id: string;
 };
 
@@ -35,6 +33,7 @@ export type AddressGeoUpdate = {
 	postal_code?: string | null;
 	city?: string | null;
 	country?: string | null;
+	geom_point?: string | Point | null;
 };
 
 export type Body_login_access_token = {
@@ -90,6 +89,11 @@ export type NewPassword = {
 	new_password: string;
 };
 
+export type OrgActorAssocPublic = {
+	org: OrgPublic;
+	actor: OrgPublic | PersonPublic;
+};
+
 export type OrgCreate = {
 	description?: string | null;
 	name: string;
@@ -103,7 +107,6 @@ export type OrgPublic = {
 	id: string;
 	name: string;
 	activities?: Array<TreePublic> | null;
-	member_assocs?: Array<ActorAssocPublic> | null;
 	contact?: ContactPublic | null;
 };
 
@@ -136,13 +139,6 @@ export type PagedResponse_TreePublic_ = {
 	results: Array<TreePublic>;
 };
 
-export type PagedResponse_UserDashboard_ = {
-	total: number;
-	limit: number;
-	offset: number;
-	results: Array<UserDashboard>;
-};
-
 export type PagedResponse_UserPublic_ = {
 	total: number;
 	limit: number;
@@ -161,6 +157,7 @@ export type PersonPublic = {
 	role?: string | null;
 	id: string;
 	contact?: ContactPublic | null;
+	membership_assocs?: Array<OrgActorAssocPublic> | null;
 };
 
 export type PersonUpdate = {
@@ -168,6 +165,21 @@ export type PersonUpdate = {
 	role?: string | null;
 	contact?: ContactUpdate | null;
 };
+
+/**
+ * Point Model
+ */
+export type Point = {
+	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
+	type: 'Point';
+	coordinates: Position2D | Position3D;
+};
+
+export type type = 'Point';
+
+export type Position2D = [number, number];
+
+export type Position3D = [number, number, number];
 
 export type Token = {
 	access_token: string;
@@ -216,21 +228,13 @@ export type UserCreate = {
 	password: string;
 };
 
-export type UserDashboard = {
-	email: string;
-	is_active?: boolean;
-	is_superuser?: boolean;
-	is_member?: boolean;
-	id: string;
-	person?: PersonPublic | null;
-};
-
 export type UserPublic = {
 	email: string;
 	is_active?: boolean;
 	is_superuser?: boolean;
 	is_member?: boolean;
 	id: string;
+	person?: PersonPublic | null;
 };
 
 export type UserRegister = {
@@ -350,18 +354,6 @@ export type UsersDeleteData = {
 export type UsersDeleteResponse = Message;
 
 export type UsersDeleteError = HTTPValidationError;
-
-export type UsersRead1Data = {
-	query?: {
-		limit?: number;
-		offset?: number;
-		q?: string | null;
-	};
-};
-
-export type UsersRead1Response = PagedResponse_UserDashboard_;
-
-export type UsersRead1Error = HTTPValidationError;
 
 export type UtilsTestEmailData = {
 	query: {

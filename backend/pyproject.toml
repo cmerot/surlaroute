@@ -30,6 +30,9 @@ dependencies = [
     "geoalchemy2>=0.16.0",
     "pyexcel>=0.7.1",
     "pyexcel-odsr>=0.6.0",
+    "shapely>=2.0.6",
+    "geojson-pydantic>=1.1.2",
+    "types-shapely>=2.0.0.20241112",
 ]
 
 [tool.uv]

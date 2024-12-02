@@ -123,7 +123,7 @@ class User(Base):
         single_parent=True,
     )
 
-    def __repr__(self) -> str:
+    def __str__(self) -> str:
         return self.email
 
 
@@ -239,16 +239,8 @@ class AddressGeo(Base):
     administrative_area_2: Mapped[str | None] = mapped_column(default=None)
     administrative_area_3: Mapped[str | None] = mapped_column(default=None)
 
-    geo_location: Mapped[Geometry | None] = mapped_column(
-        "geo_location",
-        Geometry("POINT", srid=4326),
-        default=None,
-    )
-    geo_shape: Mapped[Geometry | None] = mapped_column(
-        "geo_shape",
-        Geometry("POLYGON", srid=4326),
-        default=None,
-    )
+    geom_point: Mapped[Geometry | None] = mapped_column(Geometry("POINT", srid=4326))
+    geom_shape: Mapped[Geometry | None] = mapped_column(Geometry("POLYGON", srid=4326))
 
     def __repr__(self) -> str:
         return self.q if self.q else super().__repr__()
@@ -300,7 +292,7 @@ class Event(Base, PermissionsMixin):
     )
 
     def __repr__(self) -> str:
-        return f"{self.tour.name} {self.name if self.name else 'Événement'}"
+        return f"{self.tour.name} : {self.event_venue.name}"
 
 
 #

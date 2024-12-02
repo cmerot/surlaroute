@@ -357,59 +357,6 @@
 				}
 			}
 		},
-		"/api/dashboard/users/": {
-			"get": {
-				"tags": ["users"],
-				"summary": "Read",
-				"description": "Read users.",
-				"operationId": "users-read",
-				"security": [{ "OAuth2PasswordBearer": [] }],
-				"parameters": [
-					{
-						"name": "q",
-						"in": "query",
-						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
-					},
-					{
-						"name": "limit",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "integer",
-							"maximum": 100,
-							"exclusiveMinimum": 0,
-							"default": 100,
-							"title": "Limit"
-						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_UserDashboard_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
 		"/api/utils/test-email/": {
 			"post": {
 				"tags": ["utils"],
@@ -1055,20 +1002,6 @@
 				"type": "object",
 				"title": "ActorAssocCreate"
 			},
-			"ActorAssocPublic": {
-				"properties": {
-					"actor": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/PersonPublic" },
-							{ "$ref": "#/components/schemas/OrgPublic" },
-							{ "type": "null" }
-						],
-						"title": "Actor"
-					}
-				},
-				"type": "object",
-				"title": "ActorAssocPublic"
-			},
 			"ActorAssocUpdate": {
 				"properties": {
 					"actor": {
@@ -1092,7 +1025,15 @@
 						"title": "Postal Code"
 					},
 					"city": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "City" },
-					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" }
+					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" },
+					"geom_point": {
+						"anyOf": [
+							{ "type": "string" },
+							{ "$ref": "#/components/schemas/Point" },
+							{ "type": "null" }
+						],
+						"title": "Geom Point"
+					}
 				},
 				"type": "object",
 				"title": "AddressGeoCreate"
@@ -1107,6 +1048,10 @@
 					},
 					"city": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "City" },
 					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" },
+					"geom_point": {
+						"anyOf": [{ "$ref": "#/components/schemas/Point" }, { "type": "null" }],
+						"title": "Geom Point"
+					},
 					"id": { "type": "string", "format": "uuid", "title": "Id" }
 				},
 				"type": "object",
@@ -1122,7 +1067,15 @@
 						"title": "Postal Code"
 					},
 					"city": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "City" },
-					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" }
+					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" },
+					"geom_point": {
+						"anyOf": [
+							{ "type": "string" },
+							{ "$ref": "#/components/schemas/Point" },
+							{ "type": "null" }
+						],
+						"title": "Geom Point"
+					}
 				},
 				"type": "object",
 				"title": "AddressGeoUpdate"
@@ -1265,6 +1218,21 @@
 				"required": ["token", "new_password"],
 				"title": "NewPassword"
 			},
+			"OrgActorAssocPublic": {
+				"properties": {
+					"org": { "$ref": "#/components/schemas/OrgPublic" },
+					"actor": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/OrgPublic" },
+							{ "$ref": "#/components/schemas/PersonPublic" }
+						],
+						"title": "Actor"
+					}
+				},
+				"type": "object",
+				"required": ["org", "actor"],
+				"title": "OrgActorAssocPublic"
+			},
 			"OrgCreate": {
 				"properties": {
 					"description": {
@@ -1308,13 +1276,6 @@
 							{ "type": "null" }
 						],
 						"title": "Activities"
-					},
-					"member_assocs": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
-							{ "type": "null" }
-						],
-						"title": "Member Assocs"
 					},
 					"contact": {
 						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
@@ -1397,21 +1358,6 @@
 				"required": ["total", "limit", "offset", "results"],
 				"title": "PagedResponse[TreePublic]"
 			},
-			"PagedResponse_UserDashboard_": {
-				"properties": {
-					"total": { "type": "integer", "title": "Total" },
-					"limit": { "type": "integer", "title": "Limit" },
-					"offset": { "type": "integer", "title": "Offset" },
-					"results": {
-						"items": { "$ref": "#/components/schemas/UserDashboard" },
-						"type": "array",
-						"title": "Results"
-					}
-				},
-				"type": "object",
-				"required": ["total", "limit", "offset", "results"],
-				"title": "PagedResponse[UserDashboard]"
-			},
 			"PagedResponse_UserPublic_": {
 				"properties": {
 					"total": { "type": "integer", "title": "Total" },
@@ -1446,6 +1392,13 @@
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"contact": {
 						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
+					},
+					"membership_assocs": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/OrgActorAssocPublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Membership Assocs"
 					}
 				},
 				"type": "object",
@@ -1463,6 +1416,71 @@
 				"type": "object",
 				"required": ["name"],
 				"title": "PersonUpdate"
+			},
+			"Point": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": { "type": "string", "enum": ["Point"], "const": "Point", "title": "Type" },
+					"coordinates": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/Position2D" },
+							{ "$ref": "#/components/schemas/Position3D" }
+						],
+						"title": "Coordinates"
+					}
+				},
+				"type": "object",
+				"required": ["type", "coordinates"],
+				"title": "Point",
+				"description": "Point Model"
+			},
+			"Position2D": {
+				"prefixItems": [
+					{ "type": "number", "title": "Longitude" },
+					{ "type": "number", "title": "Latitude" }
+				],
+				"type": "array",
+				"maxItems": 2,
+				"minItems": 2
+			},
+			"Position3D": {
+				"prefixItems": [
+					{ "type": "number", "title": "Longitude" },
+					{ "type": "number", "title": "Latitude" },
+					{ "type": "number", "title": "Altitude" }
+				],
+				"type": "array",
+				"maxItems": 3,
+				"minItems": 3
 			},
 			"Token": {
 				"properties": {
@@ -1553,7 +1571,7 @@
 				"required": ["email", "password"],
 				"title": "UserCreate"
 			},
-			"UserDashboard": {
+			"UserPublic": {
 				"properties": {
 					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
 					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
@@ -1563,18 +1581,6 @@
 					"person": {
 						"anyOf": [{ "$ref": "#/components/schemas/PersonPublic" }, { "type": "null" }]
 					}
-				},
-				"type": "object",
-				"required": ["email", "id"],
-				"title": "UserDashboard"
-			},
-			"UserPublic": {
-				"properties": {
-					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
-					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
-					"id": { "type": "string", "format": "uuid", "title": "Id" }
 				},
 				"type": "object",
 				"required": ["email", "id"],

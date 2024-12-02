@@ -1,11 +1,17 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 from typing import Annotated
 
+import geoalchemy2
+import geojson_pydantic
+import geojson_pydantic.types
+import shapely
 import unidecode
 from pydantic import (
     BaseModel,
+    BeforeValidator,
     ConfigDict,
     EmailStr,
     Field,
@@ -18,7 +24,7 @@ from sqlalchemy_utils import Ltree
 
 
 class Base(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+    model_config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
 
 LtreeField = Annotated[
@@ -28,6 +34,54 @@ LtreeField = Annotated[
     ),
     PlainSerializer(lambda o: o.path, return_type=str),
     WithJsonSchema({"type": "string", "examples": ["some.path"]}),
+]
+
+
+def validate_geom_point(
+    v: str | shapely.geometry.base.BaseGeometry | geoalchemy2.WKBElement,
+) -> geoalchemy2.WKBElement | None:
+    if not v:
+        return None
+
+    if isinstance(v, geoalchemy2.WKBElement):
+        return v
+
+    if isinstance(v, str):
+        try:
+            lat, lon = map(float, v.split(",", 1))
+            print(lat, lon)
+            v = shapely.geometry.Point((lat, lon))
+        except ValueError:
+            raise ValueError(
+                "geom_point must be a string in the format 'lat, lon' eg: '1.1, 2.2'"
+            )
+
+    shape = shapely.geometry.shape(v)
+    wkbelement = geoalchemy2.shape.from_shape(shape)
+    return wkbelement
+
+
+def serialize_geom_point(
+    v: geoalchemy2.WKBElement | geojson_pydantic.Point,
+) -> geojson_pydantic.Point | None:
+    if not v:
+        return None
+
+    if isinstance(v, geojson_pydantic.Point):
+        return v
+
+    shape = geoalchemy2.shape.to_shape(v)
+
+    coords = geojson_pydantic.types.Position2D(
+        latitude=shape.coords[0][0], longitude=shape.coords[0][1]
+    )
+    return geojson_pydantic.Point(type="Point", coordinates=coords)
+
+
+GeomPoint = Annotated[
+    str | geoalchemy2.WKBElement | geojson_pydantic.Point,
+    BeforeValidator(validate_geom_point),
+    PlainSerializer(serialize_geom_point, when_used="json"),
 ]
 
 
@@ -79,14 +133,24 @@ class ActorAssocImport(Base):
     actor: PersonImport | OrgImport | None = None
 
 
+class OrgActorAssocPublic(Base):
+    org: OrgPublic
+    actor: OrgPublic | PersonPublic
+
+
 #
 # Business classes
 #
 
+
+class ActorBase(Base):
+    pass
+
+
 # Org
 
 
-class OrgBase(Base):
+class OrgBase(ActorBase):
     description: str | None = None
 
 
@@ -94,7 +158,7 @@ class OrgPublic(OrgBase):
     id: uuid.UUID
     name: str
     activities: list[TreePublic] | None = None
-    member_assocs: list[ActorAssocPublic] | None = None
+    # member_assocs: list[ActorAssocPublic] | None = None
     contact: ContactPublic | None = None
 
 
@@ -124,7 +188,7 @@ class OrgImport(OrgBase):
 # Person
 
 
-class PersonBase(Base):
+class PersonBase(ActorBase):
     name: str
     role: str | None = None
 
@@ -132,6 +196,7 @@ class PersonBase(Base):
 class PersonPublic(PersonBase):
     id: uuid.UUID
     contact: ContactPublic | None = None
+    membership_assocs: list[OrgActorAssocPublic] | None = None
 
 
 class PersonCreate(PersonBase):
@@ -184,7 +249,7 @@ class AddressGeoBase(Base):
     postal_code: str | None = None
     city: str | None = None
     country: str | None = None
-    # geo_location: str | None = None
+    geom_point: GeomPoint | None = None
 
 
 class AddressGeoPublic(AddressGeoBase):
@@ -206,10 +271,21 @@ class AddressGeoImport(AddressGeoBase):
 # Tour
 
 
-class TourImport(Base):
-    id: uuid.UUID | None = None
+class TourBase(Base):
     name: str
     description: str | None = None
+
+
+class TourPublic(Base):
+    id: uuid.UUID
+    events: list[EventPublic] | None = None
+    disciplines: list[TreePublic] | None = None
+    mobilities: list[TreePublic] | None = None
+    actor_assocs: list[ActorAssocPublic] | None = None
+
+
+class TourImport(TourBase):
+    id: uuid.UUID | None = None
     events: list[EventImport] | None = None
     disciplines: list[TreeImport] | None = None
     mobilities: list[TreeImport] | None = None
@@ -219,11 +295,33 @@ class TourImport(Base):
 # Event
 
 
-class EventImport(Base):
-    id: uuid.UUID | None = None
+class EventBase(Base):
     description: str | None = None
-    start_dt: str | None = None
-    end_dt: str | None = None
+    start_dt: datetime | None = None
+    end_dt: datetime | None = None
+
+
+class EventPublic(EventBase):
+    id: uuid.UUID
+    event_venue: OrgPublic
+    tour: TourPublic
+    actor_assocs: list[ActorAssocPublic] | None = None
+
+
+class EventImport(EventBase):
+    id: uuid.UUID | None = None
     event_venue: OrgImport
     tour: TourImport
     actor_assocs: list[ActorAssocImport] | None = None
+
+
+# User
+
+
+class UserImport(Base):
+    id: uuid.UUID | None = None
+    email: EmailStr = Field(max_length=255)
+    is_active: bool = True
+    is_superuser: bool = False
+    is_member: bool = False
+    person: PersonImport | None = None
