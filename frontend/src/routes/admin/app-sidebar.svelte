@@ -16,7 +16,7 @@
 						url: '/admin/directory/people'
 					},
 					{
-						title: 'Orgs',
+						title: 'Structures',
 						url: '/admin/directory/orgs',
 						isActive: true
 					}

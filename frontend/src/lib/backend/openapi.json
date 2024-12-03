@@ -166,7 +166,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -456,7 +456,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -520,7 +520,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -674,7 +674,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -854,7 +854,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -1001,6 +1001,21 @@
 				},
 				"type": "object",
 				"title": "ActorAssocCreate"
+			},
+			"ActorAssocPublic": {
+				"properties": {
+					"actor": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/PersonPublic" },
+							{ "$ref": "#/components/schemas/OrgPublic" }
+						],
+						"title": "Actor"
+					}
+				},
+				"type": "object",
+				"required": ["actor"],
+				"title": "ActorAssocPublic",
+				"description": "used to map any many-to-many relation impliying an actor\nex: OrgActorAssoc requires an org and an actor, so to render\nthe relation we'll use this. If we use a more specialized\nmodel with actor and org, there will be recursion:\nOrg.member_assocs.org.member_assocs.org, ..."
 			},
 			"ActorAssocUpdate": {
 				"properties": {
@@ -1218,20 +1233,12 @@
 				"required": ["token", "new_password"],
 				"title": "NewPassword"
 			},
-			"OrgActorAssocPublic": {
-				"properties": {
-					"org": { "$ref": "#/components/schemas/OrgPublic" },
-					"actor": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/OrgPublic" },
-							{ "$ref": "#/components/schemas/PersonPublic" }
-						],
-						"title": "Actor"
-					}
-				},
+			"OrgAssocPublic": {
+				"properties": { "org": { "$ref": "#/components/schemas/OrgPublic" } },
 				"type": "object",
-				"required": ["org", "actor"],
-				"title": "OrgActorAssocPublic"
+				"required": ["org"],
+				"title": "OrgAssocPublic",
+				"description": "same than ActorAssocPublic but for from the POV of an actor"
 			},
 			"OrgCreate": {
 				"properties": {
@@ -1239,6 +1246,7 @@
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Description"
 					},
+					"type": { "type": "string", "title": "Type", "default": "Org" },
 					"name": { "type": "string", "title": "Name" },
 					"activities": {
 						"anyOf": [
@@ -1268,6 +1276,7 @@
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Description"
 					},
+					"type": { "type": "string", "title": "Type", "default": "Org" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"name": { "type": "string", "title": "Name" },
 					"activities": {
@@ -1276,6 +1285,13 @@
 							{ "type": "null" }
 						],
 						"title": "Activities"
+					},
+					"member_assocs": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Member Assocs"
 					},
 					"contact": {
 						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
@@ -1291,6 +1307,7 @@
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Description"
 					},
+					"type": { "type": "string", "title": "Type", "default": "Org" },
 					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" },
 					"activities": {
 						"anyOf": [
@@ -1375,6 +1392,7 @@
 			},
 			"PersonCreate": {
 				"properties": {
+					"type": { "type": "string", "title": "Type", "default": "Person" },
 					"name": { "type": "string", "title": "Name" },
 					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"contact": {
@@ -1387,6 +1405,7 @@
 			},
 			"PersonPublic": {
 				"properties": {
+					"type": { "type": "string", "title": "Type", "default": "Person" },
 					"name": { "type": "string", "title": "Name" },
 					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
@@ -1395,7 +1414,7 @@
 					},
 					"membership_assocs": {
 						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/OrgActorAssocPublic" }, "type": "array" },
+							{ "items": { "$ref": "#/components/schemas/OrgAssocPublic" }, "type": "array" },
 							{ "type": "null" }
 						],
 						"title": "Membership Assocs"
@@ -1407,6 +1426,7 @@
 			},
 			"PersonUpdate": {
 				"properties": {
+					"type": { "type": "string", "title": "Type", "default": "Person" },
 					"name": { "type": "string", "title": "Name" },
 					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"contact": {
@@ -1562,28 +1582,28 @@
 			"UserCreate": {
 				"properties": {
 					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
-					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
+					"is_active": { "type": "boolean", "title": "Is Active" },
+					"is_superuser": { "type": "boolean", "title": "Is Superuser" },
+					"is_member": { "type": "boolean", "title": "Is Member" },
 					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" }
 				},
 				"type": "object",
-				"required": ["email", "password"],
+				"required": ["email", "is_active", "is_superuser", "is_member", "password"],
 				"title": "UserCreate"
 			},
 			"UserPublic": {
 				"properties": {
 					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
-					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
+					"is_active": { "type": "boolean", "title": "Is Active" },
+					"is_superuser": { "type": "boolean", "title": "Is Superuser" },
+					"is_member": { "type": "boolean", "title": "Is Member" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"person": {
 						"anyOf": [{ "$ref": "#/components/schemas/PersonPublic" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
-				"required": ["email", "id"],
+				"required": ["email", "is_active", "is_superuser", "is_member", "id"],
 				"title": "UserPublic"
 			},
 			"UserRegister": {
@@ -1604,15 +1624,16 @@
 						],
 						"title": "Email"
 					},
-					"is_active": { "type": "boolean", "title": "Is Active", "default": true },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
-					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
+					"is_active": { "type": "boolean", "title": "Is Active" },
+					"is_superuser": { "type": "boolean", "title": "Is Superuser" },
+					"is_member": { "type": "boolean", "title": "Is Member" },
 					"password": {
 						"anyOf": [{ "type": "string", "maxLength": 40, "minLength": 8 }, { "type": "null" }],
 						"title": "Password"
 					}
 				},
 				"type": "object",
+				"required": ["is_active", "is_superuser", "is_member"],
 				"title": "UserUpdate"
 			},
 			"ValidationError": {

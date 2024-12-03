@@ -1,13 +1,15 @@
 <script lang="ts">
-	import type { PersonPublic } from '$lib/backend/client';
+	import Pagination from '$lib/components/pagination.svelte';
 	import { Button } from '$lib/components/ui/button';
-	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Table from '$lib/components/ui/table';
 	import { Plus } from 'lucide-svelte';
 	import type { PageData } from './$types';
-
 	let { data }: { data: PageData } = $props();
-	const { results: people = [] as PersonPublic[] } = data;
-	console.log(data);
+
+	let people = $derived(data.results);
+	let total = $derived(data.total);
+	let limit = $derived(data.limit);
+	let offset = $derived(data.offset);
 </script>
 
 <Table.Root>
@@ -15,6 +17,8 @@
 		<Table.Row>
 			<Table.Head>Nom</Table.Head>
 			<Table.Head>Métier</Table.Head>
+			<Table.Head>Email</Table.Head>
+			<Table.Head>Téléphone</Table.Head>
 			<Table.Head>Stucture(s)</Table.Head>
 		</Table.Row>
 	</Table.Header>
@@ -27,19 +31,36 @@
 					</a>
 				</Table.Cell>
 				<Table.Cell>
-					<a href="/admin/directory/people/{person.id}" class="block hover:underline">
-						{person.role}
-					</a>
+					{person.role}
+				</Table.Cell>
+				<Table.Cell>
+					{#if person.contact?.email_address}
+						<a href="mailto:{person.contact?.email_address}" class="block hover:underline">
+							{person.contact?.email_address}
+						</a>
+					{/if}
+				</Table.Cell>
+				<Table.Cell>
+					{#if person.contact?.phone_number}
+						<a href="tel:{person.contact?.phone_number}" class="block hover:underline">
+							{person.contact?.phone_number}
+						</a>
+					{/if}
+				</Table.Cell>
+				<Table.Cell>
+					{#if person.membership_assocs}
+						{#each person.membership_assocs as assoc}
+							<a href="/admin/directory/orgs/{assoc.org.id}" class="block hover:underline">
+								{assoc.org.name} - {assoc.org.contact?.address?.q}
+							</a>
+						{/each}
+					{/if}
 				</Table.Cell>
 			</Table.Row>
-			<Table.Cell>
-				<a href="/admin/directory/people/{person.id}" class="block hover:underline">
-					<!-- {person.orgs.map((org) => org.name).join(', ')} -->
-				</a>
-			</Table.Cell>
 		{/each}
 	</Table.Body>
 </Table.Root>
+<Pagination {total} {limit} {offset} urlPrefix="/admin/directory/people" />
 
 <a href="/admin/directory/people/create" class="fixed bottom-4 right-4 rounded-full shadow-lg">
 	<Button variant="default" size="icon" class="rounded-full">

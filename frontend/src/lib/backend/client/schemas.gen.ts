@@ -21,6 +21,30 @@ export const ActorAssocCreateSchema = {
 	title: 'ActorAssocCreate'
 } as const;
 
+export const ActorAssocPublicSchema = {
+	properties: {
+		actor: {
+			anyOf: [
+				{
+					$ref: '#/components/schemas/PersonPublic'
+				},
+				{
+					$ref: '#/components/schemas/OrgPublic'
+				}
+			],
+			title: 'Actor'
+		}
+	},
+	type: 'object',
+	required: ['actor'],
+	title: 'ActorAssocPublic',
+	description: `used to map any many-to-many relation impliying an actor
+ex: OrgActorAssoc requires an org and an actor, so to render
+the relation we'll use this. If we use a more specialized
+model with actor and org, there will be recursion:
+Org.member_assocs.org.member_assocs.org, ...`
+} as const;
+
 export const ActorAssocUpdateSchema = {
 	properties: {
 		actor: {
@@ -573,26 +597,16 @@ export const NewPasswordSchema = {
 	title: 'NewPassword'
 } as const;
 
-export const OrgActorAssocPublicSchema = {
+export const OrgAssocPublicSchema = {
 	properties: {
 		org: {
 			$ref: '#/components/schemas/OrgPublic'
-		},
-		actor: {
-			anyOf: [
-				{
-					$ref: '#/components/schemas/OrgPublic'
-				},
-				{
-					$ref: '#/components/schemas/PersonPublic'
-				}
-			],
-			title: 'Actor'
 		}
 	},
 	type: 'object',
-	required: ['org', 'actor'],
-	title: 'OrgActorAssocPublic'
+	required: ['org'],
+	title: 'OrgAssocPublic',
+	description: 'same than ActorAssocPublic but for from the POV of an actor'
 } as const;
 
 export const OrgCreateSchema = {
@@ -607,6 +621,11 @@ export const OrgCreateSchema = {
 				}
 			],
 			title: 'Description'
+		},
+		type: {
+			type: 'string',
+			title: 'Type',
+			default: 'Org'
 		},
 		name: {
 			type: 'string',
@@ -669,6 +688,11 @@ export const OrgPublicSchema = {
 			],
 			title: 'Description'
 		},
+		type: {
+			type: 'string',
+			title: 'Type',
+			default: 'Org'
+		},
 		id: {
 			type: 'string',
 			format: 'uuid',
@@ -691,6 +715,20 @@ export const OrgPublicSchema = {
 				}
 			],
 			title: 'Activities'
+		},
+		member_assocs: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/ActorAssocPublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Member Assocs'
 		},
 		contact: {
 			anyOf: [
@@ -720,6 +758,11 @@ export const OrgUpdateSchema = {
 				}
 			],
 			title: 'Description'
+		},
+		type: {
+			type: 'string',
+			title: 'Type',
+			default: 'Org'
 		},
 		name: {
 			anyOf: [
@@ -885,6 +928,11 @@ export const PagedResponse_UserPublic_Schema = {
 
 export const PersonCreateSchema = {
 	properties: {
+		type: {
+			type: 'string',
+			title: 'Type',
+			default: 'Person'
+		},
 		name: {
 			type: 'string',
 			title: 'Name'
@@ -918,6 +966,11 @@ export const PersonCreateSchema = {
 
 export const PersonPublicSchema = {
 	properties: {
+		type: {
+			type: 'string',
+			title: 'Type',
+			default: 'Person'
+		},
 		name: {
 			type: 'string',
 			title: 'Name'
@@ -952,7 +1005,7 @@ export const PersonPublicSchema = {
 			anyOf: [
 				{
 					items: {
-						$ref: '#/components/schemas/OrgActorAssocPublic'
+						$ref: '#/components/schemas/OrgAssocPublic'
 					},
 					type: 'array'
 				},
@@ -970,6 +1023,11 @@ export const PersonPublicSchema = {
 
 export const PersonUpdateSchema = {
 	properties: {
+		type: {
+			type: 'string',
+			title: 'Type',
+			default: 'Person'
+		},
 		name: {
 			type: 'string',
 			title: 'Name'
@@ -1326,18 +1384,15 @@ export const UserCreateSchema = {
 		},
 		is_active: {
 			type: 'boolean',
-			title: 'Is Active',
-			default: true
+			title: 'Is Active'
 		},
 		is_superuser: {
 			type: 'boolean',
-			title: 'Is Superuser',
-			default: false
+			title: 'Is Superuser'
 		},
 		is_member: {
 			type: 'boolean',
-			title: 'Is Member',
-			default: false
+			title: 'Is Member'
 		},
 		password: {
 			type: 'string',
@@ -1347,7 +1402,7 @@ export const UserCreateSchema = {
 		}
 	},
 	type: 'object',
-	required: ['email', 'password'],
+	required: ['email', 'is_active', 'is_superuser', 'is_member', 'password'],
 	title: 'UserCreate'
 } as const;
 
@@ -1361,18 +1416,15 @@ export const UserPublicSchema = {
 		},
 		is_active: {
 			type: 'boolean',
-			title: 'Is Active',
-			default: true
+			title: 'Is Active'
 		},
 		is_superuser: {
 			type: 'boolean',
-			title: 'Is Superuser',
-			default: false
+			title: 'Is Superuser'
 		},
 		is_member: {
 			type: 'boolean',
-			title: 'Is Member',
-			default: false
+			title: 'Is Member'
 		},
 		id: {
 			type: 'string',
@@ -1391,7 +1443,7 @@ export const UserPublicSchema = {
 		}
 	},
 	type: 'object',
-	required: ['email', 'id'],
+	required: ['email', 'is_active', 'is_superuser', 'is_member', 'id'],
 	title: 'UserPublic'
 } as const;
 
@@ -1432,18 +1484,15 @@ export const UserUpdateSchema = {
 		},
 		is_active: {
 			type: 'boolean',
-			title: 'Is Active',
-			default: true
+			title: 'Is Active'
 		},
 		is_superuser: {
 			type: 'boolean',
-			title: 'Is Superuser',
-			default: false
+			title: 'Is Superuser'
 		},
 		is_member: {
 			type: 'boolean',
-			title: 'Is Member',
-			default: false
+			title: 'Is Member'
 		},
 		password: {
 			anyOf: [
@@ -1460,6 +1509,7 @@ export const UserUpdateSchema = {
 		}
 	},
 	type: 'object',
+	required: ['is_active', 'is_superuser', 'is_member'],
 	title: 'UserUpdate'
 } as const;
 

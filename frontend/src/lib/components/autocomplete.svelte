@@ -71,7 +71,6 @@
 	});
 
 	$effect(() => {
-		console.log('yo');
 		onValueChange(value);
 	});
 

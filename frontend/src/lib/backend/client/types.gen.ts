@@ -4,6 +4,17 @@ export type ActorAssocCreate = {
 	actor?: PersonCreate | OrgCreate | null;
 };
 
+/**
+ * used to map any many-to-many relation impliying an actor
+ * ex: OrgActorAssoc requires an org and an actor, so to render
+ * the relation we'll use this. If we use a more specialized
+ * model with actor and org, there will be recursion:
+ * Org.member_assocs.org.member_assocs.org, ...
+ */
+export type ActorAssocPublic = {
+	actor: PersonPublic | OrgPublic;
+};
+
 export type ActorAssocUpdate = {
 	actor?: PersonUpdate | OrgUpdate | null;
 };
@@ -89,13 +100,16 @@ export type NewPassword = {
 	new_password: string;
 };
 
-export type OrgActorAssocPublic = {
+/**
+ * same than ActorAssocPublic but for from the POV of an actor
+ */
+export type OrgAssocPublic = {
 	org: OrgPublic;
-	actor: OrgPublic | PersonPublic;
 };
 
 export type OrgCreate = {
 	description?: string | null;
+	type?: string;
 	name: string;
 	activities?: Array<TreeCreate> | null;
 	member_assocs?: Array<ActorAssocCreate> | null;
@@ -104,14 +118,17 @@ export type OrgCreate = {
 
 export type OrgPublic = {
 	description?: string | null;
+	type?: string;
 	id: string;
 	name: string;
 	activities?: Array<TreePublic> | null;
+	member_assocs?: Array<ActorAssocPublic> | null;
 	contact?: ContactPublic | null;
 };
 
 export type OrgUpdate = {
 	description?: string | null;
+	type?: string;
 	name?: string | null;
 	activities?: Array<TreeUpdate> | null;
 	member_assocs?: Array<ActorAssocUpdate> | null;
@@ -147,20 +164,23 @@ export type PagedResponse_UserPublic_ = {
 };
 
 export type PersonCreate = {
+	type?: string;
 	name: string;
 	role?: string | null;
 	contact?: ContactCreate | null;
 };
 
 export type PersonPublic = {
+	type?: string;
 	name: string;
 	role?: string | null;
 	id: string;
 	contact?: ContactPublic | null;
-	membership_assocs?: Array<OrgActorAssocPublic> | null;
+	membership_assocs?: Array<OrgAssocPublic> | null;
 };
 
 export type PersonUpdate = {
+	type?: string;
 	name: string;
 	role?: string | null;
 	contact?: ContactUpdate | null;
@@ -222,17 +242,17 @@ export type UpdateResponse_TreePublic_ = {
 
 export type UserCreate = {
 	email: string;
-	is_active?: boolean;
-	is_superuser?: boolean;
-	is_member?: boolean;
+	is_active: boolean;
+	is_superuser: boolean;
+	is_member: boolean;
 	password: string;
 };
 
 export type UserPublic = {
 	email: string;
-	is_active?: boolean;
-	is_superuser?: boolean;
-	is_member?: boolean;
+	is_active: boolean;
+	is_superuser: boolean;
+	is_member: boolean;
 	id: string;
 	person?: PersonPublic | null;
 };
@@ -244,9 +264,9 @@ export type UserRegister = {
 
 export type UserUpdate = {
 	email?: string | null;
-	is_active?: boolean;
-	is_superuser?: boolean;
-	is_member?: boolean;
+	is_active: boolean;
+	is_superuser: boolean;
+	is_member: boolean;
 	password?: string | null;
 };
 

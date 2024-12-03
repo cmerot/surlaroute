@@ -1,14 +1,17 @@
 <script lang="ts">
-	import type { UserPublic } from '$lib/backend/client';
+	import Pagination from '$lib/components/pagination.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { Plus } from 'lucide-svelte';
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
-	const { results: users = [] as UserPublic[] } = data;
-	console.log(users);
+	let users = $derived(data.results);
+	let total = $derived(data.total);
+	let limit = $derived(data.limit);
+	let offset = $derived(data.offset);
 </script>
 
+<!-- <pre>{JSON.stringify(users, null, 2)}</pre> -->
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
@@ -23,16 +26,20 @@
 			<Table.Row>
 				<Table.Cell>
 					<a href="/admin/users/{user.id}" class="block hover:underline">
-						{user.email}
+						{#if user.person}
+							<p>{user.person.name}</p>
+						{/if}
+						<span>{user.email}</span>
 					</a>
 				</Table.Cell>
+				<Table.Cell>{user.is_member ? 'Oui' : 'Non'}</Table.Cell>
 				<Table.Cell>{user.is_active ? 'Oui' : 'Non'}</Table.Cell>
 				<Table.Cell>{user.is_superuser ? 'Oui' : 'Non'}</Table.Cell>
-				<Table.Cell>{user.is_member ? 'Oui' : 'Non'}</Table.Cell>
 			</Table.Row>
 		{/each}
 	</Table.Body>
 </Table.Root>
+<Pagination {total} {limit} {offset} urlPrefix="/admin/users" />
 
 <a href="/admin/users/register" class="fixed bottom-4 right-4 rounded-full shadow-lg">
 	<Button variant="default" size="icon" class="rounded-full">
