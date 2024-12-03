@@ -1,10 +1,10 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect, error } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { formSchema } from './schema.js';
 import { loginAccessToken } from '$lib/backend/client/services.gen.js';
 import { getApiErrorMessage } from '$lib/backend/utils.js';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { Actions, PageServerLoad } from './$types.js';
+import { formSchema } from './schema.js';
 
 export const load: PageServerLoad = async () => {
 	return {

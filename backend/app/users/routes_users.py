@@ -68,7 +68,7 @@ def create(*, session: SessionDep, user_in: UserCreate) -> UserPublic:
     if user:
         raise HTTPException(
             status_code=400,
-            detail="The user with this email already exists in the system.",
+            detail="Un utilisateur avec cet email existe déjà",
         )
 
     user = crud.create_user(session=session, user_create=user_in)
@@ -93,7 +93,7 @@ def register(session: SessionDep, user_in: UserRegister) -> Any:
     if user:
         raise HTTPException(
             status_code=400,
-            detail="The user with this email already exists in the system",
+            detail="Un utilisateur avec cet email existe déjà",
         )
     user_create = UserCreate.model_validate(user_in)
     user = crud.create_user(session=session, user_create=user_create)
@@ -113,7 +113,7 @@ def read_by_id(
     if not current_user.is_superuser:
         raise HTTPException(
             status_code=403,
-            detail="The user doesn't have enough privileges",
+            detail="L'utilisateur n'a pas les permissions suffisantes",
         )
     return user
 
@@ -137,13 +137,13 @@ def update(
     if not db_user:
         raise HTTPException(
             status_code=404,
-            detail="The user with this id does not exist in the system",
+            detail="L'utilisateur que vous essayez de modifier n'existe pas",
         )
     if user_in.email:
         existing_user = crud.get_user_by_email(session=session, email=user_in.email)
         if existing_user and existing_user.id != user_id:
             raise HTTPException(
-                status_code=409, detail="User with this email already exists"
+                status_code=409, detail="Un utilisateur avec cet email existe déjà"
             )
 
     return crud.update_user(session=session, db_user=db_user, user_in=user_in)
@@ -161,8 +161,9 @@ def delete(
         raise HTTPException(status_code=404, detail="User not found")
     if user == current_user:
         raise HTTPException(
-            status_code=403, detail="Super users are not allowed to delete themselves"
+            status_code=403,
+            detail="Les admins ne sont pas autorisés à se supprimer eux-même",
         )
     session.delete(user)
     session.commit()
-    return Message(message="User deleted successfully")
+    return Message(message="Utilisateur supprimé")

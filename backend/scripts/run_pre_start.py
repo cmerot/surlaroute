@@ -44,6 +44,7 @@ def create_first_superuser(session: Session) -> None:
         email=settings.FIRST_SUPERUSER,
         password=settings.FIRST_SUPERUSER_PASSWORD,
         is_superuser=True,
+        is_active=True,
     )
     try:
         crud.create_user(session=session, user_create=user_in)

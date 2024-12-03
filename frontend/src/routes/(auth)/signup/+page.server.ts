@@ -1,10 +1,10 @@
-import type { PageServerLoad, Actions } from './$types.js';
-import { fail, redirect, error } from '@sveltejs/kit';
-import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
-import { formSchema } from './schema.js';
 import { usersRegister } from '$lib/backend/client/services.gen.js';
 import { getApiErrorMessage } from '$lib/backend/utils.js';
+import { error, fail, redirect } from '@sveltejs/kit';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import type { Actions, PageServerLoad } from './$types.js';
+import { formSchema } from './schema.js';
 export const load: PageServerLoad = async () => {
 	return {
 		form: await superValidate(zod(formSchema))
@@ -22,7 +22,6 @@ export const actions: Actions = {
 
 		const { error: err } = await usersRegister({
 			body: {
-				full_name: `${form.data.firstName} ${form.data.lastName}`,
 				email: form.data.email,
 				password: form.data.password
 			}
@@ -32,7 +31,7 @@ export const actions: Actions = {
 			error(422, { message: getApiErrorMessage(err) });
 		}
 
-		event.cookies.set('notification', 'Your account has been created, you may now log in', {
+		event.cookies.set('notification', 'Votre compte a été créé et sera bientôt validé', {
 			path: '/'
 		});
 		redirect(303, event.url.searchParams.get('redirectTo') ?? '/login');

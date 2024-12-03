@@ -20,7 +20,7 @@ def test_create_user(session: Session) -> None:
 def test_authenticate_user(session: Session) -> None:
     email = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=email, password=password)
+    user_in = UserCreate(email=email, password=password, is_active=True)
     user = crud.create_user(session=session, user_create=user_in)
     authenticated_user = crud.authenticate(
         session=session, email=email, password=password
@@ -39,7 +39,7 @@ def test_not_authenticate_user(session: Session) -> None:
 def test_check_if_user_is_active(session: Session) -> None:
     email = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=email, password=password)
+    user_in = UserCreate(email=email, password=password, is_active=True)
     user = crud.create_user(session=session, user_create=user_in)
     assert user.is_active is True
 
@@ -49,7 +49,7 @@ def test_check_if_user_is_active_inactive(session: Session) -> None:
     password = random_lower_string()
     user_in = UserCreate(email=email, password=password)
     user = crud.create_user(session=session, user_create=user_in)
-    assert user.is_active
+    assert user.is_active is False
 
 
 def test_check_if_user_is_superuser(session: Session) -> None:

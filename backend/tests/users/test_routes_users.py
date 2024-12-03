@@ -58,7 +58,7 @@ def test_get_existing_user(
 def test_get_existing_user_current_user(client: TestClient, session: Session) -> None:
     username = random_email()
     password = random_lower_string()
-    user_in = UserCreate(email=username, password=password)
+    user_in = UserCreate(email=username, password=password, is_active=True)
     user = crud.create_user(session=session, user_create=user_in)
     user_id = user.id
 
@@ -90,7 +90,7 @@ def test_get_existing_user_permissions_error(
         headers=normal_user_token_headers,
     )
     assert r.status_code == 403
-    assert r.json() == {"detail": "The user doesn't have enough privileges"}
+    assert r.json() == {"detail": "L'utilisateur n'a pas les permissions suffisantes"}
 
 
 def test_create_user_existing_username(
@@ -178,7 +178,7 @@ def test_register_user_already_exists_error(client: TestClient) -> None:
         json=data,
     )
     assert r.status_code == 400
-    assert r.json()["detail"] == "The user with this email already exists in the system"
+    assert r.json()["detail"] == "Un utilisateur avec cet email existe déjà"
 
 
 def test_update_user(
@@ -217,7 +217,9 @@ def test_update_user_not_exists(
         json=data,
     )
     assert r.status_code == 404
-    assert r.json()["detail"] == "The user with this id does not exist in the system"
+    assert (
+        r.json()["detail"] == "L'utilisateur que vous essayez de modifier n'existe pas"
+    )
 
 
 def test_update_user_email_exists(
@@ -240,7 +242,7 @@ def test_update_user_email_exists(
         json=data,
     )
     assert r.status_code == 409
-    assert r.json()["detail"] == "User with this email already exists"
+    assert r.json()["detail"] == "Un utilisateur avec cet email existe déjà"
 
 
 def test_delete_user_super_user(
@@ -257,7 +259,7 @@ def test_delete_user_super_user(
     )
     assert r.status_code == 200
     deleted_user = r.json()
-    assert deleted_user["message"] == "User deleted successfully"
+    assert deleted_user["message"] == "Utilisateur supprimé"
     result = session.scalar(select(User).where(User.id == user_id))
     assert result is None
 
@@ -285,7 +287,9 @@ def test_delete_user_current_super_user_error(
         headers=superuser_token_headers,
     )
     assert r.status_code == 403
-    assert r.json()["detail"] == "Super users are not allowed to delete themselves"
+    assert (
+        r.json()["detail"] == "Les admins ne sont pas autorisés à se supprimer eux-même"
+    )
 
 
 def test_delete_user_without_privileges(

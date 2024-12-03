@@ -1,5 +1,6 @@
 import { orgsReadOrgs } from '$lib/backend/client/services.gen';
 import type { OrgsReadOrgsData } from '$lib/backend/client/types.gen';
+import { error } from '@sveltejs/kit';
 
 export async function load({ url }) {
 	const query: OrgsReadOrgsData['query'] = {};
@@ -12,9 +13,9 @@ export async function load({ url }) {
 	if (offsetParam) {
 		query.offset = parseInt(offsetParam);
 	}
-	const { data, error } = await orgsReadOrgs({ query });
+	const { data, error: err } = await orgsReadOrgs({ query });
 
-	if (error) {
+	if (err) {
 		return error(500, 'Pas de réponse du serveur');
 	}
 	return data;

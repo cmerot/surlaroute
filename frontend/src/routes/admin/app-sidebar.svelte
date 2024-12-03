@@ -8,7 +8,22 @@
 				url: '/admin/users'
 			},
 			{
-				title: 'Annuaire',
+				title: 'Tournées',
+				url: '/',
+				items: [
+					{
+						title: 'Mes tournées',
+						url: '/',
+						isActive: true
+					},
+					{
+						title: 'Les tournées ArMoDo',
+						url: '/'
+					}
+				]
+			},
+			{
+				title: 'Annuaire ArMoDo',
 				url: '/admin/directory',
 				items: [
 					{

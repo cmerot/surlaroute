@@ -15,7 +15,12 @@
 
 <footer>
 	<div class="w-full text-center text-sm">
+		<p class="mb-3 text-sm text-foreground/60">
+			Première connexion ? <a href="/recover-password" class="underline">
+				Demandez votre mot de passe
+			</a>
+		</p>
 		Vous n'avez pas encore de compte ?
-		<a href="/signup" class="underline">S'inscrire</a>
+		<a href="/signup" class="underline">Inscrivez-vous</a>
 	</div>
 </footer>

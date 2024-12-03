@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { type OrgPublic } from '$lib/backend/client';
 	import Pagination from '$lib/components/pagination.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table/index.js';
@@ -32,7 +31,7 @@
 					</a>
 				</Table.Cell>
 				<Table.Cell>
-					{org.activities?.map((a: OrgPublic) => a.name).join(', ')}
+					{org.activities?.map((a) => a.name).join(', ')}
 				</Table.Cell>
 				<Table.Cell>
 					{#if org.contact?.email_address}

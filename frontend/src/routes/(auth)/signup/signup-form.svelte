@@ -1,11 +1,11 @@
 <script lang="ts">
-	import * as Form from '$lib/components/ui/form';
-	import { Input } from '$lib/components/ui/input';
-	import { formSchema, type FormSchema } from './schema';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
 	import FormActionError from '$lib/components/form-action-error.svelte';
 	import InputPassword from '$lib/components/input-password/input-password.svelte';
+	import * as Form from '$lib/components/ui/form';
+	import { Input } from '$lib/components/ui/input';
+	import { type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { formSchema, type FormSchema } from './schema';
 
 	const { data } = $props<{ data: SuperValidated<Infer<FormSchema>> }>();
 	let error = $state();
@@ -21,26 +21,15 @@
 
 <form method="POST" use:enhance class="space-y-6">
 	<FormActionError {error} />
-	<div class="grid grid-cols-2 gap-4">
-		<Form.Field {form} name="firstName">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Prénom</Form.Label>
-					<Input {...props} bind:value={$formData.firstName} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-		<Form.Field {form} name="lastName">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Form.Label>Nom</Form.Label>
-					<Input {...props} bind:value={$formData.lastName} />
-				{/snippet}
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-	</div>
+	<Form.Field {form} name="name">
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Nom complet</Form.Label>
+				<Input {...props} bind:value={$formData.name} />
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
 	<Form.Field {form} name="email">
 		<Form.Control>
 			{#snippet children({ props })}

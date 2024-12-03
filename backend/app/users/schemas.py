@@ -8,7 +8,7 @@ from app.directory.crud_schemas import PersonPublic
 
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
-    is_active: bool = True
+    is_active: bool = False
     is_superuser: bool = False
     is_member: bool = False
 
