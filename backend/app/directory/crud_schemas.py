@@ -147,7 +147,11 @@ class ActorAssocUpdate(Base):
 
 
 class ActorAssocImport(Base):
-    actor: PersonImport | OrgImport | None = None
+    actor: PersonImport | OrgImport
+
+
+class OrgAssocImport(Base):
+    org: OrgImport
 
 
 #
@@ -221,6 +225,7 @@ class PersonImport(PersonBase):
     id: uuid.UUID | None = None
     contact: ContactImport | None = None
     type_: str
+    membership_assocs: list[OrgAssocImport] | None = None
 
 
 # Contact

@@ -67,7 +67,7 @@ def get_db_instance(sql_cls: type, data: dict[str, Any]):
             )
         except NoResultFound:
             instance = sql_cls()
-        db.add(instance)
+            db.add(instance)
         return instance
     elif sql_cls is User:
         try:
@@ -75,13 +75,13 @@ def get_db_instance(sql_cls: type, data: dict[str, Any]):
         except NoResultFound:
             instance = sql_cls()
             instance.hashed_password = get_password_hash(str(uuid.uuid4()))
-        db.add(instance)
+            db.add(instance)
         return instance
     try:
         instance = db.query(sql_cls).filter(create_filter(sql_cls, data)).one()
     except NoResultFound:
         instance = sql_cls()
-    db.add(instance)
+        db.add(instance)
     return instance
 
 
