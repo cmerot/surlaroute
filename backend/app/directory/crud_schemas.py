@@ -118,7 +118,24 @@ class TreeImport(Base):
 
 
 class ActorAssocPublic(Base):
-    actor: PersonPublic | OrgPublic | None = None
+    """
+    used to map any many-to-many relation impliying an actor
+    ex: OrgActorAssoc requires an org and an actor, so to render
+    the relation we'll use this. If we use a more specialized
+    model with actor and org, there will be recursion:
+    Org.member_assocs.org.member_assocs.org, ...
+
+    """
+
+    actor: PersonPublic | OrgPublic
+
+
+class OrgAssocPublic(Base):
+    """
+    same than ActorAssocPublic but for from the POV of an actor
+    """
+
+    org: OrgPublic
 
 
 class ActorAssocCreate(Base):
@@ -133,32 +150,24 @@ class ActorAssocImport(Base):
     actor: PersonImport | OrgImport | None = None
 
 
-class OrgActorAssocPublic(Base):
-    org: OrgPublic
-    actor: OrgPublic | PersonPublic
-
-
 #
 # Business classes
 #
 
 
-class ActorBase(Base):
-    pass
-
-
 # Org
 
 
-class OrgBase(ActorBase):
+class OrgBase(Base):
     description: str | None = None
+    type: str = "Org"
 
 
 class OrgPublic(OrgBase):
     id: uuid.UUID
     name: str
     activities: list[TreePublic] | None = None
-    # member_assocs: list[ActorAssocPublic] | None = None
+    member_assocs: list[ActorAssocPublic] | None = None
     contact: ContactPublic | None = None
 
 
@@ -188,7 +197,8 @@ class OrgImport(OrgBase):
 # Person
 
 
-class PersonBase(ActorBase):
+class PersonBase(Base):
+    type: str = "Person"
     name: str
     role: str | None = None
 
@@ -196,7 +206,7 @@ class PersonBase(ActorBase):
 class PersonPublic(PersonBase):
     id: uuid.UUID
     contact: ContactPublic | None = None
-    membership_assocs: list[OrgActorAssocPublic] | None = None
+    membership_assocs: list[OrgAssocPublic] | None = None
 
 
 class PersonCreate(PersonBase):

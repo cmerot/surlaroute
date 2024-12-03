@@ -8,9 +8,9 @@ from app.directory.crud_schemas import PersonPublic
 
 class UserBase(BaseModel):
     email: EmailStr = Field(max_length=255)
-    is_active: bool = True
-    is_superuser: bool = False
-    is_member: bool = False
+    is_active: bool
+    is_superuser: bool
+    is_member: bool
 
     model_config = ConfigDict(from_attributes=True)
 

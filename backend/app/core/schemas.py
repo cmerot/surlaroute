@@ -17,7 +17,7 @@ class PageParams(BaseModel):
     """Request query params for paginated API."""
 
     q: str | None = Field(default=None)
-    limit: int = Field(default=100, gt=0, le=100)
+    limit: int = Field(default=10, gt=0, le=100)
     offset: int = Field(default=0, ge=0)
 
 
