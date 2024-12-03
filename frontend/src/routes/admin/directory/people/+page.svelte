@@ -51,7 +51,10 @@
 					{#if person.membership_assocs}
 						{#each person.membership_assocs as assoc}
 							<a href="/admin/directory/orgs/{assoc.org.id}" class="block hover:underline">
-								{assoc.org.name} - {assoc.org.contact?.address?.q}
+								{assoc.org.name}
+								{#if assoc.org.contact?.address?.q}
+									- {assoc.org.contact?.address?.q}
+								{/if}
 							</a>
 						{/each}
 					{/if}
