@@ -76,7 +76,7 @@ def read_activities(
     """
     Read all activities.
     """
-    results, total = crud.read_activities(session=session)
+    results, total = crud.read_activities(session=session, page_params=page_params)
     return PagedResponse[TreePublic].model_validate(
         {
             "total": total,

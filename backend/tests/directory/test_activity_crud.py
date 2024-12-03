@@ -5,6 +5,7 @@ from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
 from app.core.db.models import Activity
+from app.core.schemas import PageParams
 from app.directory import crud
 from app.directory.crud_schemas import (
     TreeCreate,
@@ -13,6 +14,8 @@ from app.directory.crud_schemas import (
 from tests.directory.fixtures import (
     activity_fixtures,
 )
+
+page_params = PageParams(limit=100, offset=0)
 
 
 def test_create_activity(session: Session) -> None:
@@ -50,7 +53,7 @@ def test_read_activity_not_found(session: Session) -> None:
 
 
 def test_read_activities_no_path(session: Session) -> None:
-    activities, count = crud.read_activities(session=session)
+    activities, count = crud.read_activities(session=session, page_params=page_params)
     assert isinstance(activities, Sequence)
     assert len(activities) == len(activity_fixtures)
     assert isinstance(activities[0], Activity)
@@ -59,7 +62,9 @@ def test_read_activities_no_path(session: Session) -> None:
 
 
 def test_read_activities_path_none(session: Session) -> None:
-    activities, count = crud.read_activities(session=session, path=None)
+    activities, count = crud.read_activities(
+        session=session, path=None, page_params=page_params
+    )
     assert isinstance(activities, Sequence)
     assert len(activities) == len(activity_fixtures)
     assert isinstance(activities[0], Activity)
@@ -68,7 +73,9 @@ def test_read_activities_path_none(session: Session) -> None:
 
 
 def test_read_activities_path_empty_string(session: Session) -> None:
-    activities, count = crud.read_activities(session=session, path="")
+    activities, count = crud.read_activities(
+        session=session, path="", page_params=page_params
+    )
     assert isinstance(activities, Sequence)
     assert len(activities) == len(activity_fixtures)
     assert isinstance(activities[0], Activity)
@@ -77,7 +84,9 @@ def test_read_activities_path_empty_string(session: Session) -> None:
 
 
 def test_read_activities_deep(session: Session) -> None:
-    activities, count = crud.read_activities(session=session, path="cat.big")
+    activities, count = crud.read_activities(
+        session=session, path="cat.big", page_params=page_params
+    )
     assert isinstance(activities, Sequence)
     assert len(activities) == 4
     assert isinstance(activities[0], Activity)
@@ -86,7 +95,9 @@ def test_read_activities_deep(session: Session) -> None:
 
 
 def test_read_activities_not_found(session: Session) -> None:
-    activities, count = crud.read_activities(session=session, path="do.not.exist")
+    activities, count = crud.read_activities(
+        session=session, path="do.not.exist", page_params=page_params
+    )
     assert isinstance(activities, Sequence)
     assert len(activities) == 0
 
@@ -95,7 +106,9 @@ def test_update_activity_name(session: Session) -> None:
     path = "cat.small"
     entity_in = TreeUpdate(name="small2")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
-    activities, count = crud.read_activities(session=session, path="cat.small")
+    activities, count = crud.read_activities(
+        session=session, path="cat.small", page_params=page_params
+    )
     assert activities[0].name == "small2"
 
     session.rollback()
@@ -105,13 +118,17 @@ def test_update_activity_path(session: Session) -> None:
     path = "cat.small"
     entity_in = TreeUpdate(dest_path="cat.big.small")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
-    activities, count = crud.read_activities(session=session, path="cat.big.small")
+    activities, count = crud.read_activities(
+        session=session, path="cat.big.small", page_params=page_params
+    )
     assert len(activities) == 8
 
     path = "cat"
     entity_in = TreeUpdate(dest_path="cats")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
-    activities, count = crud.read_activities(session=session, path="cats")
+    activities, count = crud.read_activities(
+        session=session, path="cats", page_params=page_params
+    )
     assert len(activities) == 13
 
     session.rollback()
@@ -121,7 +138,9 @@ def test_update_activity_path_and_name(session: Session) -> None:
     path = "cat.small"
     entity_in = TreeUpdate(dest_path="cat.big.small", name="big small")
     crud.update_activity(session=session, path=path, entity_in=entity_in)
-    activities, count = crud.read_activities(session=session, path="cat.big.small")
+    activities, count = crud.read_activities(
+        session=session, path="cat.big.small", page_params=page_params
+    )
     assert len(activities) == 8
     assert activities[0].name == "big small"
 

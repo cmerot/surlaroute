@@ -34,7 +34,7 @@ def test_create_activity(client: TestClient) -> None:
 
 
 def test_read_activities(client: TestClient) -> None:
-    r = client.get("/directory/activities")
+    r = client.get("/directory/activities/?limit=100&offset=0")
     json_resp = r.json()
     assert PagedResponse[TreePublic].model_validate_json(json.dumps(json_resp))
     assert r.status_code == 200
@@ -49,7 +49,7 @@ def test_read_activities_by_path(client: TestClient) -> None:
 
 
 def test_read_activities_by_path_with_descendant(client: TestClient) -> None:
-    r = client.get("/directory/activities/cat?descendant=true")
+    r = client.get("/directory/activities/cat?descendant=true&limit=100&offset=0")
     json_resp = r.json()
     resp = PagedResponse[TreePublic].model_validate_json(json.dumps(json_resp))
     assert r.status_code == 200
