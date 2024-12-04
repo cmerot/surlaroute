@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # mypy: ignore-errors
 import json
+import sys
 import uuid
 from typing import Any
 
@@ -82,6 +83,10 @@ def get_db_instance(sql_cls: type, data: dict[str, Any]):
     except NoResultFound:
         instance = sql_cls()
         db.add(instance)
+    except Exception as e:
+        print(data)
+        print(str(e))
+        sys.exit(1)
     return instance
 
 

@@ -62,7 +62,7 @@ if __name__ == "__main__":
     for sheet_name in workbook.sheet_names():
         print(sheet_name)
         sheet_records = pe.iget_records(
-            file_name=input, sheet_name=sheet_name, skip_empty_rows=True
+            file_name=input, sheet_name=sheet_name, skip_empty_rows=True, data_only=True
         )
 
         data[sheet_name] = []

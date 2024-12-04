@@ -36,6 +36,11 @@ LtreeField = Annotated[
     WithJsonSchema({"type": "string", "examples": ["some.path"]}),
 ]
 
+HttpUrlField = Annotated[
+    str | HttpUrl,
+    PlainSerializer(lambda o: str(o), return_type=str),
+]
+
 
 def validate_geom_point(
     v: str | shapely.geometry.base.BaseGeometry | geoalchemy2.WKBElement,
@@ -234,7 +239,7 @@ class PersonImport(PersonBase):
 class ContactBase(Base):
     email_address: EmailStr | None = None
     phone_number: str | None = None
-    website: HttpUrl | None = None
+    website: HttpUrlField | None = None
 
 
 class ContactPublic(ContactBase):
