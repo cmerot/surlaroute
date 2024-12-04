@@ -572,6 +572,9 @@ export const EventPublicSchema = {
 		start_dt: {
 			anyOf: [
 				{
+					type: 'string'
+				},
+				{
 					type: 'string',
 					format: 'date-time'
 				},
@@ -583,6 +586,9 @@ export const EventPublicSchema = {
 		},
 		end_dt: {
 			anyOf: [
+				{
+					type: 'string'
+				},
 				{
 					type: 'string',
 					format: 'date-time'
@@ -690,11 +696,6 @@ export const OrgCreateSchema = {
 			],
 			title: 'Description'
 		},
-		type: {
-			type: 'string',
-			title: 'Type',
-			default: 'Org'
-		},
 		name: {
 			type: 'string',
 			title: 'Name'
@@ -755,11 +756,6 @@ export const OrgPublicSchema = {
 				}
 			],
 			title: 'Description'
-		},
-		type: {
-			type: 'string',
-			title: 'Type',
-			default: 'Org'
 		},
 		id: {
 			type: 'string',
@@ -826,11 +822,6 @@ export const OrgUpdateSchema = {
 				}
 			],
 			title: 'Description'
-		},
-		type: {
-			type: 'string',
-			title: 'Type',
-			default: 'Org'
 		},
 		name: {
 			anyOf: [
@@ -1023,11 +1014,6 @@ export const PagedResponse_UserPublic_Schema = {
 
 export const PersonCreateSchema = {
 	properties: {
-		type: {
-			type: 'string',
-			title: 'Type',
-			default: 'Person'
-		},
 		name: {
 			type: 'string',
 			title: 'Name'
@@ -1061,11 +1047,6 @@ export const PersonCreateSchema = {
 
 export const PersonPublicSchema = {
 	properties: {
-		type: {
-			type: 'string',
-			title: 'Type',
-			default: 'Person'
-		},
 		name: {
 			type: 'string',
 			title: 'Name'
@@ -1118,11 +1099,6 @@ export const PersonPublicSchema = {
 
 export const PersonUpdateSchema = {
 	properties: {
-		type: {
-			type: 'string',
-			title: 'Type',
-			default: 'Person'
-		},
 		name: {
 			type: 'string',
 			title: 'Name'

@@ -1,7 +1,7 @@
-import type { Handle } from '@sveltejs/kit';
-import { randomBytes } from 'crypto';
-import { sessionStore } from '$lib/server/sessionStore';
 import { client } from '$lib/backend/client';
+import { sessionStore } from '$lib/server/sessionStore';
+import { type Handle } from '@sveltejs/kit';
+import { randomBytes } from 'crypto';
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 

@@ -15,8 +15,8 @@
 <Table.Root>
 	<Table.Header>
 		<Table.Row>
-			<Table.Head>Nom</Table.Head>
-			<Table.Head>Métier</Table.Head>
+			<Table.Head>Contact</Table.Head>
+			<Table.Head>Fonction</Table.Head>
 			<Table.Head>Email</Table.Head>
 			<Table.Head>Téléphone</Table.Head>
 			<Table.Head>Stucture(s)</Table.Head>

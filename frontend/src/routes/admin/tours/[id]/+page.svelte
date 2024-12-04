@@ -7,11 +7,12 @@
 
 	const { data: tour }: { data: PageData } = $props();
 	let ressources: OrgPublic[] = $state([]);
-	const ressources_assoc =
-		tour.actor_assocs?.filter((assoc) => {
-			console.log(assoc.actor.type);
-			return assoc.actor.type === 'Org';
-		}) || [];
+	// const ressources_assoc =
+	// 	tour.actor_assocs?.filter((assoc) => {
+	// 		console.log(assoc.actor.type);
+	// 		return assoc.actor.type === 'Org';
+	// 	}) || [];
+	// console.log(ressources_assoc);
 
 	const diffusions = $derived(tour.events?.map((e) => e.event_venue) || []);
 	// console.log(tour.events?.map((e) => e.event_venue));
@@ -21,25 +22,27 @@
 	// });
 </script>
 
-<h1>{tour.name}</h1>
+<div class="p-4">
+	<h1 class="mb-4 text-2xl font-bold">{tour.name}</h1>
 
-<Tabs.Root value="ressources">
-	<Tabs.List class="grid w-full grid-cols-4">
-		<Tabs.Trigger value="events">Événements</Tabs.Trigger>
-		<Tabs.Trigger value="diffusions">Lieux de diff</Tabs.Trigger>
-		<Tabs.Trigger value="ressources">Ressources</Tabs.Trigger>
-		<Tabs.Trigger value="people">Contacts</Tabs.Trigger>
-	</Tabs.List>
-	<Tabs.Content value="events">
-		{#if tour.events?.length}
-			<Events events={tour.events} />
-		{/if}
-	</Tabs.Content>
-	<Tabs.Content value="diffusions">
-		<Orgs orgs={diffusions} />
-	</Tabs.Content>
-	<Tabs.Content value="ressources">
-		<Orgs orgs={ressources} />
-	</Tabs.Content>
-	<Tabs.Content value="people"></Tabs.Content>
-</Tabs.Root>
+	<Tabs.Root value="events">
+		<Tabs.List class="grid w-full grid-cols-4">
+			<Tabs.Trigger value="events">Événements</Tabs.Trigger>
+			<Tabs.Trigger value="diffusions">Lieux de diff</Tabs.Trigger>
+			<Tabs.Trigger value="ressources">Ressources</Tabs.Trigger>
+			<Tabs.Trigger value="people">Contacts</Tabs.Trigger>
+		</Tabs.List>
+		<Tabs.Content value="events">
+			{#if tour.events?.length}
+				<Events events={tour.events} />
+			{/if}
+		</Tabs.Content>
+		<Tabs.Content value="diffusions">
+			<Orgs orgs={diffusions} />
+		</Tabs.Content>
+		<Tabs.Content value="ressources">
+			<Orgs orgs={ressources} />
+		</Tabs.Content>
+		<Tabs.Content value="people"></Tabs.Content>
+	</Tabs.Root>
+</div>

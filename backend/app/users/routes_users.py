@@ -55,6 +55,14 @@ def read(
     )
 
 
+@router.get("/me", response_model=UserPublic)
+def read_user_me(current_user: CurrentUserDep) -> Any:
+    """
+    Get current user.
+    """
+    return current_user
+
+
 @router.post(
     "/",
     dependencies=[Depends(get_current_active_superuser)],

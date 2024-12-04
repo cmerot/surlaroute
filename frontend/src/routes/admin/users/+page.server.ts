@@ -1,5 +1,6 @@
 import { usersRead } from '$lib/backend/client/services.gen';
 import type { UsersReadData } from '$lib/backend/client/types.gen';
+import { error } from '@sveltejs/kit';
 
 export async function load({ url }) {
 	const query: UsersReadData['query'] = {};
@@ -12,10 +13,11 @@ export async function load({ url }) {
 	if (offsetParam) {
 		query.offset = parseInt(offsetParam);
 	}
-	const { data, error } = await usersRead({ query });
+	const result = await usersRead({ query });
 
-	if (error) {
-		return error(500, 'Pas de réponse du serveur');
+	if (result.error) {
+		// @ts-expect-error: result.error.detail is a string
+		error(result.response.status, { message: result.error.detail });
 	}
-	return data;
+	return result.data;
 }

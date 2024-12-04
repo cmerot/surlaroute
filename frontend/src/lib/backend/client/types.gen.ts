@@ -118,7 +118,6 @@ export type OrgAssocPublic = {
 
 export type OrgCreate = {
 	description?: string | null;
-	type?: string;
 	name: string;
 	activities?: Array<TreeCreate> | null;
 	member_assocs?: Array<ActorAssocCreate> | null;
@@ -127,7 +126,6 @@ export type OrgCreate = {
 
 export type OrgPublic = {
 	description?: string | null;
-	type?: string;
 	id: string;
 	name: string;
 	activities?: Array<TreePublic> | null;
@@ -137,7 +135,6 @@ export type OrgPublic = {
 
 export type OrgUpdate = {
 	description?: string | null;
-	type?: string;
 	name?: string | null;
 	activities?: Array<TreeUpdate> | null;
 	member_assocs?: Array<ActorAssocUpdate> | null;
@@ -180,14 +177,12 @@ export type PagedResponse_UserPublic_ = {
 };
 
 export type PersonCreate = {
-	type?: string;
 	name: string;
 	role?: string | null;
 	contact?: ContactCreate | null;
 };
 
 export type PersonPublic = {
-	type?: string;
 	name: string;
 	role?: string | null;
 	id: string;
@@ -196,7 +191,6 @@ export type PersonPublic = {
 };
 
 export type PersonUpdate = {
-	type?: string;
 	name: string;
 	role?: string | null;
 	contact?: ContactUpdate | null;
@@ -362,6 +356,10 @@ export type UsersCreateData = {
 export type UsersCreateResponse = UserPublic;
 
 export type UsersCreateError = HTTPValidationError;
+
+export type UsersReadUserMeResponse = UserPublic;
+
+export type UsersReadUserMeError = unknown;
 
 export type UsersRegisterData = {
 	body: UserRegister;

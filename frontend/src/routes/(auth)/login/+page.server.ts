@@ -20,19 +20,21 @@ export const actions: Actions = {
 				form
 			});
 		}
-
-		const { data, error: err } = await loginAccessToken({
+		const result = await loginAccessToken({
 			body: { username: form.data.email, password: form.data.password }
 		});
-		if (err) {
-			error(422, { message: getApiErrorMessage(err) });
+		if (result.error) {
+			error(result.response.status, { message: getApiErrorMessage(result.error) });
 		}
 
-		event.cookies.set('notification', 'Login successful', { path: '/' });
 		if (!event.locals.session) {
 			return fail(500, { error: 'Session not found' });
 		}
-		event.locals.session.data = { access_token: data.access_token };
+		event.locals.session.data = { access_token: result.data.access_token };
+
+		const message = 'Bienvenue !';
+
+		event.cookies.set('notification', message, { path: '/' });
 		redirect(303, event.url.searchParams.get('redirectTo') ?? '/');
 	}
 };

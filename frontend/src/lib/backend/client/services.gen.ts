@@ -27,6 +27,8 @@ import type {
 	UsersCreateData,
 	UsersCreateError,
 	UsersCreateResponse,
+	UsersReadUserMeError,
+	UsersReadUserMeResponse,
 	UsersRegisterData,
 	UsersRegisterError,
 	UsersRegisterResponse,
@@ -212,6 +214,23 @@ export const usersCreate = <ThrowOnError extends boolean = false>(
 	return (options?.client ?? client).post<UsersCreateResponse, UsersCreateError, ThrowOnError>({
 		...options,
 		url: '/api/users/'
+	});
+};
+
+/**
+ * Read User Me
+ * Get current user.
+ */
+export const usersReadUserMe = <ThrowOnError extends boolean = false>(
+	options?: Options<unknown, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		UsersReadUserMeResponse,
+		UsersReadUserMeError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/users/me'
 	});
 };
 

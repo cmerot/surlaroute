@@ -13,18 +13,18 @@
 				items: [
 					{
 						title: 'Mes tournées',
-						url: '/',
-						isActive: true
+						url: '#',
+						isActive: false
 					},
 					{
 						title: 'Les tournées ArMoDo',
-						url: '/'
+						url: '#'
 					}
 				]
 			},
 			{
 				title: 'Annuaire ArMoDo',
-				url: '/admin/directory',
+				url: '#',
 				items: [
 					{
 						title: 'Personnes',
@@ -42,10 +42,18 @@
 </script>
 
 <script lang="ts">
+	import type { UserPublic } from '$lib/backend/client';
+
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 	import { Compass } from 'lucide-svelte';
 	import type { ComponentProps } from 'svelte';
-	let { ref = $bindable(null), ...restProps }: ComponentProps<typeof Sidebar.Root> = $props();
+	type Props = ComponentProps<typeof Sidebar.Root> & {
+		user: UserPublic;
+	};
+	let { ref = $bindable(null), user, ...restProps }: Props = $props();
+	if (!user.is_superuser) {
+		data.navMain.shift();
+	}
 </script>
 
 <Sidebar.Root bind:ref {...restProps}>
