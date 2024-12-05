@@ -165,7 +165,15 @@ if __name__ == "__main__":
             cls_map=cls_map,
             sql_cls=Org,
             pyd_cls=OrgImport,
-            data=data["orgs"],
+            data=data["productions"],
+        )
+        load_entities(
+            db=db,
+            get_db_instance=get_db_instance,
+            cls_map=cls_map,
+            sql_cls=User,
+            pyd_cls=UserImport,
+            data=data["users"],
         )
         load_entities(
             db=db,
@@ -187,7 +195,7 @@ if __name__ == "__main__":
             db=db,
             get_db_instance=get_db_instance,
             cls_map=cls_map,
-            sql_cls=User,
-            pyd_cls=UserImport,
-            data=data["users"],
+            sql_cls=Org,
+            pyd_cls=OrgImport,
+            data=data["ressources"],
         )

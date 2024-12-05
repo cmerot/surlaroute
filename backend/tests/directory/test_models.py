@@ -43,6 +43,7 @@ def test_directory_preloaded_fixtures(session: Session) -> None:
     print_actor(robert)
     assert robert.membership_assocs[0].org is armodo
     assert robert.membership_assocs[0] is om1
+    assert robert.__class__ is Person
 
     print_actor(mitchum)
     assert mitchum.membership_assocs[0].org is slowfest
@@ -53,6 +54,7 @@ def test_directory_preloaded_fixtures(session: Session) -> None:
     assert armodo.member_assocs[0] is om1
     assert armodo.member_assocs[1].actor is slowfest
     assert armodo.member_assocs[1] is om2
+    assert armodo.__class__ is Org
 
     print_actor(slowfest)
     assert slowfest.membership_assocs[0].org is armodo
@@ -132,17 +134,17 @@ def test_association_org_actor() -> None:
 
 
 def test_person_user(session: Session) -> None:
-    u = User(email="test@example.com", hashed_password="nopass")
+    u = User(email="test_person_user@example.com", hashed_password="nopass")
     p = Person(name="robert")
     p.user = u
     session.add(p)
     session.commit()
     session.refresh(p)
-    assert p.user.email == "test@example.com"
+    assert p.user.email == "test_person_user@example.com"
 
 
 def test_user_person(session: Session) -> None:
-    u = User(email="test2@example.com", hashed_password="nopass")
+    u = User(email="test_user_person@example.com", hashed_password="nopass")
     p = Person(name="robert")
     u.person = p
     session.add(u)

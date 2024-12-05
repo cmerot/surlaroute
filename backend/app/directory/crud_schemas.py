@@ -176,6 +176,11 @@ class ActorAssocImport(Base):
     data: JsonField | None = None
 
 
+class TourAssocImport(Base):
+    tour: TourImport
+    data: JsonField | None = None
+
+
 class OrgAssocImport(Base):
     org: OrgImport
 
@@ -219,6 +224,7 @@ class OrgImport(OrgBase):
     name: str
     activities: list[TreeImport] | None = None
     member_assocs: list[ActorAssocImport] | None = None
+    tour_assocs: list[TourAssocImport] | None = None
     contact: ContactImport | None = None
     type_: str = "Org"
 
