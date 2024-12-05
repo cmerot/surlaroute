@@ -380,6 +380,9 @@ export const ContactCreateSchema = {
 		website: {
 			anyOf: [
 				{
+					type: 'string'
+				},
+				{
 					type: 'string',
 					maxLength: 2083,
 					minLength: 1,
@@ -434,10 +437,7 @@ export const ContactPublicSchema = {
 		website: {
 			anyOf: [
 				{
-					type: 'string',
-					maxLength: 2083,
-					minLength: 1,
-					format: 'uri'
+					type: 'string'
 				},
 				{
 					type: 'null'
@@ -493,6 +493,9 @@ export const ContactUpdateSchema = {
 		},
 		website: {
 			anyOf: [
+				{
+					type: 'string'
+				},
 				{
 					type: 'string',
 					maxLength: 2083,
@@ -551,6 +554,71 @@ export const DeleteResponseSchema = {
 	required: ['success'],
 	title: 'DeleteResponse',
 	description: 'Response schema for any delete request.'
+} as const;
+
+export const EventPublicSchema = {
+	properties: {
+		description: {
+			anyOf: [
+				{
+					type: 'string'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Description'
+		},
+		start_dt: {
+			anyOf: [
+				{
+					type: 'string',
+					format: 'date-time'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Start Dt'
+		},
+		end_dt: {
+			anyOf: [
+				{
+					type: 'string',
+					format: 'date-time'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'End Dt'
+		},
+		id: {
+			type: 'string',
+			format: 'uuid',
+			title: 'Id'
+		},
+		event_venue: {
+			$ref: '#/components/schemas/OrgPublic'
+		},
+		actor_assocs: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/ActorAssocPublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Actor Assocs'
+		}
+	},
+	type: 'object',
+	required: ['id', 'event_venue'],
+	title: 'EventPublic'
 } as const;
 
 export const HTTPValidationErrorSchema = {
@@ -872,6 +940,33 @@ export const PagedResponse_PersonPublic_Schema = {
 	title: 'PagedResponse[PersonPublic]'
 } as const;
 
+export const PagedResponse_TourPublic_Schema = {
+	properties: {
+		total: {
+			type: 'integer',
+			title: 'Total'
+		},
+		limit: {
+			type: 'integer',
+			title: 'Limit'
+		},
+		offset: {
+			type: 'integer',
+			title: 'Offset'
+		},
+		results: {
+			items: {
+				$ref: '#/components/schemas/TourPublic'
+			},
+			type: 'array',
+			title: 'Results'
+		}
+	},
+	type: 'object',
+	required: ['total', 'limit', 'offset', 'results'],
+	title: 'PagedResponse[TourPublic]'
+} as const;
+
 export const PagedResponse_TreePublic_Schema = {
 	properties: {
 		total: {
@@ -1190,6 +1285,101 @@ export const TokenSchema = {
 	title: 'Token'
 } as const;
 
+export const TourPublicSchema = {
+	properties: {
+		name: {
+			type: 'string',
+			title: 'Name'
+		},
+		description: {
+			anyOf: [
+				{
+					type: 'string'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Description'
+		},
+		year: {
+			anyOf: [
+				{
+					type: 'integer'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Year'
+		},
+		id: {
+			type: 'string',
+			format: 'uuid',
+			title: 'Id'
+		},
+		events: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/EventPublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Events'
+		},
+		disciplines: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/TreePublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Disciplines'
+		},
+		mobilities: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/TreePublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Mobilities'
+		},
+		actor_assocs: {
+			anyOf: [
+				{
+					items: {
+						$ref: '#/components/schemas/ActorAssocPublic'
+					},
+					type: 'array'
+				},
+				{
+					type: 'null'
+				}
+			],
+			title: 'Actor Assocs'
+		}
+	},
+	type: 'object',
+	required: ['name', 'id'],
+	title: 'TourPublic'
+} as const;
+
 export const TreeCreateSchema = {
 	properties: {
 		path: {
@@ -1384,15 +1574,18 @@ export const UserCreateSchema = {
 		},
 		is_active: {
 			type: 'boolean',
-			title: 'Is Active'
+			title: 'Is Active',
+			default: false
 		},
 		is_superuser: {
 			type: 'boolean',
-			title: 'Is Superuser'
+			title: 'Is Superuser',
+			default: false
 		},
 		is_member: {
 			type: 'boolean',
-			title: 'Is Member'
+			title: 'Is Member',
+			default: false
 		},
 		password: {
 			type: 'string',
@@ -1402,7 +1595,7 @@ export const UserCreateSchema = {
 		}
 	},
 	type: 'object',
-	required: ['email', 'is_active', 'is_superuser', 'is_member', 'password'],
+	required: ['email', 'password'],
 	title: 'UserCreate'
 } as const;
 
@@ -1484,15 +1677,18 @@ export const UserUpdateSchema = {
 		},
 		is_active: {
 			type: 'boolean',
-			title: 'Is Active'
+			title: 'Is Active',
+			default: false
 		},
 		is_superuser: {
 			type: 'boolean',
-			title: 'Is Superuser'
+			title: 'Is Superuser',
+			default: false
 		},
 		is_member: {
 			type: 'boolean',
-			title: 'Is Member'
+			title: 'Is Member',
+			default: false
 		},
 		password: {
 			anyOf: [
@@ -1509,7 +1705,6 @@ export const UserUpdateSchema = {
 		}
 	},
 	type: 'object',
-	required: ['is_active', 'is_superuser', 'is_member'],
 	title: 'UserUpdate'
 } as const;
 

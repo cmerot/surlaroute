@@ -9,7 +9,7 @@
 			},
 			{
 				title: 'Tournées',
-				url: '/',
+				url: '/admin/tours',
 				items: [
 					{
 						title: 'Mes tournées',

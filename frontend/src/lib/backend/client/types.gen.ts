@@ -87,6 +87,15 @@ export type DeleteResponse = {
 	message?: string | null;
 };
 
+export type EventPublic = {
+	description?: string | null;
+	start_dt?: string | null;
+	end_dt?: string | null;
+	id: string;
+	event_venue: OrgPublic;
+	actor_assocs?: Array<ActorAssocPublic> | null;
+};
+
 export type HTTPValidationError = {
 	detail?: Array<ValidationError>;
 };
@@ -149,6 +158,13 @@ export type PagedResponse_PersonPublic_ = {
 	results: Array<PersonPublic>;
 };
 
+export type PagedResponse_TourPublic_ = {
+	total: number;
+	limit: number;
+	offset: number;
+	results: Array<TourPublic>;
+};
+
 export type PagedResponse_TreePublic_ = {
 	total: number;
 	limit: number;
@@ -206,6 +222,17 @@ export type Token = {
 	token_type?: string;
 };
 
+export type TourPublic = {
+	name: string;
+	description?: string | null;
+	year?: number | null;
+	id: string;
+	events?: Array<EventPublic> | null;
+	disciplines?: Array<TreePublic> | null;
+	mobilities?: Array<TreePublic> | null;
+	actor_assocs?: Array<ActorAssocPublic> | null;
+};
+
 export type TreeCreate = {
 	path: string;
 	name?: string | null;
@@ -242,9 +269,9 @@ export type UpdateResponse_TreePublic_ = {
 
 export type UserCreate = {
 	email: string;
-	is_active: boolean;
-	is_superuser: boolean;
-	is_member: boolean;
+	is_active?: boolean;
+	is_superuser?: boolean;
+	is_member?: boolean;
 	password: string;
 };
 
@@ -264,9 +291,9 @@ export type UserRegister = {
 
 export type UserUpdate = {
 	email?: string | null;
-	is_active: boolean;
-	is_superuser: boolean;
-	is_member: boolean;
+	is_active?: boolean;
+	is_superuser?: boolean;
+	is_member?: boolean;
 	password?: string | null;
 };
 
@@ -547,3 +574,25 @@ export type OrgsDeleteOrgData = {
 export type OrgsDeleteOrgResponse = DeleteResponse;
 
 export type OrgsDeleteOrgError = HTTPValidationError;
+
+export type ToursReadTourByIdData = {
+	path: {
+		id: string;
+	};
+};
+
+export type ToursReadTourByIdResponse = TourPublic;
+
+export type ToursReadTourByIdError = HTTPValidationError;
+
+export type ToursReadToursData = {
+	query?: {
+		limit?: number;
+		offset?: number;
+		q?: string | null;
+	};
+};
+
+export type ToursReadToursResponse = PagedResponse_TourPublic_;
+
+export type ToursReadToursError = HTTPValidationError;

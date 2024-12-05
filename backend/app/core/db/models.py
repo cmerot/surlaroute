@@ -7,6 +7,7 @@ from typing import Any
 from geoalchemy2 import Geometry
 from sqlalchemy import DateTime, ForeignKey, func
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
@@ -121,6 +122,7 @@ class User(Base):
         foreign_keys=[person_id],
         cascade="all, delete-orphan",
         single_parent=True,
+        back_populates="user",
     )
 
     def __str__(self) -> str:
@@ -210,6 +212,9 @@ class Person(PermissionsMixin, Actor):
     )
     name: Mapped[str] = mapped_column()
     role: Mapped[str | None] = mapped_column(default=None)
+    user: Mapped[User | None] = relationship(
+        back_populates="person", foreign_keys=[User.person_id]
+    )
 
     def __repr__(self) -> str:
         return self.name
@@ -263,6 +268,15 @@ class Tour(Base, PermissionsMixin):
     actor_assocs: Mapped[list[TourActorAssoc]] = relationship(
         cascade="all, delete-orphan",
     )
+
+    @hybrid_property
+    def year(self) -> int | None:
+        first_event = min(
+            [event for event in self.events if event.start_dt is not None],
+            key=lambda event: event.start_dt.timestamp(),  # type: ignore[union-attr]
+        )
+
+        return first_event.start_dt.year if first_event else None  # type: ignore[union-attr]
 
     def __repr__(self) -> str:
         return self.name

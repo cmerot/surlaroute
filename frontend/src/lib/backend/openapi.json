@@ -166,7 +166,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 10,
+							"default": 100,
 							"title": "Limit"
 						}
 					},
@@ -456,7 +456,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 10,
+							"default": 100,
 							"title": "Limit"
 						}
 					},
@@ -520,7 +520,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 10,
+							"default": 100,
 							"title": "Limit"
 						}
 					},
@@ -674,7 +674,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 10,
+							"default": 100,
 							"title": "Limit"
 						}
 					},
@@ -854,7 +854,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 10,
+							"default": 100,
 							"title": "Limit"
 						}
 					},
@@ -972,6 +972,90 @@
 						"description": "Successful Response",
 						"content": {
 							"application/json": { "schema": { "$ref": "#/components/schemas/DeleteResponse" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/tours/{id}": {
+			"get": {
+				"tags": ["tours"],
+				"summary": "Read Tour By Id",
+				"description": "Read an tour by its id.",
+				"operationId": "tours-read_tour_by_id",
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": { "schema": { "$ref": "#/components/schemas/TourPublic" } }
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/tours/": {
+			"get": {
+				"tags": ["tours"],
+				"summary": "Read Tours",
+				"description": "Read paginated tours.",
+				"operationId": "tours-read_tours",
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": false,
+						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"maximum": 100,
+							"exclusiveMinimum": 0,
+							"default": 100,
+							"title": "Limit"
+						}
+					},
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/PagedResponse_TourPublic_" }
+							}
 						}
 					},
 					"422": {
@@ -1129,6 +1213,7 @@
 					},
 					"website": {
 						"anyOf": [
+							{ "type": "string" },
 							{ "type": "string", "maxLength": 2083, "minLength": 1, "format": "uri" },
 							{ "type": "null" }
 						],
@@ -1151,13 +1236,7 @@
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Phone Number"
 					},
-					"website": {
-						"anyOf": [
-							{ "type": "string", "maxLength": 2083, "minLength": 1, "format": "uri" },
-							{ "type": "null" }
-						],
-						"title": "Website"
-					},
+					"website": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Website" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"address": {
 						"anyOf": [{ "$ref": "#/components/schemas/AddressGeoPublic" }, { "type": "null" }]
@@ -1179,6 +1258,7 @@
 					},
 					"website": {
 						"anyOf": [
+							{ "type": "string" },
 							{ "type": "string", "maxLength": 2083, "minLength": 1, "format": "uri" },
 							{ "type": "null" }
 						],
@@ -1201,6 +1281,34 @@
 				"required": ["success"],
 				"title": "DeleteResponse",
 				"description": "Response schema for any delete request."
+			},
+			"EventPublic": {
+				"properties": {
+					"description": {
+						"anyOf": [{ "type": "string" }, { "type": "null" }],
+						"title": "Description"
+					},
+					"start_dt": {
+						"anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+						"title": "Start Dt"
+					},
+					"end_dt": {
+						"anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
+						"title": "End Dt"
+					},
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"event_venue": { "$ref": "#/components/schemas/OrgPublic" },
+					"actor_assocs": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Actor Assocs"
+					}
+				},
+				"type": "object",
+				"required": ["id", "event_venue"],
+				"title": "EventPublic"
 			},
 			"HTTPValidationError": {
 				"properties": {
@@ -1360,6 +1468,21 @@
 				"required": ["total", "limit", "offset", "results"],
 				"title": "PagedResponse[PersonPublic]"
 			},
+			"PagedResponse_TourPublic_": {
+				"properties": {
+					"total": { "type": "integer", "title": "Total" },
+					"limit": { "type": "integer", "title": "Limit" },
+					"offset": { "type": "integer", "title": "Offset" },
+					"results": {
+						"items": { "$ref": "#/components/schemas/TourPublic" },
+						"type": "array",
+						"title": "Results"
+					}
+				},
+				"type": "object",
+				"required": ["total", "limit", "offset", "results"],
+				"title": "PagedResponse[TourPublic]"
+			},
 			"PagedResponse_TreePublic_": {
 				"properties": {
 					"total": { "type": "integer", "title": "Total" },
@@ -1511,6 +1634,48 @@
 				"required": ["access_token"],
 				"title": "Token"
 			},
+			"TourPublic": {
+				"properties": {
+					"name": { "type": "string", "title": "Name" },
+					"description": {
+						"anyOf": [{ "type": "string" }, { "type": "null" }],
+						"title": "Description"
+					},
+					"year": { "anyOf": [{ "type": "integer" }, { "type": "null" }], "title": "Year" },
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"events": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/EventPublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Events"
+					},
+					"disciplines": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/TreePublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Disciplines"
+					},
+					"mobilities": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/TreePublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Mobilities"
+					},
+					"actor_assocs": {
+						"anyOf": [
+							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
+							{ "type": "null" }
+						],
+						"title": "Actor Assocs"
+					}
+				},
+				"type": "object",
+				"required": ["name", "id"],
+				"title": "TourPublic"
+			},
 			"TreeCreate": {
 				"properties": {
 					"path": { "type": "string", "title": "Path", "examples": ["some.path"] },
@@ -1582,13 +1747,13 @@
 			"UserCreate": {
 				"properties": {
 					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"is_active": { "type": "boolean", "title": "Is Active" },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser" },
-					"is_member": { "type": "boolean", "title": "Is Member" },
+					"is_active": { "type": "boolean", "title": "Is Active", "default": false },
+					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
+					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
 					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" }
 				},
 				"type": "object",
-				"required": ["email", "is_active", "is_superuser", "is_member", "password"],
+				"required": ["email", "password"],
 				"title": "UserCreate"
 			},
 			"UserPublic": {
@@ -1624,16 +1789,15 @@
 						],
 						"title": "Email"
 					},
-					"is_active": { "type": "boolean", "title": "Is Active" },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser" },
-					"is_member": { "type": "boolean", "title": "Is Member" },
+					"is_active": { "type": "boolean", "title": "Is Active", "default": false },
+					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
+					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
 					"password": {
 						"anyOf": [{ "type": "string", "maxLength": 40, "minLength": 8 }, { "type": "null" }],
 						"title": "Password"
 					}
 				},
 				"type": "object",
-				"required": ["is_active", "is_superuser", "is_member"],
 				"title": "UserUpdate"
 			},
 			"ValidationError": {

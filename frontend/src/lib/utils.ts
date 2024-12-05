@@ -1,8 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
+import { getContext } from 'svelte';
 import { cubicOut } from 'svelte/easing';
 import type { TransitionConfig } from 'svelte/transition';
-import { getContext } from 'svelte';
+import { twMerge } from 'tailwind-merge';
 
 export type CrumbsData = {
 	[key: string]: string;
@@ -12,6 +12,14 @@ export const addCrumb = (url: string, title: string) => {
 	const data: CrumbsData = getContext('crumbs-data');
 	data[url] = title;
 };
+
+export function formatISODate(dateString: string) {
+	const date = new Date(dateString);
+	const day = String(date.getDate()).padStart(2, '0');
+	const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+	const year = date.getFullYear();
+	return `${day}/${month}/${year}`;
+}
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));

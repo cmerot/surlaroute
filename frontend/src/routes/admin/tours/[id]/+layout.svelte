@@ -4,9 +4,9 @@
 	import type { Snippet } from 'svelte';
 	import { type PageData } from './$types';
 
-	let { children, data: person }: { children: Snippet; data: PageData } = $props();
+	let { children, data: tour }: { children: Snippet; data: PageData } = $props();
 
-	addCrumb(`/admin/directory/people/${person.id}`, person.name);
+	addCrumb(`/admin/tours/${tour.id}`, tour.name);
 </script>
 
 {@render children()}

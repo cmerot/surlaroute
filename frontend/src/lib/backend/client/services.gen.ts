@@ -88,7 +88,13 @@ import type {
 	OrgsUpdateOrgResponse,
 	OrgsDeleteOrgData,
 	OrgsDeleteOrgError,
-	OrgsDeleteOrgResponse
+	OrgsDeleteOrgResponse,
+	ToursReadTourByIdData,
+	ToursReadTourByIdError,
+	ToursReadTourByIdResponse,
+	ToursReadToursData,
+	ToursReadToursError,
+	ToursReadToursResponse
 } from './types.gen';
 
 export const client = createClient(createConfig());
@@ -539,4 +545,36 @@ export const orgsDeleteOrg = <ThrowOnError extends boolean = false>(
 		...options,
 		url: '/api/directory/orgs/{id}'
 	});
+};
+
+/**
+ * Read Tour By Id
+ * Read an tour by its id.
+ */
+export const toursReadTourById = <ThrowOnError extends boolean = false>(
+	options: Options<ToursReadTourByIdData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<
+		ToursReadTourByIdResponse,
+		ToursReadTourByIdError,
+		ThrowOnError
+	>({
+		...options,
+		url: '/api/tours/{id}'
+	});
+};
+
+/**
+ * Read Tours
+ * Read paginated tours.
+ */
+export const toursReadTours = <ThrowOnError extends boolean = false>(
+	options?: Options<ToursReadToursData, ThrowOnError>
+) => {
+	return (options?.client ?? client).get<ToursReadToursResponse, ToursReadToursError, ThrowOnError>(
+		{
+			...options,
+			url: '/api/tours/'
+		}
+	);
 };

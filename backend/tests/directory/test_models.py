@@ -9,6 +9,7 @@ from app.core.db.models import (
     Org,
     OrgActorAssoc,
     Person,
+    User,
 )
 from tests.directory.fixtures import get_fixture_uuid
 
@@ -128,4 +129,23 @@ def test_association_org_actor() -> None:
     assert hasattr(Actor(), "members") is False
     assert isinstance(Person().membership_assocs, InstrumentedList)
     assert hasattr(Person(), "members") is False
-    pass
+
+
+def test_person_user(session: Session) -> None:
+    u = User(email="test@example.com", hashed_password="nopass")
+    p = Person(name="robert")
+    p.user = u
+    session.add(p)
+    session.commit()
+    session.refresh(p)
+    assert p.user.email == "test@example.com"
+
+
+def test_user_person(session: Session) -> None:
+    u = User(email="test2@example.com", hashed_password="nopass")
+    p = Person(name="robert")
+    u.person = p
+    session.add(u)
+    session.commit()
+    session.refresh(u)
+    assert u.person.name == "robert"

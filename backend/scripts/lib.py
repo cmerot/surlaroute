@@ -103,7 +103,13 @@ def populate_model_from_dict(
 
             setattr(instance, key, sub_instances)
         else:
-            setattr(instance, key, value)
+            try:
+                setattr(instance, key, value)
+            except AttributeError as e:
+                print(f"instance -> {instance}")
+                print(f"key -> {key}")
+                print(f"value -> {value}")
+                raise e
 
     return instance
 

@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+import json
 import uuid
 from datetime import datetime
-from typing import Annotated
+from typing import Annotated, Any
 
 import geoalchemy2
 import geojson_pydantic
@@ -39,6 +40,25 @@ LtreeField = Annotated[
 HttpUrlField = Annotated[
     str | HttpUrl,
     PlainSerializer(lambda o: str(o), return_type=str),
+]
+
+DatatimeField = Annotated[
+    str | datetime,
+    PlainValidator(
+        lambda o: o if isinstance(o, datetime) else datetime.strptime(o, "%d/%m/%Y")
+    ),
+]
+
+
+def validate_json(v: str | dict[str, Any]) -> str:
+    if isinstance(v, str):
+        return v
+    return json.dumps(v)
+
+
+JsonField = Annotated[
+    str | dict[str, Any],
+    PlainValidator(validate_json),
 ]
 
 
@@ -153,6 +173,7 @@ class ActorAssocUpdate(Base):
 
 class ActorAssocImport(Base):
     actor: PersonImport | OrgImport
+    data: JsonField | None = None
 
 
 class OrgAssocImport(Base):
@@ -169,7 +190,6 @@ class OrgAssocImport(Base):
 
 class OrgBase(Base):
     description: str | None = None
-    type: str = "Org"
 
 
 class OrgPublic(OrgBase):
@@ -200,14 +220,13 @@ class OrgImport(OrgBase):
     activities: list[TreeImport] | None = None
     member_assocs: list[ActorAssocImport] | None = None
     contact: ContactImport | None = None
-    type_: str | None = None
+    type_: str = "Org"
 
 
 # Person
 
 
 class PersonBase(Base):
-    type: str = "Person"
     name: str
     role: str | None = None
 
@@ -229,8 +248,9 @@ class PersonUpdate(PersonBase):
 class PersonImport(PersonBase):
     id: uuid.UUID | None = None
     contact: ContactImport | None = None
-    type_: str
+    type_: str = "Person"
     membership_assocs: list[OrgAssocImport] | None = None
+    user: UserImport | None = None
 
 
 # Contact
@@ -294,9 +314,10 @@ class AddressGeoImport(AddressGeoBase):
 class TourBase(Base):
     name: str
     description: str | None = None
+    year: int | None = None
 
 
-class TourPublic(Base):
+class TourPublic(TourBase):
     id: uuid.UUID
     events: list[EventPublic] | None = None
     disciplines: list[TreePublic] | None = None
@@ -317,14 +338,15 @@ class TourImport(TourBase):
 
 class EventBase(Base):
     description: str | None = None
-    start_dt: datetime | None = None
-    end_dt: datetime | None = None
+    start_dt: DatatimeField | None = None
+    end_dt: DatatimeField | None = None
 
 
 class EventPublic(EventBase):
     id: uuid.UUID
     event_venue: OrgPublic
-    tour: TourPublic
+    # Prevent recursion
+    # tour: TourPublic
     actor_assocs: list[ActorAssocPublic] | None = None
 
 
