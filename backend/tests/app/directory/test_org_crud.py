@@ -8,7 +8,7 @@ from app.core.db.models import Org
 from app.core.schemas import PageParams
 from app.directory import crud
 from app.directory.crud_schemas import OrgCreate, OrgUpdate
-from tests.directory.fixtures import (
+from tests.app.directory.fixtures import (
     org_fixtures,
 )
 

@@ -7,7 +7,7 @@ from app.core.schemas import PagedResponse, UpdateResponse
 from app.directory.crud_schemas import (
     OrgPublic,
 )
-from tests.directory.fixtures import org_fixtures
+from tests.app.directory.fixtures import org_fixtures
 
 
 def test_read_org_by_id(client: TestClient) -> None:

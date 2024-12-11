@@ -7,7 +7,7 @@ from app.core.schemas import PagedResponse
 from app.directory.crud_schemas import (
     PersonPublic,
 )
-from tests.directory.fixtures import person_fixtures
+from tests.app.directory.fixtures import person_fixtures
 
 
 def test_read_person_by_id(client: TestClient) -> None:

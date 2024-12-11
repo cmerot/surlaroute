@@ -10,7 +10,7 @@ from app.core.schemas import (
 )
 from app.directory import crud
 from app.directory.crud_schemas import PersonCreate, PersonUpdate
-from tests.directory.fixtures import (
+from tests.app.directory.fixtures import (
     person_fixtures,
 )
 

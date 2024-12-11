@@ -11,7 +11,7 @@ from app.core.db.models import (
     Person,
     User,
 )
-from tests.directory.fixtures import get_fixture_uuid
+from tests.app.directory.fixtures import get_fixture_uuid
 
 
 def print_actor(actor: Actor) -> None:

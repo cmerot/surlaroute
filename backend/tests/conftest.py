@@ -13,11 +13,11 @@ from app.core.db.models import Base
 from app.core.db.session import get_db
 from app.core.routes import api_router
 from scripts.run_pre_start import create_db_extensions, create_first_superuser
-from tests.directory.fixtures import (
+from tests.app.directory.fixtures import (
     activity_fixtures,
     om_fixtures,
 )
-from tests.users.user import (
+from tests.app.users.user import (
     authentication_token_from_email,
     get_superuser_token_headers,
 )

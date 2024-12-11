@@ -11,7 +11,7 @@ from app.directory.crud_schemas import (
     TreeCreate,
     TreeUpdate,
 )
-from tests.directory.fixtures import (
+from tests.app.directory.fixtures import (
     activity_fixtures,
 )
 

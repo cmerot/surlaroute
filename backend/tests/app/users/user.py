@@ -5,7 +5,7 @@ from app.core.config import settings
 from app.core.db.models import User
 from app.users import crud
 from app.users.schemas import UserCreate, UserUpdate
-from tests.utils import random_email, random_lower_string
+from tests.app.utils import random_email, random_lower_string
 
 
 def user_authentication_headers(

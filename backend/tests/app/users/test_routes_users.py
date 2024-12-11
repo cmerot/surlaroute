@@ -10,7 +10,7 @@ from app.core.db.models import User
 from app.core.security import verify_password
 from app.users import crud
 from app.users.schemas import UserCreate
-from tests.utils import random_email, random_lower_string
+from tests.app.utils import random_email, random_lower_string
 
 
 def test_create_user_new_email(
