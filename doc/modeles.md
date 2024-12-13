@@ -32,16 +32,16 @@ Une fiche Activité permet de décrire l'activité d'une organisation. Cela comp
 
 ```mermaid
 classDiagram
-    note for AssociationOrgActor "Membres de l'organisation"
-    note for AssociationOrgActivity "Activités de l'organisation"
+    note for OrgActorAssoc "Membres de l'organisation"
+    note for OrgActivity "Activités de l'organisation"
     note for Activity "Défini un schema de données pour l'org"
     Actor <|-- Org
     Actor <|-- Person
     Org --o Activity
-    AssociationOrgActor --* Org
-    AssociationOrgActor --* Actor
-    AssociationOrgActivity --* Org
-    AssociationOrgActivity --* Activity
+    OrgActorAssoc --* Org
+    OrgActorAssoc --* Actor
+    OrgActivity --* Org
+    OrgActivity --* Activity
     Actor --* Contact
     Contact --* AddressGeo
 
@@ -49,10 +49,10 @@ classDiagram
     }
     class Org {
         +str name
-        +AssociationOrgActor members
-        +AssociationOrgActivity activities
+        +OrgActorAssoc members
+        +OrgActivity activities
         +bool is_member
-        +JSONB schema_data
+        +JSONB data
     }
     class Activity {
         +ltree path
@@ -60,19 +60,17 @@ classDiagram
         +JSONB schema
     }
     class Person {
-        +str firstname
-        +str lastname
-        +str website
+        +str name
+        +str role
         +bool is_individual
-        +AssociationContactAddressGeo mobilities
     }
 
-    class AssociationOrgActor {
+    class OrgActorAssoc {
         +Org org
         +Actor member
         +JSONB data
     }
-    class AssociationOrgActivity {
+    class OrgActivity {
         +uuid org_id
         +uuid activity_id
     }
@@ -80,7 +78,7 @@ classDiagram
         +str email_address
         +str phone_number
         +str website
-        +AddressGeo contact_address
+        +AddressGeo address
     }
     class AddressGeo {
         +str street
@@ -129,18 +127,18 @@ Si c'est je passe dans une salle de concert puis à un festival en 2 étapes :
 
 ```mermaid
 classDiagram
-    AssociationTourActor --* Tour
-    AssociationTourActor --* Actor
-    AssociationEventActor --* Event
-    AssociationEventActor --* Actor
+    TourActorAssoc --* Tour
+    TourActorAssoc --* Actor
+    EventActorAssoc --* Event
+    EventActorAssoc --* Actor
     Tour "1" --o "o..n" Event
-    note for AssociationTourActor "Contacts de la tournée par fonction"
-    note for AssociationEventActor "Contacts de l'événement par fonction"
+    note for TourActorAssoc "Contacts de la tournée par fonction"
+    note for EventActorAssoc "Contacts de l'événement par fonction"
     class Tour {
         str title
         str description
         +list[Event] events
-        +AssociationTourActor actors
+        +TourActorAssoc actor_assocs
     }
     class Event {
         +str title
@@ -148,15 +146,15 @@ classDiagram
         +Tour tour
         +DateTime start_datetime
         +DateTime end_datetime
-        +Address address
-        +AssociationEventActor actors
+        +AddressGeo address
+        +EventActorAssoc actors
     }
-    class AssociationTourActor {
+    class TourActorAssoc {
         +Tour tour
         +Actor actor
         +JSONB data
     }
-    class AssociationEventActor {
+    class EventActorAssoc {
         +Event event
         +Actor actor
         +JSONB data
@@ -213,16 +211,16 @@ classDiagram
     note for Tour "Ressource"
     note for Event "Ressource"
     note for Actor "Ressource"
+    note for Person "Personne correspondante à un utilisateur"
     Permissions <|-- Tour
     Permissions <|-- Event
     Permissions <|-- Actor
     Permissions --* User
     Permissions --* Org
-    User "1" --* "0..n" Org:membre
     User --o Person
     class Permissions {
-        +User user
-        +Org group
+        +User owner
+        +Org group_owner
         +bool group_read
         +bool group_write
         +bool member_read
@@ -230,16 +228,14 @@ classDiagram
         +bool other_read
     }
     class User {
-        +str pseudo
         +str email
         +str password
         +bool is_superuser
         +bool is_member
         +bool is_active
         +Person person
-        +has_permission()
     }
-    class Org {
-        +bool is_member
+    class Person {
+        +User user
     }
 ```
