@@ -76,6 +76,7 @@ dependencies = [
     { name = "types-pyyaml" },
     { name = "types-shapely" },
     { name = "types-sqlalchemy-utils" },
+    { name = "types-tabulate" },
     { name = "unidecode" },
 ]
 
@@ -119,6 +120,7 @@ requires-dist = [
     { name = "types-pyyaml", specifier = ">=6.0.12.20240917" },
     { name = "types-shapely", specifier = ">=2.0.0.20241112" },
     { name = "types-sqlalchemy-utils", specifier = ">=1.1.0" },
+    { name = "types-tabulate", specifier = ">=0.9.0.20241207" },
     { name = "unidecode", specifier = ">=1.3.8" },
 ]
 
@@ -1678,6 +1680,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/a5/5d/747310a5b105facc74c5b466e3e234f187df6bd5168dba6e28884f9be4d8/types_sqlalchemy_utils-1.1.0.tar.gz", hash = "sha256:af9d92992687c9e7c920b9a1b814fd10915b9b3a7b1f731b7fd2fff8ce2f3bfb", size = 22676 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4d/82/ff6cd783b288130577cb516d1f65d8efb650bcd7723d0e7774f632b3df16/types_sqlalchemy_utils-1.1.0-py3-none-any.whl", hash = "sha256:60b28fe3453f67fc90bb0a106063025cffc1efa6eedb59a7ea5b043644c3d16a", size = 38415 },
+]
+
+[[package]]
+name = "types-tabulate"
+version = "0.9.0.20241207"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/3f/43/16030404a327e4ff8c692f2273854019ed36718667b2993609dc37d14dd4/types_tabulate-0.9.0.20241207.tar.gz", hash = "sha256:ac1ac174750c0a385dfd248edc6279fa328aaf4ea317915ab879a2ec47833230", size = 8195 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5e/86/a9ebfd509cbe74471106dffed320e208c72537f9aeb0a55eaa6b1b5e4d17/types_tabulate-0.9.0.20241207-py3-none-any.whl", hash = "sha256:b8dad1343c2a8ba5861c5441370c3e35908edd234ff036d4298708a1d4cf8a85", size = 8307 },
 ]
 
 [[package]]

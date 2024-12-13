@@ -74,7 +74,6 @@ def validate_geom_point(
     if isinstance(v, str):
         try:
             lat, lon = map(float, v.split(",", 1))
-            print(lat, lon)
             v = shapely.geometry.Point((lat, lon))
         except ValueError:
             raise ValueError(
@@ -226,7 +225,7 @@ class OrgImport(OrgBase):
     member_assocs: list[ActorAssocImport] | None = None
     tour_assocs: list[TourAssocImport] | None = None
     contact: ContactImport | None = None
-    type_: str = "Org"
+    type: str = "Org"
 
 
 # Person
@@ -254,7 +253,7 @@ class PersonUpdate(PersonBase):
 class PersonImport(PersonBase):
     id: uuid.UUID | None = None
     contact: ContactImport | None = None
-    type_: str = "Person"
+    type: str = "Person"
     membership_assocs: list[OrgAssocImport] | None = None
     user: UserImport | None = None
 

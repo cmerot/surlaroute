@@ -50,21 +50,15 @@ def create_first_superuser(session: Session) -> None:
         crud.create_user(session=session, user_create=user_in)
         session.commit()
         logger.info("Superuser created")
+        print("Superuser created")
     except IntegrityError:
         logger.info("Superuser already exists")
-
-
-def get_path(relative_path: str) -> str:
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Build the full path
-    full_path = os.path.join(script_dir, relative_path)
-    return full_path
+        print("Superuser already exists")
 
 
 def upgrade_to_head() -> None:
-    alembic_cfg = Config(get_path("../alembic.ini"))
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    alembic_cfg = Config(os.path.join(script_dir, "../alembic.ini"))
 
     # Perform the upgrade to the head revision
     command.upgrade(alembic_cfg, "head")
@@ -85,6 +79,7 @@ if __name__ == "__main__":
     # For some reason (alembic.ini?) alembic changes the log level
     # so this wont appear
     logger.info("Creating first superuser")
+    print("Creating first superuser")
     create_first_superuser(session=session)
 
     logging.shutdown()

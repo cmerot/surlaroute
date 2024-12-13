@@ -1,17 +1,41 @@
 #!/usr/bin/env python
-# mypy: ignore-errors
 
 import json
-import os
+from typing import Any
 
-import pyexcel as pe
+import pyexcel as pe  # type: ignore[import-untyped]
+
+from scripts.lib import get_input_file_path
 
 
-def create_nested_dict(flat_dict: dict) -> dict:
-    def insert(d: dict, keys: list[str], value: str):
+def create_nested_dict(flat_dict: dict[str, Any]) -> dict[str, Any]:
+    """
+    Transform a flat dict to a nested dict. Example:
+    {
+        "a": "1",
+        "b.c": "3",
+        "d.0": "4",
+        "d.1.name": "5"
+    }
+
+    becomes:
+
+    {
+        "a": "1",
+        "b": {
+            "c": "3"
+        },
+        "d": [
+            "4",
+            {"name": "5"}
+        ]
+    }
+    """
+
+    def insert(d: dict[str, Any], keys: list[str], value: str) -> None:
         key = keys[0]
         if key.isdigit():
-            key = int(key)
+            key = int(key)  # type: ignore[assignment]
 
         if len(keys) == 1:
             if isinstance(key, int):
@@ -34,7 +58,7 @@ def create_nested_dict(flat_dict: dict) -> dict:
                 if value != "":
                     insert(d[key], keys[1:], value)
 
-    nested_dict = {}
+    nested_dict: dict[str, Any] = {}
     for key, value in flat_dict.items():
         keys = key.split(".")
         insert(nested_dict, keys, value)
@@ -42,20 +66,11 @@ def create_nested_dict(flat_dict: dict) -> dict:
     return nested_dict
 
 
-def get_path(relative_path: str) -> str:
-    # Get the directory of the current script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # Build the full path
-    full_path = os.path.join(script_dir, relative_path)
-    return full_path
-
-
-input = get_path("../fixtures/private/data.ods")
-output = get_path("../fixtures/private/data.json")
-
 if __name__ == "__main__":
-    data = {}
+    input = get_input_file_path()
+    output = input.rsplit(".", 1)[0] + ".json"
+
+    data: dict[str, Any] = {}
 
     workbook = pe.get_book(file_name=input)
 

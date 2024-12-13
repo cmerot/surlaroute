@@ -94,7 +94,9 @@ class TreeBase(Base):
     name: Mapped[str] = mapped_column()
 
     def __repr__(self) -> str:
-        return str(self.path)
+        if not self.path:
+            return super().__repr__()
+        return f"{self.__class__.__name__}({self.path})"
 
     def __setattr__(self, name: str, value: Any) -> None:
         if name == "path":
@@ -125,8 +127,10 @@ class User(Base):
         back_populates="user",
     )
 
-    def __str__(self) -> str:
-        return self.email
+    def __repr__(self) -> str:
+        if not self.email:
+            return super().__repr__()
+        return f"{self.__class__.__name__}({self.email})"
 
 
 #
@@ -169,7 +173,7 @@ class Actor(Base):
         ForeignKey("contact.id"),
         default=None,
     )
-    contact: Mapped[Contact] = relationship()
+    contact: Mapped[Contact] = relationship(back_populates="actor")
 
     @declared_attr.directive
     def __mapper_args__(cls) -> dict[str, Any]:
@@ -202,7 +206,9 @@ class Org(PermissionsMixin, Actor):
     )
 
     def __repr__(self) -> str:
-        return self.name
+        if not self.name:
+            return super().__repr__()
+        return f"{self.__class__.__name__}({self.name})"
 
 
 class Person(PermissionsMixin, Actor):
@@ -217,7 +223,9 @@ class Person(PermissionsMixin, Actor):
     )
 
     def __repr__(self) -> str:
-        return self.name
+        if not self.name:
+            return super().__repr__()
+        return f"{self.__class__.__name__}({self.name})"
 
 
 class Contact(Base):
@@ -230,6 +238,12 @@ class Contact(Base):
         default=None,
     )
     address: Mapped[AddressGeo] = relationship()
+    actor: Mapped[Actor] = relationship()
+
+    def __repr__(self) -> str:
+        if not self.actor:
+            return super().__repr__()
+        return f"{self.__class__.__name__}(belongs to {self.actor})"
 
 
 class AddressGeo(Base):
@@ -248,7 +262,9 @@ class AddressGeo(Base):
     geom_shape: Mapped[Geometry | None] = mapped_column(Geometry("POLYGON", srid=4326))
 
     def __repr__(self) -> str:
-        return self.q if self.q else super().__repr__()
+        if not self.q:
+            return super().__repr__()
+        return f"{self.__class__.__name__}({self.q})"
 
 
 class Tour(Base, PermissionsMixin):
@@ -279,7 +295,9 @@ class Tour(Base, PermissionsMixin):
         return first_event.start_dt.year if first_event else None  # type: ignore[union-attr]
 
     def __repr__(self) -> str:
-        return self.name
+        if not self.name:
+            return super().__repr__()
+        return f"{self.__class__.__name__}({self.name})"
 
 
 class Event(Base, PermissionsMixin):
@@ -306,7 +324,12 @@ class Event(Base, PermissionsMixin):
     )
 
     def __repr__(self) -> str:
-        return f"{self.tour.name} : {self.event_venue.name}"
+        try:
+            return (
+                f"{self.__class__.__name__}({self.tour.name}/{self.event_venue.name})"
+            )
+        except AttributeError:
+            return super().__repr__()
 
 
 #
@@ -356,6 +379,9 @@ class OrgActivity(Base):
         ForeignKey("activity.id"), primary_key=True
     )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(org_id={self.org_id} activity_id={self.activity_id})"
+
 
 class OrgActorAssoc(Base):
     """
@@ -383,6 +409,12 @@ class OrgActorAssoc(Base):
     )
     data: Mapped[dict[str, Any] | None] = mapped_column(JSONB, default=None)
 
+    def __repr__(self) -> str:
+        return (
+            # f"{self.__class__.__name__}(org_id={self.org_id} actor_id={self.actor_id})"
+            f"{self.__class__.__name__}(org={self.org} actor={self.actor})"
+        )
+
 
 class TourActorAssoc(Base):
     tour_id: Mapped[uuid.UUID] = mapped_column(
@@ -403,6 +435,9 @@ class TourActorAssoc(Base):
     )
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(tour_id={self.tour_id} actor_id={self.actor_id})"
+
 
 class TourDiscipline(Base):
     tour_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tour.id"), primary_key=True)
@@ -410,12 +445,18 @@ class TourDiscipline(Base):
         ForeignKey("discipline.id"), primary_key=True
     )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(tour_id={self.tour_id} discipline_id={self.discipline_id})"
+
 
 class TourMobility(Base):
     tour_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tour.id"), primary_key=True)
     mobility_id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("mobility.id"), primary_key=True
     )
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(tour_id={self.tour_id} mobility_id={self.mobility_id})"
 
 
 class EventActorAssoc(Base):
@@ -436,3 +477,6 @@ class EventActorAssoc(Base):
         foreign_keys=[actor_id],
     )
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(event_id={self.event_id} actor_id={self.actor_id})"
