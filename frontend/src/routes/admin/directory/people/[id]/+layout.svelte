@@ -1,6 +1,5 @@
-<script lang="ts">
-	import { page } from '$app/stores';
-	import { addCrumb } from '$lib/utils';
+<!-- <script lang="ts">
+	import { addCrumb } from '$lib/slr-utils';
 	import type { Snippet } from 'svelte';
 	import { type PageData } from './$types';
 
@@ -9,4 +8,4 @@
 	addCrumb(`/admin/directory/people/${person.id}`, person.name);
 </script>
 
-{@render children()}
+{@render children()} -->

@@ -44,8 +44,8 @@
 <script lang="ts">
 	import type { UserPublic } from '$lib/backend/client';
 
+	import { Logo } from '$lib/components/icons2';
 	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
-	import { Compass } from 'lucide-svelte';
 	import type { ComponentProps } from 'svelte';
 	type Props = ComponentProps<typeof Sidebar.Root> & {
 		user: UserPublic;
@@ -63,13 +63,11 @@
 				<Sidebar.MenuButton size="lg">
 					{#snippet child({ props })}
 						<a href="/" {...props}>
-							<div
-								class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
-							>
-								<Compass class="size-6" />
+							<div class="flex items-center justify-center rounded-lg text-primary">
+								<div class="size-10"><Logo /></div>
 							</div>
-							<div class="flex flex-col gap-0.5 leading-none">
-								<span class="font-semibold">Sur la route</span>
+							<div class="flex flex-col gap-0.5 text-primary">
+								<span class="font-title text-2xl">Sur la route</span>
 							</div>
 						</a>
 					{/snippet}

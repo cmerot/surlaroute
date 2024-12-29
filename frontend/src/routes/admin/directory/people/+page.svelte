@@ -1,5 +1,5 @@
-<script lang="ts">
-	import Pagination from '$lib/components/pagination.svelte';
+<!-- <script lang="ts">
+	import Pagination from '$lib/components/pagination/pagination.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import { Plus } from 'lucide-svelte';
@@ -69,4 +69,4 @@
 	<Button variant="default" size="icon" class="rounded-full">
 		<Plus class="h-6 w-6" />
 	</Button>
-</a>
+</a> -->

@@ -1,14 +1,19 @@
+from __future__ import annotations
+
+import uuid
 from typing import Annotated, Any, Generic, TypeVar
 
+import geoalchemy2
+import geojson_pydantic
+import geojson_pydantic.types
 from fastapi import Depends
 from pydantic import (
     BaseModel,
     ConfigDict,
     Field,
+    field_validator,
 )
-
-from app.directory.crud_schemas import OrgPublic
-from app.users.schemas import UserPublic
+from sqlalchemy_utils import Ltree
 
 T = TypeVar("T")
 
@@ -17,7 +22,7 @@ class PageParams(BaseModel):
     """Request query params for paginated API."""
 
     q: str | None = Field(default=None)
-    limit: int = Field(default=100, gt=0, le=100)
+    limit: int = Field(default=10, gt=0, le=100)
     offset: int = Field(default=0, ge=0)
 
 
@@ -54,11 +59,68 @@ class DeleteResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class PermissionsPublic(BaseModel):
-    owner: UserPublic | None
-    owner_group: OrgPublic | None
-    group_read: bool = Field(default=True)
-    group_write: bool = Field(default=True)
-    member_read: bool = Field(default=True)
-    member_write: bool = Field(default=False)
-    other_read: bool = Field(default=False)
+class Base(BaseModel):
+    model_config = ConfigDict(
+        from_attributes=True,
+        exclude_none=True,
+        exclude_unset=True,
+    )
+
+
+class PermissionMixin:
+    owner_id: uuid.UUID | None = None
+    group_owner_id: uuid.UUID | None = None
+
+    other_read: bool
+    member_read: bool
+    group_read: bool
+
+    owner: OwnerPublic | None = None
+
+
+class OwnerPersonPublic(Base):
+    id: uuid.UUID
+    name: str
+
+
+class OwnerPublic(Base):
+    person: OwnerPersonPublic | None = None
+
+
+class AddressPublic(Base):
+    q: str
+    geom_point: geojson_pydantic.Point | None = None
+
+    @field_validator("geom_point", mode="before")
+    def serialize_geom_point(
+        v: geoalchemy2.WKBElement,
+    ) -> geojson_pydantic.Point | None:
+        """Plain serializer for GeomPoint"""
+        if not v:
+            return None
+
+        if not isinstance(v, geoalchemy2.WKBElement):
+            raise ValueError("Not a WKBElement")
+
+        shape = geoalchemy2.shape.to_shape(v)
+
+        coords = geojson_pydantic.types.Position2D(
+            latitude=shape.coords[0][0], longitude=shape.coords[0][1]
+        )
+        return geojson_pydantic.Point(type="Point", coordinates=coords)
+
+
+class ContactPublic(Base):
+    email_address: str | None = None
+    phone_number: str | None = None
+    address: AddressPublic | None = None
+    website: str | None = None
+
+
+class TreePublic(Base):
+    name: str
+    path: str
+
+    @field_validator("path", mode="before")
+    def validate_path(v: Ltree):
+        return str(v)

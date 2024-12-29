@@ -1,5 +1,5 @@
-import { usersRead } from '$lib/backend/client/services.gen';
-import type { UsersReadData } from '$lib/backend/client/types.gen';
+import type { UsersReadData } from '$lib/backend/client';
+import { usersRead } from '$lib/backend/client';
 import { error } from '@sveltejs/kit';
 
 export async function load({ url }) {

@@ -1,6 +1,6 @@
-<script lang="ts">
-	import Contact from '$lib/components/contact.svelte';
-	import Members from '$lib/components/members.svelte';
+<!-- <script lang="ts">
+	import Contact from '$lib/components/directory/contact.svelte';
+	import Members from '$lib/components/directory/members.svelte';
 	import { type PageData } from './$types';
 
 	const { data: org }: { data: PageData } = $props();
@@ -12,4 +12,4 @@
 
 <p>{org.description}</p>
 
-<Members members={org.member_assocs} />
+<Members member_assocs={org.member_assocs} /> -->

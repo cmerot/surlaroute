@@ -1,4 +1,4 @@
-import { usersRegister } from '$lib/backend/client/services.gen.js';
+import { usersRegister } from '$lib/backend/client/sdk.gen';
 import { getApiErrorMessage } from '$lib/backend/utils.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';

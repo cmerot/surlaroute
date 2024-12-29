@@ -1,9 +1,9 @@
-import { toursReadTourById } from '$lib/backend/client/services.gen.js';
+import { toursGetTourDetails } from '$lib/backend/client/sdk.gen';
 import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ params }) => {
-	const { data: tour } = await toursReadTourById({
+	const { data: tour } = await toursGetTourDetails({
 		path: {
 			id: params.id
 		}

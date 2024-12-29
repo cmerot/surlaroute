@@ -1,9 +1,9 @@
-import { toursReadTours } from '$lib/backend/client/services.gen';
-import type { ToursReadToursData } from '$lib/backend/client/types.gen';
+import type { ToursGetToursData } from '$lib/backend/client';
+import { toursGetTours } from '$lib/backend/client';
 import { error } from '@sveltejs/kit';
 
 export async function load({ url }) {
-	const query: ToursReadToursData['query'] = {};
+	const query: ToursGetToursData['query'] = {};
 
 	const limitParam = url.searchParams.get('limit');
 	if (limitParam) {
@@ -13,7 +13,7 @@ export async function load({ url }) {
 	if (offsetParam) {
 		query.offset = parseInt(offsetParam);
 	}
-	const { data, error: err } = await toursReadTours({ query });
+	const { data, error: err } = await toursGetTours({ query });
 
 	if (err) {
 		return error(500, 'Pas de réponse du serveur');

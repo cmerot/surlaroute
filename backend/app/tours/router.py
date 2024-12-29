@@ -1,59 +1,131 @@
 import uuid
+from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from geojson_pydantic import FeatureCollection
 from sqlalchemy.exc import NoResultFound
 
 from app.core.db.session import SessionDep
 from app.core.schemas import (
+    AddressPublic,
     PagedResponse,
     PageParamsDep,
 )
-from app.directory.crud_schemas import (
+from app.core.security import CurrentUserOrNoneDep
+from app.tours import repository
+from app.tours.schemas import (
     TourPublic,
 )
-
-# from app.core.security import CurrentPermissionsUserDep
-from app.tours import crud
 
 router = APIRouter()
 
 
-@router.get("/{id}", response_model=TourPublic)
-def read_tour_by_id(
+@router.get(
+    "/tours/{id}.geojson",
+    response_model=FeatureCollection,
+    response_model_exclude_none=True,
+)
+def get_tour_details_geojson(
     session: SessionDep,
     id: uuid.UUID,
-) -> TourPublic:
-    """Read an tour by its id."""
+    _user: CurrentUserOrNoneDep,
+) -> Any:
+    """
+    Tour geojson at /tours/tours/{id}.geojson
+
+    """
 
     try:
-        tour = crud.read_tour(
-            session=session,
-            id=id,
-        )
+        tour = repository.get_tour_details(session=session, tour_id=id)
     except NoResultFound:
         raise HTTPException(
             status_code=404,
-            detail=f"Tour '{id}' not found",
+            detail=f"Tour '{id}' non trouvé",
         )
-    return TourPublic.model_validate(tour)
+
+    tour.events.sort(key=lambda e: e.start_dt)
+    # Generate a MultiLineString, each LineString representing the way between two events
+    coordinates = []
+    for i in range(len(tour.events) - 1):
+        event1 = tour.events[i]
+        event2 = tour.events[i + 1]
+
+        address1 = AddressPublic.model_validate(
+            event1.actor_assocs[0].actor.contact.address
+        )
+        address2 = AddressPublic.model_validate(
+            event2.actor_assocs[0].actor.contact.address
+        )
+        if address1.geom_point and address2.geom_point:
+            coordinates.append(address1.geom_point.coordinates)
+            coordinates.append(address2.geom_point.coordinates)
+
+    if len(coordinates) < 1:
+        return {
+            "type": "FeatureCollection",
+            "features": [],
+        }
+
+    return {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "geometry": {
+                    "type": "MultiLineString",
+                    "coordinates": [coordinates],
+                },
+                "properties": {"name": tour.name},
+            }
+        ],
+    }
 
 
-@router.get("/", response_model=PagedResponse[TourPublic])
-def read_tours(
+@router.get(
+    "/tours/{id}",
+    response_model=TourPublic,
+    response_model_exclude_none=True,
+)
+def get_tour_details(
+    session: SessionDep,
+    id: uuid.UUID,
+    _user: CurrentUserOrNoneDep,
+) -> Any:
+    # ) -> Tour:
+    """
+    Tour details at /tours/tours/{id}
+
+    """
+
+    try:
+        tour = repository.get_tour_details(session=session, tour_id=id)
+    except NoResultFound:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Tour '{id}' non trouvé",
+        )
+    return tour
+
+
+@router.get(
+    "/",
+    response_model=PagedResponse[TourPublic],
+    response_model_exclude_none=True,
+)
+def get_tours(
     session: SessionDep,
     page_params: PageParamsDep,
-) -> PagedResponse[TourPublic]:
-    """Read paginated tours."""
+    _user: CurrentUserOrNoneDep,
+) -> Any:
+    """
+    Tours list at /
 
-    tours, count = crud.read_tours(
-        session=session,
-        page_params=page_params,
-    )
-    return PagedResponse[TourPublic].model_validate(
-        {
-            "total": count,
-            "limit": page_params.limit,
-            "offset": page_params.offset,
-            "results": tours,
-        }
-    )
+    """
+
+    tours, count = repository.get_tours(session=session, page_params=page_params)
+    return {
+        "total": count,
+        "limit": page_params.limit,
+        "offset": page_params.offset,
+        "results": tours,
+    }

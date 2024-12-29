@@ -8,8 +8,8 @@ from app.core.db.session import SessionLocal
 from app.core.security import get_password_hash
 
 if __name__ == "__main__":
-    password = os.getenv("SLR_PASSWORD")
-    email = os.getenv("SLR_EMAIL")
+    email = os.getenv("SLR_EMAIL") or input("Email:")
+    password = os.getenv("SLR_PASSWORD") or input("Password:")
 
     db = SessionLocal()
 

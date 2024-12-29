@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { addCrumb } from '$lib/utils';
+	import { addCrumb } from '$lib/slr-utils';
 	import type { Snippet } from 'svelte';
 	import { type PageData } from './$types';
 

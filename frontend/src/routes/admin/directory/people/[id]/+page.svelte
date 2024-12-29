@@ -1,5 +1,5 @@
-<script lang="ts">
-	import Contact from '$lib/components/contact.svelte';
+<!-- <script lang="ts">
+	import Contact from '$lib/components/directory/contact.svelte';
 	import { type PageData } from './$types';
 
 	const { data: person }: { data: PageData } = $props();
@@ -7,4 +7,4 @@
 
 <h1>{person.name}</h1>
 
-<Contact contact={person.contact} />
+<Contact contact={person.contact} /> -->

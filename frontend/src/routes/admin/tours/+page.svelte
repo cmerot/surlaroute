@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Pagination from '$lib/components/pagination.svelte';
+	import Pagination from '$lib/components/pagination/pagination.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table';
 	import { Plus } from 'lucide-svelte';
@@ -33,10 +33,10 @@
 					{tour.year}
 				</Table.Cell>
 				<Table.Cell>
-					{tour.disciplines?.map((m) => m.name).join(', ')}
+					<!-- {tour.disciplines?.map((m) => m.name).join(', ')} -->
 				</Table.Cell>
 				<Table.Cell>
-					{tour.mobilities?.map((m) => m.name).join(', ')}
+					<!-- {tour.mobilities?.map((m) => m.name).join(', ')} -->
 				</Table.Cell>
 			</Table.Row>
 		{/each}

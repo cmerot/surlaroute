@@ -1,7 +1,3 @@
-import type { LayoutServerLoad } from './$types';
-export const load: LayoutServerLoad = async ({ cookies }) => {
-	const notification = cookies.get('notification');
-	cookies.delete('notification', { path: '/' });
-
-	return { notification };
-};
+export async function load({ locals }) {
+	return { user: locals.session?.data?.user };
+}

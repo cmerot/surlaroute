@@ -1,30 +1,18 @@
 <script lang="ts">
-	import { client } from '$lib/backend/client';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import { ModeWatcher } from 'mode-watcher';
+	import Layout from '$lib/components/layout/layout.svelte';
 	import { setContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
 	import '../app.css';
-
-	const VITE_API_URL = import.meta.env.VITE_API_URL;
-
+	import { myGlobalState } from '../lib/state.svelte';
 	let { children, data } = $props();
-
-	let crumbs = $state({
-		'/': 'Accueil'
-	});
-	setContext('crumbs-data', crumbs);
-
 	$effect(() => {
-		if (data.notification) {
-			toast(data.notification);
-		}
-	});
-	client.setConfig({
-		baseUrl: VITE_API_URL
+		myGlobalState.user = data.user;
 	});
 </script>
 
-{@render children()}
-<Toaster richColors />
-<ModeWatcher defaultTheme="violet" />
+<Layout>
+	<div class="flex flex-1 flex-col">
+		<div class="h-full w-full bg-white/50 dark:bg-black/50">
+			{@render children()}
+		</div>
+	</div>
+</Layout>

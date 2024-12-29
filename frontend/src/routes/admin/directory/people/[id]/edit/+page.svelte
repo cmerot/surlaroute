@@ -1,10 +1,10 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import { page } from '$app/stores';
-	import FormActionError from '$lib/components/form-action-error.svelte';
+	import FormActionError from '$lib/components/form/action-error.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
-	import { addCrumb } from '$lib/utils';
+	import { addCrumb } from '$lib/slr-utils';
 	import { toast } from 'svelte-sonner';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -46,7 +46,7 @@
 			</Form.Control>
 			<Form.FieldErrors />
 		</Form.Field>
-		<!-- <Form.Field form={sform} name="email">
+		<Form.Field form={sform} name="email">
 			<Form.Control>
 				{#snippet children({ props })}
 					<Form.Label>Email</Form.Label>
@@ -54,7 +54,7 @@
 				{/snippet}
 			</Form.Control>
 			<Form.FieldErrors />
-		</Form.Field> -->
+		</Form.Field>
 		<Form.Button class="font-bold">Modifier</Form.Button>
 	</form>
 	<Accordion.Root type="single">
@@ -69,4 +69,4 @@
 			</Accordion.Content>
 		</Accordion.Item>
 	</Accordion.Root>
-</div>
+</div> -->

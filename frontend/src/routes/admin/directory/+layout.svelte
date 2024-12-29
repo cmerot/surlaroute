@@ -1,8 +1,8 @@
-<script lang="ts">
-	import { addCrumb } from '$lib/utils';
+<!-- <script lang="ts">
+	// import { addCrumb } from '$lib/slr-utils';
 
 	let { children } = $props();
-	addCrumb('/admin/directory', 'Annuaire ArMoDo');
+	// addCrumb('/admin/directory', 'Annuaire ArMoDo');
 </script>
 
-{@render children()}
+{@render children()} -->

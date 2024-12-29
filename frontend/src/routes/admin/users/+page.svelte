@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Pagination from '$lib/components/pagination.svelte';
+	import Pagination from '$lib/components/pagination/pagination.svelte';
 	import { Button } from '$lib/components/ui/button';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { Plus } from 'lucide-svelte';

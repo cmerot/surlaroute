@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
 	import type { OrgPublic } from '$lib/backend/client';
 	import Events from '$lib/components/events.svelte';
 	import Orgs from '$lib/components/orgs.svelte';
@@ -45,4 +45,4 @@
 		</Tabs.Content>
 		<Tabs.Content value="people"></Tabs.Content>
 	</Tabs.Root>
-</div>
+</div> -->

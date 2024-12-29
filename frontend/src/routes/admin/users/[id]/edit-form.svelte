@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import FormActionError from '$lib/components/form-action-error.svelte';
+	import FormActionError from '$lib/components/form/action-error.svelte';
 	import * as Accordion from '$lib/components/ui/accordion';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import Switch from '$lib/components/ui/switch/switch.svelte';
-	import { addCrumb } from '$lib/utils';
+	import { addCrumb } from '$lib/slr-utils';
 	import { type Infer, superForm, type SuperValidated } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { formSchema, type FormSchema } from './schema';

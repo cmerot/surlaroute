@@ -1,10 +1,10 @@
-import { usersRegister } from '$lib/backend/client/services.gen.js';
+import { usersRegister } from '$lib/backend/client/sdk.gen';
+import { getApiErrorMessage } from '$lib/backend/utils.js';
 import { error, fail, redirect } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import type { Actions, PageServerLoad } from './$types.js';
 import { formSchema } from './schema';
-import { getApiErrorMessage } from '$lib/backend/utils.js';
 
 export const load: PageServerLoad = async () => {
 	return {

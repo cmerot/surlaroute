@@ -1,5 +1,5 @@
 <script lang="ts">
-	import FormActionError from '$lib/components/form-action-error.svelte';
+	import FormActionError from '$lib/components/form/action-error.svelte';
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
 	import { formSchema, type FormSchema } from './schema';
