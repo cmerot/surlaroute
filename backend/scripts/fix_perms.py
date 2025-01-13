@@ -25,8 +25,8 @@ We use that owner and group to set ownership of:
 - and each time an actor is an org and has members, then we also set the membership on those members
 """
 
-from sqlalchemy import and_
-from sqlalchemy.orm import joinedload
+from sqlalchemy import and_, or_, select
+from sqlalchemy.orm import raiseload, subqueryload
 from tabulate import tabulate
 
 from app.core.db.models import (
@@ -40,9 +40,9 @@ from app.core.db.models import (
     TourActorAssoc,
     User,
 )
-from app.core.db.session import SessionLocal
+from app.core.db.session import get_db
 
-db = SessionLocal()
+db = next(get_db())
 
 
 def find_first_tour_org_producer(tour: Tour) -> Org | None:
@@ -97,17 +97,18 @@ def set_tour_events_ownership(tour: Tour, owner_group: Org, owner: User) -> None
         set_actor_assocs_ownership(event.actor_assocs, owner_group, owner)
 
         # Event venue owner
-        set_actor_ownership(event.event_venue, owner_group, owner)
+        # set_actor_ownership(event.event_venue, owner_group, owner)
 
 
 def set_tours_ownership() -> None:
-    tours = (
-        db.query(Tour)
-        .options(joinedload(Tour.actor_assocs))
-        .order_by(Tour.name)
-        # .where(Tour.owner_id == None)  # noqa: E711
-        .all()
-    )
+    tours = db.scalars(
+        select(Tour).options(
+            subqueryload(Tour.actor_assocs),
+            subqueryload(Tour.owner),
+            subqueryload(Tour.group_owner),
+        )
+    ).all()
+
     for t in tours:
         tour_owner_group = find_first_tour_org_producer(t)
         if not tour_owner_group:
@@ -115,11 +116,13 @@ def set_tours_ownership() -> None:
 
         tour_owner = find_first_org_person_member(tour_owner_group)
         if not tour_owner:
-            raise Exception("tour owner not found")
+            raise Exception(f"tour owner not found {t} ")
 
         # Tour owner
-        t.owner_id = tour_owner.id
-        t.group_owner_id = tour_owner_group.id
+        if not t.owner_id:
+            t.owner_id = tour_owner.id
+        if not t.group_owner_id:
+            t.group_owner_id = tour_owner_group.id
 
         # Tour events owner
         set_tour_events_ownership(t, tour_owner_group, tour_owner)
@@ -154,53 +157,93 @@ def set_orgs_with_members_ownership() -> None:
             o.owner_id = o.member_assocs[0].actor.user.id
 
 
-def print_entities_without_ownership() -> None:
-    lines = [["Type", "Entity", "Extra"]]
+def print_entities_ownership(with_owner: bool = True) -> None:
+    lines = [["Type", "Entity", "Owner", "Group owner"]]
 
-    people = (
-        db.query(Person)
-        .filter(Person.owner_id == None)  # noqa: E711
-        .all()
-    )
+    if with_owner:
+        f = and_(Person.owner_id.isnot(None), Person.group_owner_id.isnot(None))
+    else:
+        f = or_(Person.owner_id.is_(None), Person.group_owner_id.is_(None))
+
+    people = db.query(Person).filter(f).all()
     for p in people:
         lines.append(
-            ["Person", p.name, ", ".join([m.org.name for m in p.membership_assocs])]
+            [
+                "Person",
+                p.name,
+                p.owner.email if p.owner else "?",
+                p.group_owner.name if p.group_owner else "?",
+            ]
         )
 
-    orgs = (
-        db.query(Org)
-        .filter(Org.owner_id == None)  # noqa: E711
-        .all()
-    )
+    if with_owner:
+        f = and_(Org.owner_id.isnot(None), Org.group_owner_id.isnot(None))
+    else:
+        f = or_(Org.owner_id.is_(None), Org.group_owner_id.is_(None))
+
+    orgs = db.scalars(
+        select(Org)
+        .options(raiseload("*"), subqueryload(Org.group_owner), subqueryload(Org.owner))
+        .filter(f)
+    ).all()
+
     for o in orgs:
         lines.append(
-            ["Tour", o.name, ", ".join([m.actor.name for m in o.member_assocs])]  # type: ignore[attr-defined]
+            [
+                "Org",
+                o.name,
+                o.owner.email if o.owner else "?",
+                o.group_owner.name if o.group_owner else "?",
+            ]
         )
 
-    tours = (
-        db.query(Tour)
-        .filter(Tour.owner_id == None)  # noqa: E711
-        .all()
-    )
-    for t in tours:
-        lines.append(["Tour", t.name])
+    if with_owner:
+        f = and_(Tour.owner_id.isnot(None), Tour.group_owner_id.isnot(None))
+    else:
+        f = or_(Tour.owner_id.is_(None), Tour.group_owner_id.is_(None))
 
-    events = (
-        db.query(Event)
-        .filter(Event.owner_id == None)  # noqa: E711
-        .all()
-    )
+    tours = db.query(Tour).filter(f).all()
+    for t in tours:
+        lines.append(
+            [
+                "Tour",
+                t.name,
+                t.owner.email if t.owner else "?",
+                t.group_owner.name if t.group_owner else "?",
+            ]
+        )
+
+    if with_owner:
+        f = and_(Event.owner_id.isnot(None), Event.group_owner_id.isnot(None))
+    else:
+        f = or_(Event.owner_id.is_(None), Event.group_owner_id.is_(None))
+
+    events = db.query(Event).filter(f).all()
     for e in events:
-        lines.append(["Event", e.start_dt.strftime("%Y-%m-%d") if e.start_dt else ""])
+        lines.append(
+            [
+                "Event",
+                e.start_dt.strftime("%Y-%m-%d") if e.start_dt else "",
+                e.owner.email if e.owner else "?",
+                e.group_owner.name if e.group_owner else "?",
+            ]
+        )
 
     if len(lines) > 1:
         print(tabulate(lines, headers="firstrow"))
 
 
 if __name__ == "__main__":
+    user = db.scalar(select(User).where(User.email == "admin@example.com"))
+    db.info["user"] = user
     set_people_with_user_ownership()
     set_tours_ownership()
+    db.commit()
     set_orgs_with_members_ownership()
     db.commit()
 
-    print_entities_without_ownership()
+    print("Entities with owner:")
+    print_entities_ownership()
+    print("")
+    print("Entities without owner:")
+    print_entities_ownership(with_owner=False)

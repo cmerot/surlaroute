@@ -2,6 +2,270 @@
 	"openapi": "3.1.0",
 	"info": { "title": "Sur la route", "version": "0.1.0" },
 	"paths": {
+		"/api/tours/": {
+			"get": {
+				"tags": ["tours"],
+				"summary": "Get All Tours",
+				"description": "Paginated list of tours",
+				"operationId": "tours-get_all_tours",
+				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"anyOf": [{ "type": "string" }, { "type": "null" }],
+							"title": "Q"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"maximum": 100,
+							"exclusiveMinimum": 0,
+							"default": 10,
+							"title": "Limit"
+						}
+					},
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 0,
+							"default": 0,
+							"title": "Offset"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResponse_TourPublic_"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/tours/tours/{id}": {
+			"get": {
+				"tags": ["tours"],
+				"summary": "Get Tour",
+				"description": "Tour details",
+				"operationId": "tours-get_tour",
+				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/TourPublic" }
+							}
+						}
+					},
+					"404": {
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						},
+						"description": "Not Found"
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/": {
+			"get": {
+				"tags": ["directory"],
+				"summary": "Get All Actors",
+				"description": "Paginated list of actors",
+				"operationId": "directory-get_all_actors",
+				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "q",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"anyOf": [{ "type": "string" }, { "type": "null" }],
+							"title": "Q"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"maximum": 100,
+							"exclusiveMinimum": 0,
+							"default": 10,
+							"title": "Limit"
+						}
+					},
+					{
+						"name": "offset",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"minimum": 0,
+							"default": 0,
+							"title": "Offset"
+						}
+					},
+					{
+						"name": "activity",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"anyOf": [{ "type": "string" }, { "type": "null" }],
+							"title": "Activity"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PagedResponse_Union_OrgPublic__PersonPublic__"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/orgs/{id}": {
+			"get": {
+				"tags": ["directory"],
+				"summary": "Get Org",
+				"description": "Org details",
+				"operationId": "directory-get_org",
+				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/OrgPublic" }
+							}
+						}
+					},
+					"404": {
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						},
+						"description": "Not Found"
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/directory/people/{id}": {
+			"get": {
+				"tags": ["directory"],
+				"summary": "Get Person",
+				"description": "Person details",
+				"operationId": "directory-get_person",
+				"security": [{ "OAuth2PasswordBearer": [] }],
+				"parameters": [
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string", "format": "uuid", "title": "Id" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/PersonPublic" }
+							}
+						}
+					},
+					"404": {
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						},
+						"description": "Not Found"
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
+							}
+						}
+					}
+				}
+			}
+		},
 		"/api/login/access-token": {
 			"post": {
 				"tags": ["login"],
@@ -11,7 +275,9 @@
 				"requestBody": {
 					"content": {
 						"application/x-www-form-urlencoded": {
-							"schema": { "$ref": "#/components/schemas/Body_login-access_token" }
+							"schema": {
+								"$ref": "#/components/schemas/Body_login-access_token"
+							}
 						}
 					},
 					"required": true
@@ -20,7 +286,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/Token" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Token" }
+							}
 						}
 					},
 					"422": {
@@ -44,7 +312,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UserPublic" }
+							}
 						}
 					}
 				},
@@ -69,7 +339,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Message" }
+							}
 						}
 					},
 					"422": {
@@ -91,7 +363,9 @@
 				"operationId": "login-reset_password",
 				"requestBody": {
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/NewPassword" } }
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/NewPassword" }
+						}
 					},
 					"required": true
 				},
@@ -99,7 +373,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Message" }
+							}
 						}
 					},
 					"422": {
@@ -156,7 +432,10 @@
 						"name": "q",
 						"in": "query",
 						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+						"schema": {
+							"anyOf": [{ "type": "string" }, { "type": "null" }],
+							"title": "Q"
+						}
 					},
 					{
 						"name": "limit",
@@ -166,7 +445,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -174,7 +453,12 @@
 						"name": "offset",
 						"in": "query",
 						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
+						"schema": {
+							"type": "integer",
+							"minimum": 0,
+							"default": 0,
+							"title": "Offset"
+						}
 					}
 				],
 				"responses": {
@@ -182,7 +466,9 @@
 						"description": "Successful Response",
 						"content": {
 							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_UserPublic_" }
+								"schema": {
+									"$ref": "#/components/schemas/PagedResponse_UserPublic_"
+								}
 							}
 						}
 					},
@@ -205,14 +491,18 @@
 				"requestBody": {
 					"required": true,
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/UserCreate" } }
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/UserCreate" }
+						}
 					}
 				},
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UserPublic" }
+							}
 						}
 					},
 					"422": {
@@ -236,7 +526,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UserPublic" }
+							}
 						}
 					}
 				},
@@ -251,7 +543,9 @@
 				"operationId": "users-register",
 				"requestBody": {
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/UserRegister" } }
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/UserRegister" }
+						}
 					},
 					"required": true
 				},
@@ -259,7 +553,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UserPublic" }
+							}
 						}
 					},
 					"422": {
@@ -292,8 +588,34 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UserPublic" }
+							}
 						}
+					},
+					"401": {
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						},
+						"description": "Unauthorized"
+					},
+					"403": {
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						},
+						"description": "Forbidden"
+					},
+					"404": {
+						"content": {
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/ErrorResponse" }
+							}
+						},
+						"description": "Not Found"
 					},
 					"422": {
 						"description": "Validation Error",
@@ -322,14 +644,18 @@
 				"requestBody": {
 					"required": true,
 					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/UserUpdate" } }
+						"application/json": {
+							"schema": { "$ref": "#/components/schemas/UserUpdate" }
+						}
 					}
 				},
 				"responses": {
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/UserPublic" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/UserPublic" }
+							}
 						}
 					},
 					"422": {
@@ -360,7 +686,9 @@
 					"200": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Message" }
+							}
 						}
 					},
 					"422": {
@@ -386,14 +714,20 @@
 						"name": "email_to",
 						"in": "query",
 						"required": true,
-						"schema": { "type": "string", "format": "email", "title": "Email To" }
+						"schema": {
+							"type": "string",
+							"format": "email",
+							"title": "Email To"
+						}
 					}
 				],
 				"responses": {
 					"201": {
 						"description": "Successful Response",
 						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/Message" } }
+							"application/json": {
+								"schema": { "$ref": "#/components/schemas/Message" }
+							}
 						}
 					},
 					"422": {
@@ -417,99 +751,22 @@
 						"description": "Successful Response",
 						"content": {
 							"application/json": {
-								"schema": { "type": "boolean", "title": "Response Utils-Health Check" }
+								"schema": {
+									"type": "boolean",
+									"title": "Response Utils-Health Check"
+								}
 							}
 						}
 					}
 				}
 			}
 		},
-		"/api/directory/activities/": {
-			"post": {
-				"tags": ["activities"],
-				"summary": "Create Activity",
-				"description": "Create an activity.",
-				"operationId": "activities-create_activity",
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/TreeCreate" } }
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/TreePublic" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
+		"/api/activities/{path}": {
 			"get": {
 				"tags": ["activities"],
-				"summary": "Read Activities",
-				"description": "Read all activities.",
-				"operationId": "activities-read_activities",
-				"parameters": [
-					{
-						"name": "q",
-						"in": "query",
-						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
-					},
-					{
-						"name": "limit",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "integer",
-							"maximum": 100,
-							"exclusiveMinimum": 0,
-							"default": 100,
-							"title": "Limit"
-						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_TreePublic_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/directory/activities/{path}": {
-			"get": {
-				"tags": ["activities"],
-				"summary": "Read Activities By Path",
+				"summary": "Get Activities By Path",
 				"description": "Read activities from a path.",
-				"operationId": "activities-read_activities_by_path",
+				"operationId": "activities-get_activities_by_path",
 				"parameters": [
 					{
 						"name": "path",
@@ -521,13 +778,20 @@
 						"name": "descendant",
 						"in": "query",
 						"required": false,
-						"schema": { "type": "boolean", "default": false, "title": "Descendant" }
+						"schema": {
+							"type": "boolean",
+							"default": false,
+							"title": "Descendant"
+						}
 					},
 					{
 						"name": "q",
 						"in": "query",
 						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+						"schema": {
+							"anyOf": [{ "type": "string" }, { "type": "null" }],
+							"title": "Q"
+						}
 					},
 					{
 						"name": "limit",
@@ -537,7 +801,7 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
@@ -545,7 +809,12 @@
 						"name": "offset",
 						"in": "query",
 						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
+						"schema": {
+							"type": "integer",
+							"minimum": 0,
+							"default": 0,
+							"title": "Offset"
+						}
 					}
 				],
 				"responses": {
@@ -555,10 +824,12 @@
 							"application/json": {
 								"schema": {
 									"anyOf": [
-										{ "$ref": "#/components/schemas/PagedResponse_TreePublic_" },
+										{
+											"$ref": "#/components/schemas/PagedResponse_TreePublic_"
+										},
 										{ "$ref": "#/components/schemas/TreePublic" }
 									],
-									"title": "Response Activities-Read Activities By Path"
+									"title": "Response Activities-Get Activities By Path"
 								}
 							}
 						}
@@ -572,116 +843,23 @@
 						}
 					}
 				}
-			},
-			"patch": {
+			}
+		},
+		"/api/activities/": {
+			"get": {
 				"tags": ["activities"],
-				"summary": "Update Activity",
-				"description": "Update an activity.\n\nIf the name or the parent path is patched, it will also update children.",
-				"operationId": "activities-update_activity",
-				"parameters": [
-					{
-						"name": "path",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "title": "Path" }
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/TreeUpdate" } }
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/UpdateResponse_TreePublic_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"tags": ["activities"],
-				"summary": "Delete Activity",
-				"description": "Delete an activity and its children.",
-				"operationId": "activities-delete_activity",
-				"parameters": [
-					{
-						"name": "path",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "title": "Path" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/DeleteResponse" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/directory/people/": {
-			"post": {
-				"tags": ["people"],
-				"summary": "Create Person",
-				"description": "Create a person.",
-				"operationId": "people-create_person",
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/PersonCreate" } }
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"tags": ["people"],
-				"summary": "Read People",
-				"description": "Read paginated people.",
-				"operationId": "people-read_people",
+				"summary": "Get Activities",
+				"description": "Read all activities.",
+				"operationId": "activities-get_activities",
 				"parameters": [
 					{
 						"name": "q",
 						"in": "query",
 						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
+						"schema": {
+							"anyOf": [{ "type": "string" }, { "type": "null" }],
+							"title": "Q"
+						}
 					},
 					{
 						"name": "limit",
@@ -691,195 +869,20 @@
 							"type": "integer",
 							"maximum": 100,
 							"exclusiveMinimum": 0,
-							"default": 100,
+							"default": 10,
 							"title": "Limit"
 						}
 					},
 					{
 						"name": "offset",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_PersonPublic_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/directory/people/{id}": {
-			"get": {
-				"tags": ["people"],
-				"summary": "Read Person By Id",
-				"description": "Read a person by its id.",
-				"operationId": "people-read_person_by_id",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/PersonPublic" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"patch": {
-				"tags": ["people"],
-				"summary": "Update Person",
-				"description": "Update a person.",
-				"operationId": "people-update_person",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/PersonUpdate" } }
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/UpdateResponse_PersonPublic_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"tags": ["people"],
-				"summary": "Delete Person",
-				"description": "Delete a person.",
-				"operationId": "people-delete_person",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/DeleteResponse" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/directory/orgs/": {
-			"post": {
-				"tags": ["orgs"],
-				"summary": "Create Org",
-				"description": "Create an org.",
-				"operationId": "orgs-create_org",
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/OrgCreate" } }
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/OrgPublic" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"get": {
-				"tags": ["orgs"],
-				"summary": "Read Orgs",
-				"description": "Read paginated orgs.",
-				"operationId": "orgs-read_orgs",
-				"parameters": [
-					{
-						"name": "q",
-						"in": "query",
-						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
-					},
-					{
-						"name": "limit",
 						"in": "query",
 						"required": false,
 						"schema": {
 							"type": "integer",
-							"maximum": 100,
-							"exclusiveMinimum": 0,
-							"default": 100,
-							"title": "Limit"
+							"minimum": 0,
+							"default": 0,
+							"title": "Offset"
 						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
 					}
 				],
 				"responses": {
@@ -887,191 +890,9 @@
 						"description": "Successful Response",
 						"content": {
 							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_OrgPublic_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/directory/orgs/{id}": {
-			"get": {
-				"tags": ["orgs"],
-				"summary": "Read Org By Id",
-				"description": "Read an org by its id.",
-				"operationId": "orgs-read_org_by_id",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/OrgPublic" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"patch": {
-				"tags": ["orgs"],
-				"summary": "Update Org",
-				"description": "Update an org.",
-				"operationId": "orgs-update_org",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": { "schema": { "$ref": "#/components/schemas/OrgUpdate" } }
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/UpdateResponse_OrgPublic_" }
-							}
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			},
-			"delete": {
-				"tags": ["orgs"],
-				"summary": "Delete Org",
-				"description": "Delete an org.",
-				"operationId": "orgs-delete_org",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/DeleteResponse" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/tours/{id}": {
-			"get": {
-				"tags": ["tours"],
-				"summary": "Read Tour By Id",
-				"description": "Read an tour by its id.",
-				"operationId": "tours-read_tour_by_id",
-				"parameters": [
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string", "format": "uuid", "title": "Id" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": { "schema": { "$ref": "#/components/schemas/TourPublic" } }
-						}
-					},
-					"422": {
-						"description": "Validation Error",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/HTTPValidationError" }
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/tours/": {
-			"get": {
-				"tags": ["tours"],
-				"summary": "Read Tours",
-				"description": "Read paginated tours.",
-				"operationId": "tours-read_tours",
-				"parameters": [
-					{
-						"name": "q",
-						"in": "query",
-						"required": false,
-						"schema": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" }
-					},
-					{
-						"name": "limit",
-						"in": "query",
-						"required": false,
-						"schema": {
-							"type": "integer",
-							"maximum": 100,
-							"exclusiveMinimum": 0,
-							"default": 100,
-							"title": "Limit"
-						}
-					},
-					{
-						"name": "offset",
-						"in": "query",
-						"required": false,
-						"schema": { "type": "integer", "minimum": 0, "default": 0, "title": "Offset" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Successful Response",
-						"content": {
-							"application/json": {
-								"schema": { "$ref": "#/components/schemas/PagedResponse_TourPublic_" }
+								"schema": {
+									"$ref": "#/components/schemas/PagedResponse_TreePublic_"
+								}
 							}
 						}
 					},
@@ -1089,117 +910,53 @@
 	},
 	"components": {
 		"schemas": {
-			"ActorAssocCreate": {
-				"properties": {
-					"actor": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/PersonCreate" },
-							{ "$ref": "#/components/schemas/OrgCreate" },
-							{ "type": "null" }
-						],
-						"title": "Actor"
-					}
-				},
-				"type": "object",
-				"title": "ActorAssocCreate"
-			},
 			"ActorAssocPublic": {
 				"properties": {
 					"actor": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/PersonPublic" },
-							{ "$ref": "#/components/schemas/OrgPublic" }
+						"oneOf": [
+							{ "$ref": "#/components/schemas/OrgPublic" },
+							{ "$ref": "#/components/schemas/PersonPublic" }
 						],
-						"title": "Actor"
+						"title": "Actor",
+						"discriminator": {
+							"propertyName": "type",
+							"mapping": {
+								"Org": "#/components/schemas/OrgPublic",
+								"Person": "#/components/schemas/PersonPublic"
+							}
+						}
+					},
+					"data": {
+						"anyOf": [{ "type": "object" }, { "type": "null" }],
+						"title": "Data"
 					}
 				},
 				"type": "object",
 				"required": ["actor"],
-				"title": "ActorAssocPublic",
-				"description": "used to map any many-to-many relation impliying an actor\nex: OrgActorAssoc requires an org and an actor, so to render\nthe relation we'll use this. If we use a more specialized\nmodel with actor and org, there will be recursion:\nOrg.member_assocs.org.member_assocs.org, ..."
+				"title": "ActorAssocPublic"
 			},
-			"ActorAssocUpdate": {
+			"AddressPublic": {
 				"properties": {
-					"actor": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/PersonUpdate" },
-							{ "$ref": "#/components/schemas/OrgUpdate" },
-							{ "type": "null" }
-						],
-						"title": "Actor"
-					}
-				},
-				"type": "object",
-				"title": "ActorAssocUpdate"
-			},
-			"AddressGeoCreate": {
-				"properties": {
-					"q": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" },
-					"street": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Street" },
-					"postal_code": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Postal Code"
-					},
-					"city": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "City" },
-					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" },
+					"q": { "type": "string", "title": "Q" },
 					"geom_point": {
 						"anyOf": [
-							{ "type": "string" },
 							{ "$ref": "#/components/schemas/Point" },
 							{ "type": "null" }
-						],
-						"title": "Geom Point"
+						]
 					}
 				},
 				"type": "object",
-				"title": "AddressGeoCreate"
+				"required": ["q"],
+				"title": "AddressPublic"
 			},
-			"AddressGeoPublic": {
-				"properties": {
-					"q": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" },
-					"street": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Street" },
-					"postal_code": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Postal Code"
-					},
-					"city": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "City" },
-					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" },
-					"geom_point": {
-						"anyOf": [{ "$ref": "#/components/schemas/Point" }, { "type": "null" }],
-						"title": "Geom Point"
-					},
-					"id": { "type": "string", "format": "uuid", "title": "Id" }
-				},
-				"type": "object",
-				"required": ["id"],
-				"title": "AddressGeoPublic"
-			},
-			"AddressGeoUpdate": {
-				"properties": {
-					"q": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Q" },
-					"street": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Street" },
-					"postal_code": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Postal Code"
-					},
-					"city": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "City" },
-					"country": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Country" },
-					"geom_point": {
-						"anyOf": [
-							{ "type": "string" },
-							{ "$ref": "#/components/schemas/Point" },
-							{ "type": "null" }
-						],
-						"title": "Geom Point"
-					}
-				},
-				"type": "object",
-				"title": "AddressGeoUpdate"
-			},
+			"BaseModel": { "properties": {}, "type": "object", "title": "BaseModel" },
 			"Body_login-access_token": {
 				"properties": {
 					"grant_type": {
-						"anyOf": [{ "type": "string", "pattern": "password" }, { "type": "null" }],
+						"anyOf": [
+							{ "type": "string", "pattern": "password" },
+							{ "type": "null" }
+						],
 						"title": "Grant Type"
 					},
 					"username": { "type": "string", "title": "Username" },
@@ -1218,122 +975,312 @@
 				"required": ["username", "password"],
 				"title": "Body_login-access_token"
 			},
-			"ContactCreate": {
-				"properties": {
-					"email_address": {
-						"anyOf": [{ "type": "string", "format": "email" }, { "type": "null" }],
-						"title": "Email Address"
-					},
-					"phone_number": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Phone Number"
-					},
-					"website": {
-						"anyOf": [
-							{ "type": "string" },
-							{ "type": "string", "maxLength": 2083, "minLength": 1, "format": "uri" },
-							{ "type": "null" }
-						],
-						"title": "Website"
-					},
-					"address": {
-						"anyOf": [{ "$ref": "#/components/schemas/AddressGeoCreate" }, { "type": "null" }]
-					}
-				},
-				"type": "object",
-				"title": "ContactCreate"
-			},
 			"ContactPublic": {
 				"properties": {
 					"email_address": {
-						"anyOf": [{ "type": "string", "format": "email" }, { "type": "null" }],
+						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Email Address"
 					},
 					"phone_number": {
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Phone Number"
 					},
-					"website": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Website" },
-					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"address": {
-						"anyOf": [{ "$ref": "#/components/schemas/AddressGeoPublic" }, { "type": "null" }]
-					}
-				},
-				"type": "object",
-				"required": ["id"],
-				"title": "ContactPublic"
-			},
-			"ContactUpdate": {
-				"properties": {
-					"email_address": {
-						"anyOf": [{ "type": "string", "format": "email" }, { "type": "null" }],
-						"title": "Email Address"
-					},
-					"phone_number": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Phone Number"
+						"anyOf": [
+							{ "$ref": "#/components/schemas/AddressPublic" },
+							{ "type": "null" }
+						]
 					},
 					"website": {
-						"anyOf": [
-							{ "type": "string" },
-							{ "type": "string", "maxLength": 2083, "minLength": 1, "format": "uri" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Website"
-					},
-					"address": {
-						"anyOf": [{ "$ref": "#/components/schemas/AddressGeoUpdate" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
-				"title": "ContactUpdate"
+				"title": "ContactPublic"
 			},
-			"DeleteResponse": {
-				"properties": {
-					"success": { "type": "boolean", "title": "Success" },
-					"data": { "anyOf": [{}, { "type": "null" }], "title": "Data" },
-					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
-				},
+			"ErrorResponse": {
+				"properties": { "detail": { "type": "string", "title": "Detail" } },
 				"type": "object",
-				"required": ["success"],
-				"title": "DeleteResponse",
-				"description": "Response schema for any delete request."
+				"required": ["detail"],
+				"title": "ErrorResponse"
 			},
 			"EventPublic": {
 				"properties": {
+					"owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Owner Id"
+					},
+					"owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/OwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"group_owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Group Owner Id"
+					},
+					"group_owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"other_read": { "type": "boolean", "title": "Other Read" },
+					"member_read": { "type": "boolean", "title": "Member Read" },
+					"group_read": { "type": "boolean", "title": "Group Read" },
 					"description": {
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Description"
 					},
 					"start_dt": {
-						"anyOf": [
-							{ "type": "string" },
-							{ "type": "string", "format": "date-time" },
-							{ "type": "null" }
-						],
+						"type": "string",
+						"format": "date-time",
 						"title": "Start Dt"
 					},
 					"end_dt": {
 						"anyOf": [
-							{ "type": "string" },
 							{ "type": "string", "format": "date-time" },
 							{ "type": "null" }
 						],
 						"title": "End Dt"
 					},
-					"id": { "type": "string", "format": "uuid", "title": "Id" },
-					"event_venue": { "$ref": "#/components/schemas/OrgPublic" },
 					"actor_assocs": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
-							{ "type": "null" }
-						],
-						"title": "Actor Assocs"
+						"items": { "$ref": "#/components/schemas/ActorAssocPublic" },
+						"type": "array",
+						"title": "Actor Assocs",
+						"default": []
 					}
 				},
 				"type": "object",
-				"required": ["id", "event_venue"],
-				"title": "EventPublic"
+				"required": ["other_read", "member_read", "group_read", "start_dt"],
+				"title": "EventPublic",
+				"description": "Used for the /tours/{id} endpoint"
+			},
+			"Feature": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["Feature"],
+						"const": "Feature",
+						"title": "Type"
+					},
+					"geometry": {
+						"anyOf": [
+							{
+								"oneOf": [
+									{ "$ref": "#/components/schemas/Point" },
+									{ "$ref": "#/components/schemas/MultiPoint" },
+									{ "$ref": "#/components/schemas/LineString" },
+									{ "$ref": "#/components/schemas/MultiLineString" },
+									{ "$ref": "#/components/schemas/Polygon" },
+									{ "$ref": "#/components/schemas/MultiPolygon" },
+									{ "$ref": "#/components/schemas/GeometryCollection" }
+								],
+								"discriminator": {
+									"propertyName": "type",
+									"mapping": {
+										"GeometryCollection": "#/components/schemas/GeometryCollection",
+										"LineString": "#/components/schemas/LineString",
+										"MultiLineString": "#/components/schemas/MultiLineString",
+										"MultiPoint": "#/components/schemas/MultiPoint",
+										"MultiPolygon": "#/components/schemas/MultiPolygon",
+										"Point": "#/components/schemas/Point",
+										"Polygon": "#/components/schemas/Polygon"
+									}
+								}
+							},
+							{ "type": "null" }
+						],
+						"title": "Geometry"
+					},
+					"properties": {
+						"anyOf": [
+							{ "type": "object" },
+							{ "$ref": "#/components/schemas/BaseModel" },
+							{ "type": "null" }
+						],
+						"title": "Properties"
+					},
+					"id": {
+						"anyOf": [
+							{ "type": "integer" },
+							{ "type": "string" },
+							{ "type": "null" }
+						],
+						"title": "Id"
+					}
+				},
+				"type": "object",
+				"required": ["type", "geometry", "properties"],
+				"title": "Feature",
+				"description": "Feature Model"
+			},
+			"FeatureCollection": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["FeatureCollection"],
+						"const": "FeatureCollection",
+						"title": "Type"
+					},
+					"features": {
+						"items": { "$ref": "#/components/schemas/Feature" },
+						"type": "array",
+						"title": "Features"
+					}
+				},
+				"type": "object",
+				"required": ["type", "features"],
+				"title": "FeatureCollection",
+				"description": "FeatureCollection Model"
+			},
+			"GeometryCollection": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["GeometryCollection"],
+						"const": "GeometryCollection",
+						"title": "Type"
+					},
+					"geometries": {
+						"items": {
+							"oneOf": [
+								{ "$ref": "#/components/schemas/Point" },
+								{ "$ref": "#/components/schemas/MultiPoint" },
+								{ "$ref": "#/components/schemas/LineString" },
+								{ "$ref": "#/components/schemas/MultiLineString" },
+								{ "$ref": "#/components/schemas/Polygon" },
+								{ "$ref": "#/components/schemas/MultiPolygon" },
+								{ "$ref": "#/components/schemas/GeometryCollection" }
+							],
+							"discriminator": {
+								"propertyName": "type",
+								"mapping": {
+									"GeometryCollection": "#/components/schemas/GeometryCollection",
+									"LineString": "#/components/schemas/LineString",
+									"MultiLineString": "#/components/schemas/MultiLineString",
+									"MultiPoint": "#/components/schemas/MultiPoint",
+									"MultiPolygon": "#/components/schemas/MultiPolygon",
+									"Point": "#/components/schemas/Point",
+									"Polygon": "#/components/schemas/Polygon"
+								}
+							}
+						},
+						"type": "array",
+						"title": "Geometries"
+					}
+				},
+				"type": "object",
+				"required": ["type", "geometries"],
+				"title": "GeometryCollection",
+				"description": "GeometryCollection Model"
+			},
+			"GroupOwnerPublic": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" }
+				},
+				"type": "object",
+				"required": ["id", "name"],
+				"title": "GroupOwnerPublic"
 			},
 			"HTTPValidationError": {
 				"properties": {
@@ -1346,11 +1293,239 @@
 				"type": "object",
 				"title": "HTTPValidationError"
 			},
+			"LineString": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["LineString"],
+						"const": "LineString",
+						"title": "Type"
+					},
+					"coordinates": {
+						"items": {
+							"anyOf": [
+								{ "$ref": "#/components/schemas/Position2D" },
+								{ "$ref": "#/components/schemas/Position3D" }
+							]
+						},
+						"type": "array",
+						"minItems": 2,
+						"title": "Coordinates"
+					}
+				},
+				"type": "object",
+				"required": ["type", "coordinates"],
+				"title": "LineString",
+				"description": "LineString Model"
+			},
 			"Message": {
 				"properties": { "message": { "type": "string", "title": "Message" } },
 				"type": "object",
 				"required": ["message"],
 				"title": "Message"
+			},
+			"MultiLineString": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["MultiLineString"],
+						"const": "MultiLineString",
+						"title": "Type"
+					},
+					"coordinates": {
+						"items": {
+							"items": {
+								"anyOf": [
+									{ "$ref": "#/components/schemas/Position2D" },
+									{ "$ref": "#/components/schemas/Position3D" }
+								]
+							},
+							"type": "array",
+							"minItems": 2
+						},
+						"type": "array",
+						"title": "Coordinates"
+					}
+				},
+				"type": "object",
+				"required": ["type", "coordinates"],
+				"title": "MultiLineString",
+				"description": "MultiLineString Model"
+			},
+			"MultiPoint": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["MultiPoint"],
+						"const": "MultiPoint",
+						"title": "Type"
+					},
+					"coordinates": {
+						"items": {
+							"anyOf": [
+								{ "$ref": "#/components/schemas/Position2D" },
+								{ "$ref": "#/components/schemas/Position3D" }
+							]
+						},
+						"type": "array",
+						"title": "Coordinates"
+					}
+				},
+				"type": "object",
+				"required": ["type", "coordinates"],
+				"title": "MultiPoint",
+				"description": "MultiPoint Model"
+			},
+			"MultiPolygon": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["MultiPolygon"],
+						"const": "MultiPolygon",
+						"title": "Type"
+					},
+					"coordinates": {
+						"items": {
+							"items": {
+								"items": {
+									"anyOf": [
+										{ "$ref": "#/components/schemas/Position2D" },
+										{ "$ref": "#/components/schemas/Position3D" }
+									]
+								},
+								"type": "array",
+								"minItems": 4
+							},
+							"type": "array"
+						},
+						"type": "array",
+						"title": "Coordinates"
+					}
+				},
+				"type": "object",
+				"required": ["type", "coordinates"],
+				"title": "MultiPolygon",
+				"description": "MultiPolygon Model"
 			},
 			"NewPassword": {
 				"properties": {
@@ -1367,128 +1542,125 @@
 				"title": "NewPassword"
 			},
 			"OrgAssocPublic": {
-				"properties": { "org": { "$ref": "#/components/schemas/OrgPublic" } },
-				"type": "object",
-				"required": ["org"],
-				"title": "OrgAssocPublic",
-				"description": "same than ActorAssocPublic but for from the POV of an actor"
-			},
-			"OrgCreate": {
 				"properties": {
-					"description": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Description"
-					},
-					"name": { "type": "string", "title": "Name" },
-					"activities": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/TreeCreate" }, "type": "array" },
-							{ "type": "null" }
-						],
-						"title": "Activities"
-					},
-					"member_assocs": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/ActorAssocCreate" }, "type": "array" },
-							{ "type": "null" }
-						],
-						"title": "Member Assocs"
-					},
-					"contact": {
-						"anyOf": [{ "$ref": "#/components/schemas/ContactCreate" }, { "type": "null" }]
+					"org": { "$ref": "#/components/schemas/OrgPublic" },
+					"data": {
+						"anyOf": [{ "type": "object" }, { "type": "null" }],
+						"title": "Data"
 					}
 				},
 				"type": "object",
-				"required": ["name"],
-				"title": "OrgCreate"
+				"required": ["org"],
+				"title": "OrgAssocPublic"
 			},
 			"OrgPublic": {
 				"properties": {
+					"owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Owner Id"
+					},
+					"owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/OwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"group_owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Group Owner Id"
+					},
+					"group_owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"other_read": { "type": "boolean", "title": "Other Read" },
+					"member_read": { "type": "boolean", "title": "Member Read" },
+					"group_read": { "type": "boolean", "title": "Group Read" },
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" },
+					"contact": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/ContactPublic" },
+							{ "type": "null" }
+						]
+					},
+					"membership_assocs": {
+						"items": { "$ref": "#/components/schemas/OrgAssocPublic" },
+						"type": "array",
+						"title": "Membership Assocs"
+					},
+					"tour_assocs": {
+						"items": { "$ref": "#/components/schemas/TourAssocPublic" },
+						"type": "array",
+						"title": "Tour Assocs"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["Org"],
+						"const": "Org",
+						"title": "Type"
+					},
 					"description": {
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Description"
 					},
-					"id": { "type": "string", "format": "uuid", "title": "Id" },
-					"name": { "type": "string", "title": "Name" },
 					"activities": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/TreePublic" }, "type": "array" },
-							{ "type": "null" }
-						],
+						"items": { "$ref": "#/components/schemas/TreePublic" },
+						"type": "array",
 						"title": "Activities"
 					},
 					"member_assocs": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
-							{ "type": "null" }
-						],
+						"items": { "$ref": "#/components/schemas/ActorAssocPublic" },
+						"type": "array",
 						"title": "Member Assocs"
-					},
-					"contact": {
-						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
 					}
+				},
+				"type": "object",
+				"required": [
+					"other_read",
+					"member_read",
+					"group_read",
+					"id",
+					"name",
+					"membership_assocs",
+					"tour_assocs",
+					"type",
+					"activities",
+					"member_assocs"
+				],
+				"title": "OrgPublic"
+			},
+			"OwnerPersonPublic": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" }
 				},
 				"type": "object",
 				"required": ["id", "name"],
-				"title": "OrgPublic"
+				"title": "OwnerPersonPublic"
 			},
-			"OrgUpdate": {
+			"OwnerPublic": {
 				"properties": {
-					"description": {
-						"anyOf": [{ "type": "string" }, { "type": "null" }],
-						"title": "Description"
-					},
-					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" },
-					"activities": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"email": { "type": "string", "title": "Email" },
+					"person": {
 						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/TreeUpdate" }, "type": "array" },
+							{ "$ref": "#/components/schemas/OwnerPersonPublic" },
 							{ "type": "null" }
-						],
-						"title": "Activities"
-					},
-					"member_assocs": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/ActorAssocUpdate" }, "type": "array" },
-							{ "type": "null" }
-						],
-						"title": "Member Assocs"
-					},
-					"contact": {
-						"anyOf": [{ "$ref": "#/components/schemas/ContactUpdate" }, { "type": "null" }]
+						]
 					}
 				},
 				"type": "object",
-				"title": "OrgUpdate"
-			},
-			"PagedResponse_OrgPublic_": {
-				"properties": {
-					"total": { "type": "integer", "title": "Total" },
-					"limit": { "type": "integer", "title": "Limit" },
-					"offset": { "type": "integer", "title": "Offset" },
-					"results": {
-						"items": { "$ref": "#/components/schemas/OrgPublic" },
-						"type": "array",
-						"title": "Results"
-					}
-				},
-				"type": "object",
-				"required": ["total", "limit", "offset", "results"],
-				"title": "PagedResponse[OrgPublic]"
-			},
-			"PagedResponse_PersonPublic_": {
-				"properties": {
-					"total": { "type": "integer", "title": "Total" },
-					"limit": { "type": "integer", "title": "Limit" },
-					"offset": { "type": "integer", "title": "Offset" },
-					"results": {
-						"items": { "$ref": "#/components/schemas/PersonPublic" },
-						"type": "array",
-						"title": "Results"
-					}
-				},
-				"type": "object",
-				"required": ["total", "limit", "offset", "results"],
-				"title": "PagedResponse[PersonPublic]"
+				"required": ["id", "email"],
+				"title": "OwnerPublic"
 			},
 			"PagedResponse_TourPublic_": {
 				"properties": {
@@ -1520,6 +1692,26 @@
 				"required": ["total", "limit", "offset", "results"],
 				"title": "PagedResponse[TreePublic]"
 			},
+			"PagedResponse_Union_OrgPublic__PersonPublic__": {
+				"properties": {
+					"total": { "type": "integer", "title": "Total" },
+					"limit": { "type": "integer", "title": "Limit" },
+					"offset": { "type": "integer", "title": "Offset" },
+					"results": {
+						"items": {
+							"anyOf": [
+								{ "$ref": "#/components/schemas/OrgPublic" },
+								{ "$ref": "#/components/schemas/PersonPublic" }
+							]
+						},
+						"type": "array",
+						"title": "Results"
+					}
+				},
+				"type": "object",
+				"required": ["total", "limit", "offset", "results"],
+				"title": "PagedResponse[Union[OrgPublic, PersonPublic]]"
+			},
 			"PagedResponse_UserPublic_": {
 				"properties": {
 					"total": { "type": "integer", "title": "Total" },
@@ -1535,49 +1727,78 @@
 				"required": ["total", "limit", "offset", "results"],
 				"title": "PagedResponse[UserPublic]"
 			},
-			"PersonCreate": {
-				"properties": {
-					"name": { "type": "string", "title": "Name" },
-					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
-					"contact": {
-						"anyOf": [{ "$ref": "#/components/schemas/ContactCreate" }, { "type": "null" }]
-					}
-				},
-				"type": "object",
-				"required": ["name"],
-				"title": "PersonCreate"
-			},
 			"PersonPublic": {
 				"properties": {
-					"name": { "type": "string", "title": "Name" },
-					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
-					"id": { "type": "string", "format": "uuid", "title": "Id" },
-					"contact": {
-						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
-					},
-					"membership_assocs": {
+					"owner_id": {
 						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/OrgAssocPublic" }, "type": "array" },
+							{ "type": "string", "format": "uuid" },
 							{ "type": "null" }
 						],
-						"title": "Membership Assocs"
-					}
-				},
-				"type": "object",
-				"required": ["name", "id"],
-				"title": "PersonPublic"
-			},
-			"PersonUpdate": {
-				"properties": {
+						"title": "Owner Id"
+					},
+					"owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/OwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"group_owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Group Owner Id"
+					},
+					"group_owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"other_read": { "type": "boolean", "title": "Other Read" },
+					"member_read": { "type": "boolean", "title": "Member Read" },
+					"group_read": { "type": "boolean", "title": "Group Read" },
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"name": { "type": "string", "title": "Name" },
-					"role": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Role" },
 					"contact": {
-						"anyOf": [{ "$ref": "#/components/schemas/ContactUpdate" }, { "type": "null" }]
+						"anyOf": [
+							{ "$ref": "#/components/schemas/ContactPublic" },
+							{ "type": "null" }
+						]
+					},
+					"membership_assocs": {
+						"items": { "$ref": "#/components/schemas/OrgAssocPublic" },
+						"type": "array",
+						"title": "Membership Assocs"
+					},
+					"tour_assocs": {
+						"items": { "$ref": "#/components/schemas/TourAssocPublic" },
+						"type": "array",
+						"title": "Tour Assocs"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["Person"],
+						"const": "Person",
+						"title": "Type"
+					},
+					"role": {
+						"anyOf": [{ "type": "string" }, { "type": "null" }],
+						"title": "Role"
 					}
 				},
 				"type": "object",
-				"required": ["name"],
-				"title": "PersonUpdate"
+				"required": [
+					"other_read",
+					"member_read",
+					"group_read",
+					"id",
+					"name",
+					"membership_assocs",
+					"tour_assocs",
+					"type"
+				],
+				"title": "PersonPublic"
 			},
 			"Point": {
 				"properties": {
@@ -1611,7 +1832,12 @@
 						],
 						"title": "Bbox"
 					},
-					"type": { "type": "string", "enum": ["Point"], "const": "Point", "title": "Type" },
+					"type": {
+						"type": "string",
+						"enum": ["Point"],
+						"const": "Point",
+						"title": "Type"
+					},
 					"coordinates": {
 						"anyOf": [
 							{ "$ref": "#/components/schemas/Position2D" },
@@ -1624,6 +1850,64 @@
 				"required": ["type", "coordinates"],
 				"title": "Point",
 				"description": "Point Model"
+			},
+			"Polygon": {
+				"properties": {
+					"bbox": {
+						"anyOf": [
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 4,
+								"minItems": 4
+							},
+							{
+								"prefixItems": [
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" },
+									{ "type": "number" }
+								],
+								"type": "array",
+								"maxItems": 6,
+								"minItems": 6
+							},
+							{ "type": "null" }
+						],
+						"title": "Bbox"
+					},
+					"type": {
+						"type": "string",
+						"enum": ["Polygon"],
+						"const": "Polygon",
+						"title": "Type"
+					},
+					"coordinates": {
+						"items": {
+							"items": {
+								"anyOf": [
+									{ "$ref": "#/components/schemas/Position2D" },
+									{ "$ref": "#/components/schemas/Position3D" }
+								]
+							},
+							"type": "array",
+							"minItems": 4
+						},
+						"type": "array",
+						"title": "Coordinates"
+					}
+				},
+				"type": "object",
+				"required": ["type", "coordinates"],
+				"title": "Polygon",
+				"description": "Polygon Model"
 			},
 			"Position2D": {
 				"prefixItems": [
@@ -1647,143 +1931,203 @@
 			"Token": {
 				"properties": {
 					"access_token": { "type": "string", "title": "Access Token" },
-					"token_type": { "type": "string", "title": "Token Type", "default": "bearer" }
+					"token_type": {
+						"type": "string",
+						"title": "Token Type",
+						"default": "bearer"
+					}
 				},
 				"type": "object",
 				"required": ["access_token"],
 				"title": "Token"
 			},
+			"TourAssocPublic": {
+				"properties": {
+					"tour": { "$ref": "#/components/schemas/TourPublic" },
+					"data": {
+						"anyOf": [{ "type": "object" }, { "type": "null" }],
+						"title": "Data"
+					}
+				},
+				"type": "object",
+				"required": ["tour"],
+				"title": "TourAssocPublic"
+			},
 			"TourPublic": {
 				"properties": {
+					"owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Owner Id"
+					},
+					"owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/OwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"group_owner_id": {
+						"anyOf": [
+							{ "type": "string", "format": "uuid" },
+							{ "type": "null" }
+						],
+						"title": "Group Owner Id"
+					},
+					"group_owner": {
+						"anyOf": [
+							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
+							{ "type": "null" }
+						]
+					},
+					"other_read": { "type": "boolean", "title": "Other Read" },
+					"member_read": { "type": "boolean", "title": "Member Read" },
+					"group_read": { "type": "boolean", "title": "Group Read" },
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"name": { "type": "string", "title": "Name" },
 					"description": {
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
 						"title": "Description"
 					},
-					"year": { "anyOf": [{ "type": "integer" }, { "type": "null" }], "title": "Year" },
-					"id": { "type": "string", "format": "uuid", "title": "Id" },
-					"events": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/EventPublic" }, "type": "array" },
-							{ "type": "null" }
-						],
-						"title": "Events"
+					"year": {
+						"anyOf": [{ "type": "integer" }, { "type": "null" }],
+						"title": "Year"
 					},
 					"disciplines": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/TreePublic" }, "type": "array" },
-							{ "type": "null" }
-						],
+						"items": { "$ref": "#/components/schemas/TreePublic" },
+						"type": "array",
 						"title": "Disciplines"
 					},
 					"mobilities": {
-						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/TreePublic" }, "type": "array" },
-							{ "type": "null" }
-						],
+						"items": { "$ref": "#/components/schemas/TreePublic" },
+						"type": "array",
 						"title": "Mobilities"
 					},
 					"actor_assocs": {
+						"items": { "$ref": "#/components/schemas/ActorAssocPublic" },
+						"type": "array",
+						"title": "Actor Assocs",
+						"default": []
+					},
+					"events": {
+						"items": { "$ref": "#/components/schemas/EventPublic" },
+						"type": "array",
+						"title": "Events"
+					},
+					"geojson": {
 						"anyOf": [
-							{ "items": { "$ref": "#/components/schemas/ActorAssocPublic" }, "type": "array" },
+							{ "$ref": "#/components/schemas/FeatureCollection" },
 							{ "type": "null" }
-						],
-						"title": "Actor Assocs"
+						]
 					}
 				},
 				"type": "object",
-				"required": ["name", "id"],
-				"title": "TourPublic"
-			},
-			"TreeCreate": {
-				"properties": {
-					"path": { "type": "string", "title": "Path", "examples": ["some.path"] },
-					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" }
-				},
-				"type": "object",
-				"required": ["path"],
-				"title": "TreeCreate"
+				"required": [
+					"other_read",
+					"member_read",
+					"group_read",
+					"id",
+					"name",
+					"disciplines",
+					"mobilities",
+					"events"
+				],
+				"title": "TourPublic",
+				"description": "Used for the /tours endpoint"
 			},
 			"TreePublic": {
 				"properties": {
-					"id": {
-						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
-						"title": "Id"
-					},
-					"path": { "type": "string", "minLength": 1, "title": "Path", "examples": ["some.path"] },
-					"name": { "type": "string", "title": "Name" }
+					"name": { "type": "string", "title": "Name" },
+					"path": { "type": "string", "title": "Path" }
 				},
 				"type": "object",
-				"required": ["path", "name"],
+				"required": ["name", "path"],
 				"title": "TreePublic"
-			},
-			"TreeUpdate": {
-				"properties": {
-					"dest_path": {
-						"anyOf": [
-							{ "type": "string", "minLength": 1, "examples": ["some.path"] },
-							{ "type": "null" }
-						],
-						"title": "Dest Path"
-					},
-					"name": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Name" }
-				},
-				"type": "object",
-				"title": "TreeUpdate"
-			},
-			"UpdateResponse_OrgPublic_": {
-				"properties": {
-					"success": { "type": "boolean", "title": "Success" },
-					"data": { "anyOf": [{ "$ref": "#/components/schemas/OrgPublic" }, { "type": "null" }] },
-					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
-				},
-				"type": "object",
-				"required": ["success"],
-				"title": "UpdateResponse[OrgPublic]"
-			},
-			"UpdateResponse_PersonPublic_": {
-				"properties": {
-					"success": { "type": "boolean", "title": "Success" },
-					"data": {
-						"anyOf": [{ "$ref": "#/components/schemas/PersonPublic" }, { "type": "null" }]
-					},
-					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
-				},
-				"type": "object",
-				"required": ["success"],
-				"title": "UpdateResponse[PersonPublic]"
-			},
-			"UpdateResponse_TreePublic_": {
-				"properties": {
-					"success": { "type": "boolean", "title": "Success" },
-					"data": { "anyOf": [{ "$ref": "#/components/schemas/TreePublic" }, { "type": "null" }] },
-					"message": { "anyOf": [{ "type": "string" }, { "type": "null" }], "title": "Message" }
-				},
-				"type": "object",
-				"required": ["success"],
-				"title": "UpdateResponse[TreePublic]"
 			},
 			"UserCreate": {
 				"properties": {
-					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"is_active": { "type": "boolean", "title": "Is Active", "default": false },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
-					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
-					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" }
+					"email": {
+						"type": "string",
+						"maxLength": 255,
+						"format": "email",
+						"title": "Email"
+					},
+					"is_active": {
+						"type": "boolean",
+						"title": "Is Active",
+						"default": false
+					},
+					"is_superuser": {
+						"type": "boolean",
+						"title": "Is Superuser",
+						"default": false
+					},
+					"is_member": {
+						"type": "boolean",
+						"title": "Is Member",
+						"default": false
+					},
+					"password": {
+						"type": "string",
+						"maxLength": 40,
+						"minLength": 8,
+						"title": "Password"
+					}
 				},
 				"type": "object",
 				"required": ["email", "password"],
 				"title": "UserCreate"
 			},
+			"UserPerson": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" },
+					"membership_assocs": {
+						"items": { "$ref": "#/components/schemas/UserPersonOrgAssoc" },
+						"type": "array",
+						"title": "Membership Assocs"
+					}
+				},
+				"type": "object",
+				"required": ["id", "name", "membership_assocs"],
+				"title": "UserPerson"
+			},
+			"UserPersonOrg": {
+				"properties": {
+					"id": { "type": "string", "format": "uuid", "title": "Id" },
+					"name": { "type": "string", "title": "Name" }
+				},
+				"type": "object",
+				"required": ["id", "name"],
+				"title": "UserPersonOrg"
+			},
+			"UserPersonOrgAssoc": {
+				"properties": {
+					"data": { "type": "object", "title": "Data" },
+					"org": { "$ref": "#/components/schemas/UserPersonOrg" }
+				},
+				"type": "object",
+				"required": ["data", "org"],
+				"title": "UserPersonOrgAssoc"
+			},
 			"UserPublic": {
 				"properties": {
-					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
+					"email": {
+						"type": "string",
+						"maxLength": 255,
+						"format": "email",
+						"title": "Email"
+					},
 					"is_active": { "type": "boolean", "title": "Is Active" },
 					"is_superuser": { "type": "boolean", "title": "Is Superuser" },
 					"is_member": { "type": "boolean", "title": "Is Member" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"person": {
-						"anyOf": [{ "$ref": "#/components/schemas/PersonPublic" }, { "type": "null" }]
+						"anyOf": [
+							{ "$ref": "#/components/schemas/UserPerson" },
+							{ "type": "null" }
+						]
 					}
 				},
 				"type": "object",
@@ -1792,8 +2136,18 @@
 			},
 			"UserRegister": {
 				"properties": {
-					"email": { "type": "string", "maxLength": 255, "format": "email", "title": "Email" },
-					"password": { "type": "string", "maxLength": 40, "minLength": 8, "title": "Password" }
+					"email": {
+						"type": "string",
+						"maxLength": 255,
+						"format": "email",
+						"title": "Email"
+					},
+					"password": {
+						"type": "string",
+						"maxLength": 40,
+						"minLength": 8,
+						"title": "Password"
+					}
 				},
 				"type": "object",
 				"required": ["email", "password"],
@@ -1808,11 +2162,26 @@
 						],
 						"title": "Email"
 					},
-					"is_active": { "type": "boolean", "title": "Is Active", "default": false },
-					"is_superuser": { "type": "boolean", "title": "Is Superuser", "default": false },
-					"is_member": { "type": "boolean", "title": "Is Member", "default": false },
+					"is_active": {
+						"type": "boolean",
+						"title": "Is Active",
+						"default": false
+					},
+					"is_superuser": {
+						"type": "boolean",
+						"title": "Is Superuser",
+						"default": false
+					},
+					"is_member": {
+						"type": "boolean",
+						"title": "Is Member",
+						"default": false
+					},
 					"password": {
-						"anyOf": [{ "type": "string", "maxLength": 40, "minLength": 8 }, { "type": "null" }],
+						"anyOf": [
+							{ "type": "string", "maxLength": 40, "minLength": 8 },
+							{ "type": "null" }
+						],
 						"title": "Password"
 					}
 				},
@@ -1837,7 +2206,9 @@
 		"securitySchemes": {
 			"OAuth2PasswordBearer": {
 				"type": "oauth2",
-				"flows": { "password": { "scopes": {}, "tokenUrl": "/api/login/access-token" } }
+				"flows": {
+					"password": { "scopes": {}, "tokenUrl": "/api/login/access-token" }
+				}
 			}
 		}
 	}

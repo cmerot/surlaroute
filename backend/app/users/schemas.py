@@ -1,9 +1,8 @@
 # Shared properties
 import uuid
+from typing import Any
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
-
-from app.directory.crud_schemas import PersonPublic
 
 
 class UserBase(BaseModel):
@@ -34,12 +33,28 @@ class UpdatePassword(BaseModel):
     new_password: str = Field(min_length=8, max_length=40)
 
 
+class UserPersonOrg(BaseModel):
+    id: uuid.UUID
+    name: str
+
+
+class UserPersonOrgAssoc(BaseModel):
+    data: dict[str, Any]
+    org: UserPersonOrg
+
+
+class UserPerson(BaseModel):
+    id: uuid.UUID
+    name: str
+    membership_assocs: list[UserPersonOrgAssoc]
+
+
 class UserPublic(UserBase):
     id: uuid.UUID
-    person: PersonPublic | None = None
     is_active: bool
     is_superuser: bool
     is_member: bool
+    person: UserPerson | None = None
 
 
 # JSON payload containing access token

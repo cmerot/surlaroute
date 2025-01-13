@@ -7,17 +7,28 @@ from fastapi.security import OAuth2PasswordBearer
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
 from pydantic import ValidationError
+from sqlalchemy import and_, select
+from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import joinedload, raiseload, selectinload
 
 from app.core import security
 from app.core.config import settings
-from app.core.db.models import User
+from app.core.db.models import OrgActorAssoc, Person, User
 from app.core.db.session import SessionDep
 from app.users.schemas import TokenPayload
 
 reusable_oauth2 = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/login/access-token"
 )
+
+reusable_oauth2_no_auto_error = OAuth2PasswordBearer(
+    tokenUrl=f"{settings.API_V1_STR}/login/access-token", auto_error=False
+)
+
+
 TokenDep = Annotated[str, Depends(reusable_oauth2)]
+
+NoAutoErrorTokenDep = Annotated[str, Depends(reusable_oauth2_no_auto_error)]
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -61,25 +72,55 @@ def get_current_user(session: SessionDep, token: TokenDep) -> User:
 CurrentUserDep = Annotated[User, Depends(get_current_user)]
 
 
-def get_current_permissions_user(session: SessionDep) -> Any:
-    token = str(
-        OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/login/access-token")
-    )
+def get_current_user_or_none(
+    session: SessionDep, token: NoAutoErrorTokenDep
+) -> User | None:
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[security.ALGORITHM]
         )
         token_data = TokenPayload(**payload)
     except (InvalidTokenError, ValidationError):
-        user = None
+        session.info["user"] = None
+        return None
 
-    if user is not None:
-        user = session.get(User, token_data.sub)
+    try:
+        statement = select(User).where(
+            and_(
+                User.id == token_data.sub,
+                User.is_active == True,  # noqa: E712
+            )
+        )
+        user = session.scalars(statement).one()
 
+    except NoResultFound:
+        session.info["user"] = None
+        return None
+
+    session.info["user"] = user
+
+    stmt = (
+        select(User)
+        .where(User.id == user.id)
+        .options(
+            raiseload("*"),
+            joinedload(User.person).options(
+                joinedload(Person.membership_assocs).options(
+                    selectinload(OrgActorAssoc.org)
+                ),
+            ),
+        )
+    )
+
+    # We already know the user exists, so we can ignore the type error
+    user = session.scalar(stmt)  # type: ignore
+    user.set_group_ids()
+
+    session.expunge_all()
     return user
 
 
-CurrentPermissionsUserDep = Annotated[User, Depends(get_current_permissions_user)]
+CurrentUserOrNoneDep = Annotated[User, Depends(get_current_user_or_none)]
 
 
 def get_current_active_superuser(current_user: CurrentUserDep) -> User:

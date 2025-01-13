@@ -5,16 +5,33 @@ from datetime import datetime
 from typing import Any
 
 from geoalchemy2 import Geometry
-from sqlalchemy import DateTime, ForeignKey, func
+from sqlalchemy import (
+    Column,
+    ColumnElement,
+    DateTime,
+    Extract,
+    ForeignKey,
+    Select,
+    and_,
+    extract,
+    func,
+    or_,
+    select,
+    true,
+)
 from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
+    Session,
     declared_attr,
     mapped_column,
     relationship,
 )
+from sqlalchemy.orm.session import ORMExecuteState
+from sqlalchemy.sql.elements import BooleanClauseList
 from sqlalchemy_utils import Ltree, LtreeType
 
 #
@@ -46,11 +63,6 @@ class PermissionsMixin:
     - other (read only)
     """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        if "owner" in kwargs:
-            pass
-        super().__init__(*args, **kwargs)
-
     owner_id: Mapped[uuid.UUID | None] = mapped_column(
         ForeignKey("user.id"), default=None
     )
@@ -60,12 +72,12 @@ class PermissionsMixin:
         return relationship(foreign_keys=[self.owner_id])  # type: ignore[list-item]
 
     group_owner_id: Mapped[uuid.UUID | None] = mapped_column(
-        ForeignKey("org.id"), default=None
+        ForeignKey("org.id", use_alter=True), default=None
     )
 
     @declared_attr
-    def group_owner(self) -> Mapped[Org]:
-        return relationship(foreign_keys=[self.group_owner_id])  # type: ignore[list-item]
+    def group_owner(cls) -> Mapped[Org]:
+        return relationship(foreign_keys=[cls.group_owner_id], remote_side="Org.id")  # type: ignore[list-item]
 
     group_read: Mapped[bool] = mapped_column(default=True)
     group_write: Mapped[bool] = mapped_column(default=True)
@@ -94,8 +106,6 @@ class TreeBase(Base):
     name: Mapped[str] = mapped_column()
 
     def __repr__(self) -> str:
-        if not self.path:
-            return super().__repr__()
         return f"{self.__class__.__name__}({self.path})"
 
     def __setattr__(self, name: str, value: Any) -> None:
@@ -127,10 +137,20 @@ class User(Base):
         back_populates="user",
     )
 
+    _group_ids: list[uuid.UUID] = []
+
+    @property
+    def group_ids(self) -> list[uuid.UUID]:
+        return self._group_ids
+
+    def set_group_ids(self) -> None:
+        if self.person:
+            self._group_ids = [m.org_id for m in self.person.membership_assocs]
+
     def __repr__(self) -> str:
         if not self.email:
             return super().__repr__()
-        return f"{self.__class__.__name__}({self.email})"
+        return f"{self.__class__.__name__}(id={self.id} email={self.email})"
 
 
 #
@@ -138,7 +158,7 @@ class User(Base):
 #
 
 
-class Actor(Base):
+class Actor(PermissionsMixin, Base):
     """
     Base class for Person and Org, so each time we need to link either a
     Person or an Org we can use an Actor.
@@ -175,21 +195,14 @@ class Actor(Base):
     )
     contact: Mapped[Contact] = relationship(back_populates="actor")
 
-    @declared_attr.directive
-    def __mapper_args__(cls) -> dict[str, Any]:
-        if cls.__name__ == "Actor":
-            return {
-                "polymorphic_on": cls.type,
-                "polymorphic_identity": cls.__name__,
-                "confirm_deleted_rows": False,
-            }
-        else:
-            return {
-                "polymorphic_identity": cls.__name__,
-            }
+    __mapper_args__ = {
+        "polymorphic_on": type,
+        "polymorphic_identity": "Actor",
+        "confirm_deleted_rows": False,
+    }
 
 
-class Org(PermissionsMixin, Actor):
+class Org(Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
@@ -204,14 +217,18 @@ class Org(PermissionsMixin, Actor):
         back_populates="org",
         cascade="all, delete-orphan",
     )
+    __mapper_args__ = {
+        "polymorphic_identity": "Org",
+        "inherit_condition": id == Actor.id,
+    }
 
     def __repr__(self) -> str:
         if not self.name:
             return super().__repr__()
-        return f"{self.__class__.__name__}({self.name})"
+        return f"{self.__class__.__name__}(id={self.id} name={self.name})"
 
 
-class Person(PermissionsMixin, Actor):
+class Person(Actor):
     id: Mapped[uuid.UUID] = mapped_column(
         ForeignKey("actor.id"),
         primary_key=True,
@@ -223,9 +240,13 @@ class Person(PermissionsMixin, Actor):
     )
 
     def __repr__(self) -> str:
-        if not self.name:
-            return super().__repr__()
-        return f"{self.__class__.__name__}({self.name})"
+        return f"{self.__class__.__name__}(id={self.id} other_read={self.other_read} owner_id={self.owner_id})"
+        # if not self.name:
+        #     return super().__repr__()
+
+    __mapper_args__ = {
+        "polymorphic_identity": "Person",
+    }
 
 
 class Contact(Base):
@@ -239,11 +260,6 @@ class Contact(Base):
     )
     address: Mapped[AddressGeo] = relationship()
     actor: Mapped[Actor] = relationship()
-
-    def __repr__(self) -> str:
-        if not self.actor:
-            return super().__repr__()
-        return f"{self.__class__.__name__}(belongs to {self.actor})"
 
 
 class AddressGeo(Base):
@@ -287,12 +303,24 @@ class Tour(Base, PermissionsMixin):
 
     @hybrid_property
     def year(self) -> int | None:
-        first_event = min(
-            [event for event in self.events if event.start_dt is not None],
-            key=lambda event: event.start_dt.timestamp(),  # type: ignore[union-attr]
-        )
+        if self.events:
+            # Filter out None values and get the year
+            years = [
+                event.start_dt.year
+                for event in self.events
+                if event.start_dt is not None
+            ]
+            return min(years) if years else None
+        return None
 
-        return first_event.start_dt.year if first_event else None  # type: ignore[union-attr]
+    @year.expression
+    def year_expression(cls) -> Extract:
+        subquery = (
+            select(func.min(Event.start_dt).label("first_event_date"))
+            .where(Event.tour_id == cls.id)
+            .scalar_subquery()
+        )
+        return extract("year", subquery)
 
     def __repr__(self) -> str:
         if not self.name:
@@ -311,25 +339,12 @@ class Event(Base, PermissionsMixin):
         DateTime, default=None, nullable=True
     )
 
-    event_venue_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("org.id"),
-    )
-    event_venue: Mapped[Org] = relationship(foreign_keys=event_venue_id)
-
     tour_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tour.id"))
     tour: Mapped[Tour] = relationship(back_populates="events")
 
     actor_assocs: Mapped[list[EventActorAssoc]] = relationship(
         cascade="all, delete-orphan",
     )
-
-    def __repr__(self) -> str:
-        try:
-            return (
-                f"{self.__class__.__name__}({self.tour.name}/{self.event_venue.name})"
-            )
-        except AttributeError:
-            return super().__repr__()
 
 
 #
@@ -411,8 +426,7 @@ class OrgActorAssoc(Base):
 
     def __repr__(self) -> str:
         return (
-            # f"{self.__class__.__name__}(org_id={self.org_id} actor_id={self.actor_id})"
-            f"{self.__class__.__name__}(org={self.org} actor={self.actor})"
+            f"{self.__class__.__name__}(org_id={self.org_id} actor_id={self.actor_id})"
         )
 
 
@@ -480,3 +494,115 @@ class EventActorAssoc(Base):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(event_id={self.event_id} actor_id={self.actor_id})"
+
+
+#
+#
+#
+def filter_out_actor_assocs(
+    assocs: list[EventActorAssoc | TourActorAssoc | OrgActorAssoc],
+) -> list[EventActorAssoc | TourActorAssoc | OrgActorAssoc]:
+    def cleanActor(
+        assoc: EventActorAssoc | TourActorAssoc | OrgActorAssoc,
+    ) -> EventActorAssoc | TourActorAssoc | OrgActorAssoc:
+        if isinstance(assoc.actor, Org):
+            new_assocs = []
+            for member_assoc in assoc.actor.member_assocs:
+                if member_assoc.actor is not None:
+                    new_assocs.append(member_assoc)
+            assoc.actor.member_assocs = new_assocs
+        return assoc
+
+    new_assocs = []
+
+    for assoc in assocs:
+        if assoc.actor:
+            if isinstance(assoc, EventActorAssoc) and assoc.event:
+                new_assocs.append(cleanActor(assoc))
+            elif isinstance(assoc, TourActorAssoc) and assoc.tour:
+                new_assocs.append(cleanActor(assoc))
+            elif isinstance(assoc, OrgActorAssoc) and assoc.org:
+                new_assocs.append(cleanActor(assoc))
+            else:
+                pass
+                # print("filtered out", assoc)
+        else:
+            pass
+            # print("filtered out", assoc)
+
+    return new_assocs
+
+
+def get_model_from_table_name(table_name: str) -> type[Base] | None:
+    for mapper in Base.registry.mappers:
+        if mapper.class_.__tablename__ == table_name:
+            return mapper.class_
+    return None
+
+
+def get_permission_filter(
+    model: type[PermissionsMixin], user: User | None
+) -> BooleanClauseList | ColumnElement[bool]:
+    """
+    Return a filter for the given model and user.
+    """
+    if user and user.is_superuser:
+        return true()
+
+    criteria = []
+
+    # Public other_read gives access
+    criteria.append(model.other_read == True)  # noqa: E712
+
+    # If no user is logged in, that's it
+    if not user:
+        return or_(*criteria)
+
+    # Ownership: a user can select its own entities
+    if user.id:
+        criteria.append(model.owner_id == user.id)
+
+    # If the user is a member, the entity may be available
+    if user.is_member:
+        criteria.append(model.member_read == True)  # noqa: E712
+
+    # If the user is a member of a group, the entity may be available
+    criteria.append(
+        and_(
+            model.group_read == True,  # noqa: E712
+            model.group_owner_id.in_(user.group_ids),
+        )
+    )
+
+    return or_(*criteria)
+
+
+@listens_for(Session, "do_orm_execute")
+def add_permission_filters_on_select(orm_execute_state: ORMExecuteState) -> None:
+    """
+    On Session `do_orm_execute` event, add filters on subclasses of PermissionsMixin
+    by inspecting the exported_columns of the statement.
+    """
+
+    if not isinstance(orm_execute_state.statement, Select):
+        return
+
+    user = orm_execute_state.session.info.get("user")
+
+    models = set()
+
+    # First pass to build the models set
+    for col in orm_execute_state.statement.exported_columns:
+        # Could have a func instead of a real col
+        if not isinstance(col, Column):
+            continue
+        model = get_model_from_table_name(col.table.name)
+        if model:
+            models.add(model)
+
+    # Second pass, add filters
+    for model in models:
+        if issubclass(model, PermissionsMixin) or isinstance(model, Actor):
+            orm_execute_state.statement = orm_execute_state.statement.filter(
+                get_permission_filter(model, user)
+            )

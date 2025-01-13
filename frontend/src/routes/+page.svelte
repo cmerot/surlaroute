@@ -1,26 +1,86 @@
 <script>
-	import { buttonVariants } from '$lib/components/ui/button';
+import { Logotext } from "$lib/components/icons";
+import * as Page from "$lib/components/page";
+import { Button } from "$lib/components/ui/button";
 </script>
 
-<div class="bg-gradient-to-br from-purple-500 to-pink-500 dark:from-purple-950 dark:to-pink-950">
-	<div class="flex h-screen items-center justify-center">
-		<section
-			class="w-full space-y-10 rounded-none bg-background/70 p-10 text-center text-foreground sm:w-[640px] sm:rounded-xl"
-		>
-			<header>
-				<h1 class="mb-3 text-3xl font-bold uppercase">Sur la route</h1>
-				<p class="text-center text-foreground">
-					L'atlas des tournées artistiques à modes doux, <br />un projet du réseau ArMoDo - les Arts
-					en Mode Doux
+<Page.Root>
+	<Page.Content class=" bg-couleur-bg text-couleur-fg">
+		<Logotext class="mx-auto mb-3 size-64" />
+		<div class="m-auto space-y-8 text-couleur-fg">
+			<h1 class="px-2 text-center text-xl md:text-2xl">
+				L'atlas des tournées artistiques à modes doux
+			</h1>
+			<p class="text-center">
+				<Button
+					href="/tours"
+					variant="secondary"
+					class="rounded text-xl"
+					size="lg">Explorer</Button
+				>
+			</p>
+			<div class="prose m-auto text-lg text-couleur-fg">
+				<p>
+					Le mouvement des arts à modes doux se développe partout en Europe. Des
+					centaines d’artistes et de compagnies ont choisi, pour réduire leur
+					empreinte environnementale, de tourner leurs spectacles en mobilités
+					douces : à vélo, à cheval, à pieds ou à la voile.
 				</p>
-			</header>
-			<section>
-				<p class="text-center">
-					<a href="/admin" class={buttonVariants({ variant: 'secondary', size: 'lg' })}>
-						Accéder au tableau de bord
+				<p>
+					« Sur la route » est un projet imaginé par Slowfest et le réseau
+					ARMODO pour recenser et cartographier les tournées artistiques en
+					mobilités douces. C’est une plateforme collaborative et numérique dont
+					les objectifs sont :
+				</p>
+				<ul>
+					<li>🔆 Visibiliser et valoriser les tournées en modes doux.</li>
+					<li>
+						🔆 Faire baisser les temps de production et susciter des vocations
+						par la mutualisation des données.
+					</li>
+					<li>
+						🔆 Accélérer la mutualisation de matériel spécifique aux modes doux
+						(vélogistique, autonomie énergétique).
+					</li>
+				</ul>
+				<p>
+					Slowfest est en partenariat avec les réseaux ARMODO et <a
+						href="https://www.linkedin.com/company/european-network-of-cultural-centers/"
+					>
+						European Network of Cultural Centres
 					</a>
+					pour ce projet, soutenu par la
+					<a
+						href="https://www.linkedin.com/company/conseil-r-gional-nouvelle-aquitaine/"
+					>
+						Région Nouvelle-Aquitaine
+					</a>
+					au titre de la sobriété numérique et l’Union Européenne pour le programme
+					<a href="https://www.linkedin.com/company/livemx/">LIVEMX</a>.
 				</p>
-			</section>
-		</section>
-	</div>
-</div>
+				<hr />
+				<ul class="m-auto">
+					<li>
+						<a
+							href="https://www.slowfest.org/"
+							class=" text-white no-underline"
+						>
+							<span class="no-underline">Slowfest</span><br />
+							<span class="no-underline opacity-40"
+								>https://www.slowfest.org/</span
+							>
+						</a>
+					</li>
+					<li>
+						<a href="https://www.armodo.org/" class=" text-white no-underline">
+							<span class="no-underline">ArMoDo</span><br />
+							<span class="no-underline opacity-40"
+								>https://www.armodo.org/</span
+							>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</Page.Content>
+</Page.Root>

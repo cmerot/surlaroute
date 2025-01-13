@@ -1,7 +1,8 @@
-import type { LayoutServerLoad } from './$types';
-export const load: LayoutServerLoad = async ({ cookies }) => {
-	const notification = cookies.get('notification');
-	cookies.delete('notification', { path: '/' });
+import type { ServerLoadEvent } from "@sveltejs/kit";
 
-	return { notification };
-};
+export function load({ locals }: ServerLoadEvent) {
+	return {
+		authToken: locals.authToken,
+		user: locals.user,
+	};
+}

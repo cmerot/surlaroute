@@ -6,7 +6,6 @@ from collections.abc import Callable
 from typing import Any, TypeVar
 
 from pydantic import BaseModel, ValidationError
-from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import (
     DeclarativeBase,
     Session,
@@ -33,6 +32,10 @@ def set_logger(new_logger: logging.Logger) -> None:
 
 
 def get_input_file_path() -> str:
+    """
+    Return absolute path of the input file, given as a command line argument
+    To be used by a script that takes a file as input
+    """
     # Check if an argument was provided
     if len(sys.argv) < 2:
         print(f"Usage: {sys.argv[0]} <file_path>")
@@ -52,19 +55,39 @@ T = TypeVar("T", bound=DeclarativeBase)
 
 
 def get_class_from_name(cls_name: str) -> type[T]:
+    """
+    Return a class by its name by using the registry or raise an exception
+    """
     for mapper in Base.registry.mappers:
         if mapper.class_.__name__ == cls_name:
             return mapper.class_
-    raise Exception("polymorphic subclass not found")
+    raise Exception(f"Class {cls_name} not found")
 
 
 def get_submodel_class(
-    sql_cls: type[T],
+    cls: type[T],
     value: dict[str, Any],
 ) -> type[T]:
-    mapper = class_mapper(sql_cls)
+    """
+    Used during data import to instantiate the correct polymorphic
+    child of a parent class by using the "type" key of the value.
+
+    eg. for:
+
+      {"actor": {"type": "Person", "name": "John"}}
+
+    will use:
+
+        get_submodel_class(
+            Actor,
+            {"type": "Person", "name": "John"}
+        )
+
+    to get the Person class.
+    """
+    mapper = class_mapper(cls)
     if mapper.polymorphic_identity is None:
-        return sql_cls
+        return cls
 
     return get_class_from_name(value["type"])
 
@@ -148,8 +171,8 @@ def populate_model_from_dict(
 
         # Column attribute
         else:
-            if isinstance(cls_attr.type, JSONB):
-                data_attr = json.loads(data_attr)
+            # if isinstance(cls_attr.type, JSONB):
+            #     data_attr = json.loads(data_attr)
             logger.log(
                 TRACE_LOG_LEVEL,
                 f"C   {' ' * level * 2}{cls.__name__}.{data_key}: {data_attr}",
@@ -174,8 +197,8 @@ def add_polymorphic_discriminator(
         for key, value in d.items():
             if "#" in key:
                 new_key, type_value = key.split("#", 1)
-                new_dict[new_key] = value
-                new_dict[new_key]["type"] = type_value
+                new_dict[new_key] = add_polymorphic_discriminator(value)
+                new_dict[new_key]["type"] = type_value  # type: ignore[call-overload]
             elif isinstance(value, dict | list):
                 new_dict[key] = add_polymorphic_discriminator(value)
             else:
@@ -237,4 +260,3 @@ def load_entities(
         except Exception as e:
             logger.error(f"{e}")
             sys.exit(1)
-        db.refresh(instance)

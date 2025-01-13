@@ -1,30 +1,61 @@
 <script lang="ts">
-	import { client } from '$lib/backend/client';
-	import { Toaster } from '$lib/components/ui/sonner';
-	import { ModeWatcher } from 'mode-watcher';
-	import { setContext } from 'svelte';
-	import { toast } from 'svelte-sonner';
-	import '../app.css';
+import { navigating } from "$app/state";
+import Layout from "$lib/components/layout/layout.svelte";
+import { auth } from "$lib/stores/auth";
+import type { Snippet } from "svelte";
+import "../app.css";
+import type { LayoutData } from "./$types";
 
-	const VITE_API_URL = import.meta.env.VITE_API_URL;
+type Props = { children: Snippet; data: LayoutData };
 
-	let { children, data } = $props();
+const { children, data }: Props = $props();
 
-	let crumbs = $state({
-		'/': 'Accueil'
-	});
-	setContext('crumbs-data', crumbs);
+let opacity = $state("opacity-0");
 
-	$effect(() => {
-		if (data.notification) {
-			toast(data.notification);
-		}
-	});
-	client.setConfig({
-		baseUrl: VITE_API_URL
-	});
+$effect(() => {
+	// Show loading bar when navigation is in progress (from and to are not null)
+	opacity = navigating?.from && navigating?.to ? "opacity-100" : "opacity-0";
+});
+
+// Separate effect for auth logic
+$effect(() => {
+	if (data.user && data.authToken) {
+		auth.login(data.user, data.authToken);
+	} else {
+		auth.logout();
+	}
+});
 </script>
 
-{@render children()}
-<Toaster richColors />
-<ModeWatcher defaultTheme="violet" />
+<div
+	class="loading-bar fixed inset-x-0 top-0 z-50 h-1 bg-couleur-bg transition-opacity duration-300 {opacity}"
+></div>
+
+<Layout>
+	<div class="flex h-full bg-white/50 dark:bg-black/50">
+		<div class="grow">
+			{@render children()}
+		</div>
+	</div>
+</Layout>
+
+<style>
+	.loading-bar {
+		animation: loading 2s ease-in-out infinite;
+	}
+
+	@keyframes loading {
+		0% {
+			width: 0%;
+			margin-left: 0%;
+		}
+		50% {
+			width: 50%;
+			margin-left: 25%;
+		}
+		100% {
+			width: 0%;
+			margin-left: 100%;
+		}
+	}
+</style>

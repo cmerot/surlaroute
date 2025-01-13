@@ -1,4 +1,5 @@
-import { dev } from '$app/environment';
+import { dev } from "$app/environment";
+import type { UserPublic } from "$lib/backend/client";
 export interface Session {
 	id: string;
 	data?: SessionData;
@@ -6,7 +7,8 @@ export interface Session {
 }
 
 export interface SessionData {
-	access_token: string | null;
+	user?: UserPublic;
+	authToken?: string;
 }
 
 class SessionStore {
@@ -17,13 +19,26 @@ class SessionStore {
 		this.sessions.set(id, { id, data, expiresAt });
 	}
 
-	get(id: string): Session | undefined {
+	get(id: string | undefined): Session | undefined {
+		if (!id) {
+			return undefined;
+		}
 		const session = this.sessions.get(id);
 		if (session && session.expiresAt > Date.now()) {
 			return session;
 		}
 		this.destroy(id);
 		return undefined;
+	}
+
+	getOrCreate(id: string, data: SessionData, expiresIn: number): Session {
+		const session = this.sessions.get(id);
+		if (session) {
+			return session;
+		}
+
+		this.create(id, data, expiresIn);
+		return this.sessions.get(id) as Session;
 	}
 
 	update(id: string, data: SessionData): void {
@@ -48,9 +63,9 @@ class SessionStore {
 	}
 
 	dump(): void {
-		this.sessions.entries().forEach(([id, session]) => {
+		for (const [id, session] of this.sessions.entries()) {
 			console.log(id, session);
-		});
+		}
 	}
 }
 

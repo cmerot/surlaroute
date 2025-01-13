@@ -1,43 +1,45 @@
+@import url("https://use.typekit.net/gkn3zek.css");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
 	:root,
-	[data-theme^='violet'],
-	[data-theme^='violet'] .light,
-	.violet {
-		--background: 263 100% 95%;
-		--foreground: 263 5% 10%;
-		--card: 263 50% 90%;
-		--card-foreground: 263 5% 15%;
-		--popover: 263 100% 95%;
-		--popover-foreground: 263 100% 10%;
-		--primary: 263 87% 46%;
-		--primary-foreground: 0 0% 100%;
-		--secondary: 263 30% 70%;
-		--secondary-foreground: 0 0% 0%;
-		--muted: 225 30% 85%;
-		--muted-foreground: 263 5% 35%;
-		--accent: 225 30% 80%;
-		--accent-foreground: 263 5% 15%;
-		--destructive: 0 100% 35%;
-		--destructive-foreground: 263 5% 90%;
-		--border: 263 30% 50%;
-		--input: 263 30% 35%;
-		--ring: 263 87% 46%;
+	[data-theme^="nb"],
+	[data-theme^="nb"] .light,
+	.nb {
+		--background: 0 0% 100%;
+		--foreground: 222.2 84% 4.9%;
+		--muted: 210 40% 96.1%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+		--border: 214.3 31.8% 91.4%;
+		--input: 214.3 31.8% 91.4%;
+		--primary: 222.2 47.4% 11.2%;
+		--primary-foreground: 210 40% 98%;
+		--secondary: 210 40% 96.1%;
+		--secondary-foreground: 222.2 47.4% 11.2%;
+		--accent: 210 40% 96.1%;
+		--accent-foreground: 222.2 47.4% 11.2%;
+		--destructive: 0 72.2% 50.6%;
+		--destructive-foreground: 210 40% 98%;
+		--ring: 222.2 84% 4.9%;
 		--radius: 0.5rem;
-		--sidebar-background: 200 23% 90%;
-		--sidebar-foreground: 200 17% 24%;
-		--sidebar-primary: 30 91% 34%;
-		--sidebar-primary-foreground: 60 33% 98%;
-		--sidebar-accent: 60 33% 82%;
-		--sidebar-accent-foreground: 200 17% 24%;
-		--sidebar-border: 60 17% 94%;
-		--sidebar-ring: 180 22% 58%;
+		--sidebar-background: 0 0% 98%;
+		--sidebar-foreground: 240 5.3% 26.1%;
+		--sidebar-primary: 240 5.9% 10%;
+		--sidebar-primary-foreground: 0 0% 98%;
+		--sidebar-accent: 240 4.8% 95.9%;
+		--sidebar-accent-foreground: 240 5.9% 10%;
+		--sidebar-border: 220 13% 91%;
+		--sidebar-ring: 217.2 91.2% 59.8%;
 	}
-	[data-theme^='vert'],
-	[data-theme^='vert'] .light,
+	[data-theme^="vert"],
+	[data-theme^="vert"] .light,
 	.vert {
 		--background: 180 100% 95%;
 		--foreground: 180 5% 10%;
@@ -60,8 +62,8 @@
 		--ring: 180 12.5% 37.6%;
 		--radius: 0.5rem;
 	}
-	[data-theme^='marron'],
-	[data-theme^='marron'] .light,
+	[data-theme^="marron"],
+	[data-theme^="marron"] .light,
 	.marron {
 		--background: 30 100% 95%;
 		--foreground: 30 5% 10%;
@@ -84,41 +86,42 @@
 		--ring: 30 100% 30%;
 		--radius: 0rem;
 	}
+
 	.dark,
-	[data-theme^='violet'].dark,
-	[data-theme^='violet'] .dark,
-	.dark .violet:not(.light *) {
-		--background: 263 50% 10%;
-		--foreground: 263 5% 90%;
-		--card: 263 50% 10%;
-		--card-foreground: 263 5% 90%;
-		--popover: 263 50% 5%;
-		--popover-foreground: 263 5% 90%;
-		--primary: 263 87% 46%;
-		--primary-foreground: 0 0% 100%;
-		--secondary: 263 30% 20%;
-		--secondary-foreground: 0 0% 100%;
-		--muted: 225 30% 25%;
-		--muted-foreground: 263 5% 60%;
-		--accent: 225 30% 25%;
-		--accent-foreground: 263 5% 90%;
-		--destructive: 0 100% 35%;
-		--destructive-foreground: 263 5% 90%;
-		--border: 263 30% 35%;
-		--input: 263 30% 35%;
-		--ring: 263 87% 46%;
-		--radius: 0.5rem;
-		--sidebar-background: 200 17% 24%;
-		--sidebar-foreground: 60 33% 98%;
-		--sidebar-primary: 180 23% 79%;
-		--sidebar-primary-foreground: 200 17% 24%;
-		--sidebar-accent: 200 33% 97%;
-		--sidebar-accent-foreground: 180 22% 24%;
-		--sidebar-border: 200 15% 34%;
-		--sidebar-ring: 180 22% 58%;
+	[data-theme^="nb"].dark,
+	[data-theme^="nb"] .dark,
+	.dark .nb:not(.light *) {
+		--background: 222.2 84% 4.9%;
+		--foreground: 210 40% 98%;
+		--muted: 217.2 32.6% 17.5%;
+		--muted-foreground: 215 20.2% 65.1%;
+		--popover: 222.2 84% 4.9%;
+		--popover-foreground: 210 40% 98%;
+		--card: 222.2 84% 4.9%;
+		--card-foreground: 210 40% 98%;
+		--border: 217.2 32.6% 17.5%;
+		--input: 217.2 32.6% 17.5%;
+		--primary: 210 40% 98%;
+		--primary-foreground: 222.2 47.4% 11.2%;
+		--secondary: 217.2 32.6% 17.5%;
+		--secondary-foreground: 210 40% 98%;
+		--accent: 217.2 32.6% 17.5%;
+		--accent-foreground: 210 40% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 210 40% 98%;
+		--ring: 212.7 26.8% 83.9%;
+		--sidebar-background: 240 5.9% 10%;
+		--sidebar-foreground: 240 4.8% 95.9%;
+		--sidebar-primary: 224.3 76.3% 48%;
+		--sidebar-primary-foreground: 0 0% 100%;
+		--sidebar-accent: 240 3.7% 15.9%;
+		--sidebar-accent-foreground: 240 4.8% 95.9%;
+		--sidebar-border: 240 3.7% 15.9%;
+		--sidebar-ring: 217.2 91.2% 59.8%;
 	}
-	[data-theme^='vert'].dark,
-	[data-theme^='vert'] .dark,
+
+	[data-theme^="vert"].dark,
+	[data-theme^="vert"] .dark,
 	.dark .vert:not(.light *) {
 		--background: 180 50% 10%;
 		--foreground: 180 5% 90%;
@@ -141,8 +144,8 @@
 		--ring: 180 12.5% 37.6%;
 		--radius: 0.5rem;
 	}
-	[data-theme^='marron'].dark,
-	[data-theme^='marron'] .dark,
+	[data-theme^="marron"].dark,
+	[data-theme^="marron"] .dark,
 	.dark .marron:not(.light *) {
 		--background: 30 50% 10%;
 		--foreground: 30 5% 90%;
@@ -186,7 +189,7 @@
 	.vert {
 		@apply bg-background text-foreground;
 	}
-	.violet {
+	.nb {
 		@apply bg-background text-foreground;
 	}
 }

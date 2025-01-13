@@ -1,7 +1,7 @@
-import Root from './input-password.svelte';
+import Root from "./input-password.svelte";
 
 export {
 	Root,
 	//
-	Root as InputPassword
+	Root as InputPassword,
 };

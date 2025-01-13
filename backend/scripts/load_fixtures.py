@@ -1,11 +1,12 @@
 #!/usr/bin/env python
+# type: ignore
 import json
 import logging
 import sys
 import uuid
 from typing import Any, TypeVar
 
-from sqlalchemy import ColumnElement, and_
+from sqlalchemy import ColumnElement, and_, select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import (
     DeclarativeBase,
@@ -15,17 +16,17 @@ from sqlalchemy_utils import Ltree
 from app.core.db.models import (
     Activity,
     AddressGeo,
-    Base,
     Discipline,
     Event,
     Mobility,
     Org,
     Tour,
+    TreeBase,
     User,
 )
 from app.core.db.session import SessionLocal
 from app.core.security import get_password_hash
-from app.directory.crud_schemas import (
+from scripts.import_schemas import (
     EventImport,
     OrgImport,
     TourImport,
@@ -60,16 +61,18 @@ def create_filter(model: type[T], data: dict[str, Any]) -> ColumnElement[bool] |
 def get_db_instance(sql_cls: type[T], data: dict[str, Any]) -> T:
     """
     function used by scripts.lib.load_entities to retrieve an
-    already existing instance from database or a new one.
+    already existing instance from database or instantiate a new one.
 
-    It'll receive any classes used in the sqlalchemy model
-    with it's corresponding data from data and try to find the
-    corresponding instance
+    It'll receive any class from the registry with its corresponding
+    data and try to find the corresponding instance.
+
+    The default case is to match all attributes we have but there are
+    exceptions.
     """
 
-    # if issubclass(sql_cls, TreeBase):  # mypy complains
-    if sql_cls is Activity | Discipline | Mobility:
-        """ Specific request for TreeBase classes based on the unique TreeBase.path, 100% sure """
+    # if sql_cls is Activity | Discipline | Mobility:
+    if issubclass(sql_cls, TreeBase):  # mypy complains
+        """ Specific request for TreeBase classes based on the unique TreeBase.path """
         try:
             instance = (
                 db.query(sql_cls).where(sql_cls.path == Ltree(data["path"])).one()  # type: ignore[attr-defined]
@@ -81,7 +84,7 @@ def get_db_instance(sql_cls: type[T], data: dict[str, Any]) -> T:
         return instance
 
     elif sql_cls is User:
-        """ Specific request for User based on the unique User.email, 100% sure """
+        """ Specific request for User based on the unique User.email """
         try:
             instance = db.query(sql_cls).filter(User.email == data["email"]).one()
         except NoResultFound:
@@ -92,13 +95,23 @@ def get_db_instance(sql_cls: type[T], data: dict[str, Any]) -> T:
         return instance
 
     elif sql_cls is AddressGeo:
+        """
+        This class is only used in a one-to-one relationship with Contact
+        so either we have an instance already populated and we don't need to match
+        or it's a new Contact with a new AddressGeo.
+
+        It cannot be handled by the default handler because we need an instance per Contact
+        and 2 AddressGeo can be exactly the same, so there is no point in looking for a match.
+        """
         instance = sql_cls()
         db.add(instance)
         return instance
 
     try:
         """
-        Otherwise we'll match all attributes we have. For instance we have
+        Default case: we'll match all attributes we have.
+
+        In can be a problem in many cases, for instance we have
         two different people named David and we have no more information,
         we'll just match the name. So the first occurence will create a person,
         the second will reuse the first one, instead of creating a new one.
@@ -120,17 +133,13 @@ def get_db_instance(sql_cls: type[T], data: dict[str, Any]) -> T:
     return instance
 
 
-def get_class_from_name(cls_name: str) -> type[T] | None:
-    for mapper in Base.registry.mappers:
-        if mapper.class_.__name__ == cls_name:
-            return mapper.class_
-    return None
-
-
 if __name__ == "__main__":
     logger = logging.getLogger("load_fixture")
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=20)
     set_logger(logger)
+
+    user = db.scalar(select(User).where(User.email == "admin@example.com"))
+    db.info["user"] = user
 
     with open(get_input_file_path()) as f:
         data = json.load(f)

@@ -1,11 +1,13 @@
 import json
 from unittest.mock import patch
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.utils.schemas import Message
 
 
+@pytest.mark.usefixtures("function_create_superuser")
 def test_test_email(
     client: TestClient, superuser_token_headers: dict[str, str]
 ) -> None:
