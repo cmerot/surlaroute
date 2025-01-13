@@ -24,7 +24,7 @@ from app.core.db.models import (
     TreeBase,
     User,
 )
-from app.core.db.session import SessionLocal
+from app.core.db.session import get_db
 from app.core.security import get_password_hash
 from scripts.import_schemas import (
     EventImport,
@@ -35,7 +35,7 @@ from scripts.import_schemas import (
 )
 from scripts.lib import get_input_file_path, load_entities, set_logger
 
-db = SessionLocal()
+db = next(get_db())
 
 T = TypeVar("T", bound=DeclarativeBase)
 

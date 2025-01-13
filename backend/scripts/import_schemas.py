@@ -93,9 +93,7 @@ class AddressGeoImport(Base):
     geom_point: geoalchemy2.WKBElement | None = None
 
     @field_validator("geom_point", mode="before")
-    def validate_geom_point(
-        self, v: str | None = None
-    ) -> geoalchemy2.WKBElement | None:
+    def validate_geom_point(v: str | None = None) -> geoalchemy2.WKBElement | None:  # type: ignore
         if not v:
             return None
 
