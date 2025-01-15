@@ -54,17 +54,21 @@ def get_all_actors(
             noload(Org.member_assocs)
         ),
     )
-    statement = select(actor_poly).options(
-        selectinload(actor_poly.membership_assocs).options(
-            *select_actor,
-            select_org,
-        ),
-        selectinload(actor_poly.contact),
-        selectinload(actor_poly.Org.member_assocs).options(
-            *select_actor,
-            select_org,
-        ),
-        noload(actor_poly.tour_assocs),
+    statement = (
+        select(actor_poly)
+        .options(
+            selectinload(actor_poly.membership_assocs).options(
+                *select_actor,
+                select_org,
+            ),
+            selectinload(actor_poly.contact),
+            selectinload(actor_poly.Org.member_assocs).options(
+                *select_actor,
+                select_org,
+            ),
+            noload(actor_poly.tour_assocs),
+        )
+        .order_by(func.coalesce(actor_poly.Org.name, actor_poly.Person.name).asc())
     )
 
     if page_params.q is not None and page_params.q != "":
