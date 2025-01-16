@@ -1,20 +1,20 @@
 <script lang="ts">
-import type { OrgPublic, PersonPublic, TourPublic } from "$lib/backend/client";
-import { Button } from "$lib/components/ui/button";
-import { buttonVariants } from "$lib/components/ui/button/index.js";
-import * as Sheet from "$lib/components/ui/sheet/index.js";
-import { ShieldEllipsis } from "lucide-svelte";
-import Permission from "./permission.svelte";
+	import type { OrgPublic, PersonPublic, TourPublic } from '$lib/backend/client';
+	import { Button } from '$lib/components/ui/button';
+	import { buttonVariants } from '$lib/components/ui/button/index.js';
+	import * as Sheet from '$lib/components/ui/sheet/index.js';
+	import { ShieldEllipsis } from 'lucide-svelte';
+	import Permission from './permission.svelte';
 
-type PermissionsProps = {
-	entity: OrgPublic | PersonPublic | TourPublic;
-};
+	type PermissionsProps = {
+		entity: OrgPublic | PersonPublic | TourPublic;
+	};
 
-const { entity }: PermissionsProps = $props();
+	const { entity }: PermissionsProps = $props();
 </script>
 
 <Sheet.Root>
-	<Sheet.Trigger class={buttonVariants({ variant: "outline" })}>
+	<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
 		<ShieldEllipsis class="size-5" />
 	</Sheet.Trigger>
 	<Sheet.Content side="right">
@@ -59,11 +59,7 @@ const { entity }: PermissionsProps = $props();
 						{#if entity.group_owner}
 							<li>
 								Groupe :
-								<Button
-									variant="ghost"
-									href={`/directory/orgs/${entity.group_owner.id}`}
-									size="sm"
-								>
+								<Button variant="ghost" href={`/directory/orgs/${entity.group_owner.id}`} size="sm">
 									{entity.group_owner.name}
 								</Button>
 							</li>

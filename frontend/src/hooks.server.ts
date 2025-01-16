@@ -1,11 +1,11 @@
-import { client } from "$lib/backend/client";
-import { sessionStore } from "$lib/server/sessionStore";
-import type { Handle } from "@sveltejs/kit";
+import { client } from '$lib/backend/client';
+import { sessionStore } from '$lib/server/sessionStore';
+import type { Handle } from '@sveltejs/kit';
 
 const VITE_API_URL = import.meta.env.VITE_API_URL;
 
 export const handle: Handle = async ({ event, resolve }) => {
-	const sessionId = event.cookies.get("sessionId");
+	const sessionId = event.cookies.get('sessionId');
 
 	if (sessionId) {
 		const session = sessionStore.get(sessionId);

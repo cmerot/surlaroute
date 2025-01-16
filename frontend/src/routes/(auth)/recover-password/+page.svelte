@@ -1,7 +1,7 @@
 <script lang="ts">
-import type { PageData } from "./$types.js";
-import RecoverPasswordForm from "./recover-password-form.svelte";
-export let data: PageData;
+	import type { PageData } from './$types.js';
+	import RecoverPasswordForm from './recover-password-form.svelte';
+	export let data: PageData;
 </script>
 
 <header>

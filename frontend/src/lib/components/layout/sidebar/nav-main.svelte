@@ -1,17 +1,17 @@
 <script lang="ts">
-import * as Sidebar from "$lib/components/ui/sidebar/index.js";
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
 
-const {
-	items,
-}: {
-	items: {
-		title: string;
-		url: string;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		icon: any;
-		isActive?: boolean;
-	}[];
-} = $props();
+	const {
+		items
+	}: {
+		items: {
+			title: string;
+			url: string;
+			// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+			icon: any;
+			isActive?: boolean;
+		}[];
+	} = $props();
 </script>
 
 <Sidebar.Menu>

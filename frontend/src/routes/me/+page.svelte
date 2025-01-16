@@ -1,29 +1,29 @@
 <script lang="ts">
-import Contact from "$lib/components/directory/contact.svelte";
-import PersonOrganisations from "$lib/components/directory/page/person-organisations.svelte";
-import { Account } from "$lib/components/icons";
-import * as Page from "$lib/components/page";
-import Permissions from "$lib/components/permissions/permissions.svelte";
-import Button from "$lib/components/ui/button/button.svelte";
-import * as Card from "$lib/components/ui/card";
-import { Skeleton } from "$lib/components/ui/skeleton";
-import type { PageData } from "./$types";
-const { data }: { data: PageData } = $props();
+	import Contact from '$lib/components/directory/contact.svelte';
+	import PersonOrganisations from '$lib/components/directory/page/person-organisations.svelte';
+	import { Account } from '$lib/components/icons';
+	import * as Page from '$lib/components/page';
+	import Permissions from '$lib/components/permissions/permissions.svelte';
+	import Button from '$lib/components/ui/button/button.svelte';
+	import * as Card from '$lib/components/ui/card';
+	import { Skeleton } from '$lib/components/ui/skeleton';
+	import type { PageData } from './$types';
+	const { data }: { data: PageData } = $props();
 
-const { user, person } = data;
+	const { user, person } = data;
 
-const description = $derived.by(() => {
-	if (!person) return [];
+	const description = $derived.by(() => {
+		if (!person) return [];
 
-	const desc: string[] = [];
-	if (person.role) {
-		desc.push(person.role);
-	}
-	if (person.contact?.address?.q) {
-		desc.push(person.contact.address.q);
-	}
-	return desc;
-});
+		const desc: string[] = [];
+		if (person.role) {
+			desc.push(person.role);
+		}
+		if (person.contact?.address?.q) {
+			desc.push(person.contact.address.q);
+		}
+		return desc;
+	});
 </script>
 
 <Page.Root>
@@ -54,8 +54,7 @@ const description = $derived.by(() => {
 				<Card.Header>
 					<Card.Title>Ajouter des informations personnelles</Card.Title>
 					<Card.Description>
-						Vous n'avez pas d'informations personnelles rattachées à votre
-						compte.
+						Vous n'avez pas d'informations personnelles rattachées à votre compte.
 					</Card.Description>
 				</Card.Header>
 				<Card.Content class="prose dark:prose-invert">

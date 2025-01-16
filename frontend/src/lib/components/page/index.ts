@@ -1,8 +1,8 @@
-import ContentRoot, { type ContentProps } from "./content.svelte";
-import DescriptionRoot, { type DescriptionProps } from "./description.svelte";
-import FooterRoot, { type FooterProps } from "./footer.svelte";
-import PageRoot, { type PageProps } from "./page.svelte";
-import TitleRoot, { type TitleProps } from "./title.svelte";
+import ContentRoot, { type ContentProps } from './content.svelte';
+import DescriptionRoot, { type DescriptionProps } from './description.svelte';
+import FooterRoot, { type FooterProps } from './footer.svelte';
+import PageRoot, { type PageProps } from './page.svelte';
+import TitleRoot, { type TitleProps } from './title.svelte';
 
 export {
 	ContentRoot as Content,
@@ -16,5 +16,5 @@ export {
 	type FooterProps,
 	type PageProps,
 	type PageProps as Props,
-	type TitleProps,
+	type TitleProps
 };

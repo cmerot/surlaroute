@@ -1,8 +1,8 @@
 <script lang="ts">
-import { Logotext } from "$lib/components/icons";
-import Button from "$lib/components/ui/button/button.svelte";
+	import { Logotext } from '$lib/components/icons';
+	import Button from '$lib/components/ui/button/button.svelte';
 
-const { mode, theme }: { mode?: string; theme?: string } = $props();
+	const { mode, theme }: { mode?: string; theme?: string } = $props();
 </script>
 
 <div class={mode}>
@@ -17,24 +17,14 @@ const { mode, theme }: { mode?: string; theme?: string } = $props();
 				<Button variant="destructive" class="w-full">Destructive</Button>
 				<Button variant="link" class="w-full">Link</Button>
 				<Button variant="ghost" class="w-full">Ghost</Button>
-				<div
-					class="rounded-md bg-accent p-2.5 text-center text-sm text-accent-foreground"
-				>
+				<div class="rounded-md bg-accent p-2.5 text-center text-sm text-accent-foreground">
 					Accent
 				</div>
-				<div
-					class="rounded-md bg-muted p-2.5 text-center text-sm text-muted-foreground"
-				>
-					Muted
-				</div>
-				<div
-					class="rounded-md bg-background p-2.5 text-center text-sm text-foreground"
-				>
+				<div class="rounded-md bg-muted p-2.5 text-center text-sm text-muted-foreground">Muted</div>
+				<div class="rounded-md bg-background p-2.5 text-center text-sm text-foreground">
 					Background
 				</div>
-				<div
-					class="rounded-md bg-foreground p-2.5 text-center text-sm text-background"
-				>
+				<div class="rounded-md bg-foreground p-2.5 text-center text-sm text-background">
 					Foreground
 				</div>
 			</div>
