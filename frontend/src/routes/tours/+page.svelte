@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { DisciplineBadge } from '$lib/components/discipline-badge';
-	import { Directory, Tour } from '$lib/components/icons';
-	import Mobility from '$lib/components/icons/mobility.svelte';
-	import * as Page from '$lib/components/page';
-	import * as Card from '$lib/components/ui/card';
-	import * as Pagination from '$lib/components/ui/pagination';
-	import { ChevronLeft, ChevronRight } from 'lucide-svelte';
-	import type { PageData } from './$types';
+	import { goto } from "$app/navigation";
+	import { DisciplineBadge } from "$lib/components/discipline-badge";
+	import { Tour } from "$lib/components/icons";
+	import Mobility from "$lib/components/icons/mobility.svelte";
+	import * as Page from "$lib/components/page";
+	import * as Card from "$lib/components/ui/card";
+	import * as Pagination from "$lib/components/ui/pagination";
+	import { ChevronLeft, ChevronRight } from "lucide-svelte";
+	import type { PageData } from "./$types";
 
 	function getPageNumber() {
 		return Math.floor(query.offset / query.limit) + 1;
@@ -16,7 +16,7 @@
 	function scrollToElement(id: string) {
 		const element = document.getElementById(id);
 		if (element) {
-			element.scrollIntoView({ behavior: 'smooth' });
+			element.scrollIntoView({ behavior: "smooth" });
 		}
 	}
 
@@ -25,11 +25,11 @@
 		const searchParams = new URLSearchParams({
 			q: query.q,
 			limit: query.limit.toString(),
-			offset: query.offset.toString()
+			offset: query.offset.toString(),
 		});
 
 		await goto(`?${searchParams.toString()}`, {
-			keepFocus: true
+			keepFocus: true,
 		});
 		loading = false;
 	}
@@ -86,7 +86,7 @@
 				onPageChange={(p) => {
 					query.offset = (p - 1) * query.limit;
 					search();
-					scrollToElement('search');
+					scrollToElement("search");
 				}}
 			>
 				{#snippet children({ pages, currentPage })}
@@ -98,7 +98,7 @@
 							</Pagination.PrevButton>
 						</Pagination.Item>
 						{#each pages as page (page.key)}
-							{#if page.type === 'ellipsis'}
+							{#if page.type === "ellipsis"}
 								<Pagination.Item>
 									<Pagination.Ellipsis />
 								</Pagination.Item>

@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import OrgResult from '$lib/components/directory/result/org-result.svelte';
-	import PersonResult from '$lib/components/directory/result/person-result.svelte';
-	import { Directory } from '$lib/components/icons';
-	import * as Page from '$lib/components/page';
-	import { Button } from '$lib/components/ui/button';
-	import { Input } from '$lib/components/ui/input';
-	import * as Pagination from '$lib/components/ui/pagination';
-	import * as Select from '$lib/components/ui/select';
-	import { ChevronLeft, ChevronRight, Loader, Search, X } from 'lucide-svelte';
-	import type { PageData } from './$types';
+	import { goto } from "$app/navigation";
+	import OrgResult from "$lib/components/directory/result/org-result.svelte";
+	import PersonResult from "$lib/components/directory/result/person-result.svelte";
+	import { Directory } from "$lib/components/icons";
+	import * as Page from "$lib/components/page";
+	import { Button } from "$lib/components/ui/button";
+	import { Input } from "$lib/components/ui/input";
+	import * as Pagination from "$lib/components/ui/pagination";
+	import * as Select from "$lib/components/ui/select";
+	import { ChevronLeft, ChevronRight, Search, X } from "lucide-svelte";
+	import type { PageData } from "./$types";
 
 	const activityList = [
-		{ name: 'Toutes les catégories', path: '' },
-		{ name: 'Diffusion', path: 'Structure.Diffusion' },
-		{ name: 'Ressource', path: 'Structure.Ressource' },
-		{ name: 'Production', path: 'Structure.Production' }
+		{ name: "Toutes les catégories", path: "" },
+		{ name: "Diffusion", path: "Structure.Diffusion" },
+		{ name: "Ressource", path: "Structure.Ressource" },
+		{ name: "Production", path: "Structure.Production" },
 	];
 
 	function getPageNumber() {
@@ -28,11 +28,11 @@
 			q: query.q,
 			limit: query.limit.toString(),
 			offset: query.offset.toString(),
-			activity: query.activity
+			activity: query.activity,
 		});
 
 		await goto(`?${searchParams.toString()}`, {
-			keepFocus: true
+			keepFocus: true,
 		});
 		loading = false;
 	}
@@ -43,20 +43,20 @@
 	}
 
 	function getActivityName(path: string) {
-		return activityList.find((f) => f.path === path)?.name ?? 'Toutes les catégories';
+		return activityList.find((f) => f.path === path)?.name ?? "Toutes les catégories";
 	}
 
 	function scrollToElement(id: string) {
 		const element = document.getElementById(id);
 		if (element) {
-			element.scrollIntoView({ behavior: 'smooth' });
+			element.scrollIntoView({ behavior: "smooth" });
 		}
 	}
 
 	const { data }: { data: PageData } = $props();
+	let loading = $state(false);
 	const query = $state(data.query);
 	const pageNumber = $state(getPageNumber());
-	let loading = $state(false);
 
 	$effect(() => {
 		if (query.q) {
@@ -110,7 +110,7 @@
 								class="absolute right-12 top-1/2 -translate-y-1/2 rounded-none"
 								variant="ghost"
 								onclick={() => {
-									query.q = '';
+									query.q = "";
 									search();
 								}}
 							>
@@ -129,7 +129,7 @@
 			{:else}
 				<div class="relative space-y-4">
 					{#each data.results as actor}
-						{#if actor.type === 'Person'}
+						{#if actor.type === "Person"}
 							<PersonResult person={actor} />
 						{:else}
 							<OrgResult org={actor} />
@@ -142,7 +142,7 @@
 						onPageChange={(p) => {
 							query.offset = (p - 1) * query.limit;
 							search();
-							scrollToElement('search');
+							scrollToElement("search");
 						}}
 					>
 						{#snippet children({ pages, currentPage })}
@@ -154,7 +154,7 @@
 									</Pagination.PrevButton>
 								</Pagination.Item>
 								{#each pages as page (page.key)}
-									{#if page.type === 'ellipsis'}
+									{#if page.type === "ellipsis"}
 										<Pagination.Item>
 											<Pagination.Ellipsis />
 										</Pagination.Item>

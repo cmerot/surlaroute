@@ -1,6 +1,6 @@
-import { browser } from '$app/environment';
-import { client, type UserPublic } from '$lib/backend/client';
-import { writable } from 'svelte/store';
+import { browser } from "$app/environment";
+import type { UserPublic } from "$lib/backend/client";
+import { writable } from "svelte/store";
 
 interface AuthState {
 	user: UserPublic | null;
@@ -10,12 +10,12 @@ interface AuthState {
 function createAuthStore() {
 	const { subscribe, set } = writable<AuthState>({
 		user: null,
-		authToken: null
+		authToken: null,
 	});
 
 	// Initialize from localStorage if we're in the browser
 	if (browser) {
-		const stored = localStorage.getItem('auth');
+		const stored = localStorage.getItem("auth");
 		if (stored) set(JSON.parse(stored));
 	}
 
@@ -24,15 +24,15 @@ function createAuthStore() {
 		login: (user: UserPublic, authToken: string) => {
 			set({ user, authToken });
 			if (browser) {
-				localStorage.setItem('auth', JSON.stringify({ user, authToken }));
+				localStorage.setItem("auth", JSON.stringify({ user, authToken }));
 			}
 		},
 		logout: () => {
 			set({ user: null, authToken: null });
 			if (browser) {
-				localStorage.removeItem('auth');
+				localStorage.removeItem("auth");
 			}
-		}
+		},
 	};
 }
 

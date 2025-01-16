@@ -1,7 +1,7 @@
 <script lang="ts" module>
-	import * as Card from '$lib/components/ui/card';
-	import type { WithoutChildrenOrChild } from 'bits-ui';
-	import type { HTMLAttributes } from 'svelte/elements';
+	import * as Card from "$lib/components/ui/card";
+	import type { WithoutChildrenOrChild } from "bits-ui";
+	import type { HTMLAttributes } from "svelte/elements";
 	export type ColorSetProps = WithoutChildrenOrChild<
 		HTMLAttributes<HTMLDivElement> & {
 			name: string;

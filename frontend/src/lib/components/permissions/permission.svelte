@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { Badge } from '$lib/components/ui/badge';
-	import { Ban, Check } from 'lucide-svelte';
-	import { Button } from '$lib/components/ui/button';
+	import { Badge } from "$lib/components/ui/badge";
+	import { Ban, Check } from "lucide-svelte";
 
 	interface PermissionProps {
 		name: string;

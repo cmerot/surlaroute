@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
-	import ResetPassword from './reset-password-form.svelte';
+	import type { PageData } from "./$types.js";
+	import ResetPassword from "./reset-password-form.svelte";
 	export let data: PageData;
 </script>
 

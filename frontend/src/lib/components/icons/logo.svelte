@@ -7,9 +7,9 @@
 </script>
 
 <script lang="ts">
-	import type { WithoutChildrenOrChild } from 'bits-ui';
-	import type { SVGAttributes } from 'svelte/elements';
-	let { size = 24, background = 'none', withText = false, ...restProps }: LogoProps = $props();
+	import type { WithoutChildrenOrChild } from "bits-ui";
+	import type { SVGAttributes } from "svelte/elements";
+	let { size = 24, background = "none", withText = false, ...restProps }: LogoProps = $props();
 
 	type SizeProps = {
 		viewBox: string;
@@ -19,8 +19,8 @@
 
 	let sizeProps: SizeProps | undefined = $state();
 
-	const logoViewBox = '50 50 200 200';
-	const logoWithTextViewBox = '0 0 300 300';
+	const logoViewBox = "50 50 200 200";
+	const logoWithTextViewBox = "0 0 300 300";
 
 	if (withText) {
 		sizeProps = { viewBox: logoWithTextViewBox };

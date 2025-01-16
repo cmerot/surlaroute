@@ -1,22 +1,22 @@
 <script lang="ts">
-	import type { ActorAssocPublic, EventPublic, TourPublic } from '$lib/backend/client';
-	import { DisciplineBadge } from '$lib/components/discipline-badge';
-	import { Mobility, Tour } from '$lib/components/icons';
-	import * as Page from '$lib/components/page';
-	import Permissions from '$lib/components/permissions/permissions.svelte';
-	import { Badge } from '$lib/components/ui/badge';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import { onMount } from 'svelte';
+	import type { ActorAssocPublic, EventPublic, TourPublic } from "$lib/backend/client";
+	import { DisciplineBadge } from "$lib/components/discipline-badge";
+	import { Mobility, Tour } from "$lib/components/icons";
+	import * as Page from "$lib/components/page";
+	import Permissions from "$lib/components/permissions/permissions.svelte";
+	import { Badge } from "$lib/components/ui/badge";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import { onMount } from "svelte";
 	import {
 		GeoJSON,
 		LineLayer,
 		MapLibre,
 		Marker,
 		Popup,
-		type LngLatBoundsLike
-	} from 'svelte-maplibre';
-	import type { PageData } from './$types';
+		type LngLatBoundsLike,
+	} from "svelte-maplibre";
+	import type { PageData } from "./$types";
 
 	type MarkerType = {
 		lngLat: [number, number];
@@ -44,7 +44,7 @@
 							lngLat: assoc.actor.contact.address.geom_point.coordinates as [number, number],
 							name: label,
 							label,
-							assoc
+							assoc,
 						});
 					}
 				}
@@ -56,7 +56,7 @@
 	function getBoundsFromMarkers(markers: Array<MarkerType>) {
 		const bounds = [
 			[90, 90], // [lng, lat]
-			[-90, -90] // [lng, lat]
+			[-90, -90], // [lng, lat]
 		];
 
 		for (const marker of markers) {
@@ -70,7 +70,7 @@
 
 	function getProducers(tour: TourPublic) {
 		return (
-			tour.actor_assocs?.filter((assoc: ActorAssocPublic) => assoc.data?.role === 'producer') ?? []
+			tour.actor_assocs?.filter((assoc: ActorAssocPublic) => assoc.data?.role === "producer") ?? []
 		);
 	}
 
@@ -88,8 +88,8 @@
 				top: 100,
 				right: 100,
 				bottom: 100,
-				left: 100
-			}
+				left: 100,
+			},
 		});
 	});
 </script>
@@ -115,12 +115,12 @@
 			>
 				<GeoJSON id="maine" data={tour.geojson as unknown as string}>
 					<LineLayer
-						layout={{ 'line-cap': 'round', 'line-join': 'round' }}
+						layout={{ "line-cap": "round", "line-join": "round" }}
 						paint={{
-							'line-width': 5,
-							'line-dasharray': [5, 2],
-							'line-color': '#008800',
-							'line-opacity': 0.8
+							"line-width": 5,
+							"line-dasharray": [5, 2],
+							"line-color": "#008800",
+							"line-opacity": 0.8,
 						}}
 					/>
 				</GeoJSON>
@@ -128,7 +128,7 @@
 					<!-- <EventMarker {org} event={assoc.event} {step} /> -->
 					<Marker
 						{lngLat}
-						onclick={() => console.log('click')}
+						onclick={() => console.log("click")}
 						class="grid h-8 w-8 place-items-center"
 					>
 						<Badge>{index + 1}</Badge>
@@ -151,9 +151,9 @@
 						<p>
 							Produit par {@html producers
 								.map((p) => {
-									return `<a class="underline" href="/directory/${p.actor.type == 'Person' ? 'people' : 'orgs'}/${p.actor.id}">${p.actor.name}</a>`;
+									return `<a class="underline" href="/directory/${p.actor.type == "Person" ? "people" : "orgs"}/${p.actor.id}">${p.actor.name}</a>`;
 								})
-								.join(', ')}
+								.join(", ")}
 							en {tour.year}
 						</p>
 					{/if}
@@ -170,15 +170,15 @@
 								{#each event.actor_assocs as assoc}
 									<li>
 										<Button
-											href={`/directory/${assoc.actor.type == 'Person' ? 'people' : 'orgs'}/${assoc.actor.id}`}
+											href={`/directory/${assoc.actor.type == "Person" ? "people" : "orgs"}/${assoc.actor.id}`}
 											class="flex w-full justify-start"
 											variant="ghost"
 										>
 											<div class="w-40">
 												{new Date(event.start_dt).toLocaleDateString(undefined, {
-													year: 'numeric',
-													month: 'long',
-													day: 'numeric'
+													year: "numeric",
+													month: "long",
+													day: "numeric",
 												})}
 											</div>
 											<Badge>{event_index + 1}</Badge>

@@ -1,7 +1,7 @@
 <script>
-	import { Logotext } from '$lib/components/icons';
-	import * as Page from '$lib/components/page';
-	import { Button } from '$lib/components/ui/button';
+	import { Logotext } from "$lib/components/icons";
+	import * as Page from "$lib/components/page";
+	import { Button } from "$lib/components/ui/button";
 </script>
 
 <Page.Root>

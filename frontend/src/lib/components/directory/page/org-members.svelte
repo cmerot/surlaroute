@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type { OrgPublic } from '$lib/backend/client';
-	import { Button } from '$lib/components/ui/button';
+	import type { OrgPublic } from "$lib/backend/client";
+	import { Button } from "$lib/components/ui/button";
 
-	import { Org, Person } from '$lib/components/icons';
-	import * as Card from '$lib/components/ui/card';
-	import clsx from 'clsx';
-	import type { SvelteHTMLElements } from 'svelte/elements';
+	import { Org, Person } from "$lib/components/icons";
+	import * as Card from "$lib/components/ui/card";
+	import clsx from "clsx";
+	import type { SvelteHTMLElements } from "svelte/elements";
 
-	type Props = SvelteHTMLElements['div'] & { org: OrgPublic };
+	type Props = SvelteHTMLElements["div"] & { org: OrgPublic };
 
 	const { org, class: classNames, ...restProps }: Props = $props();
 </script>
 
-<Card.Root class={clsx('', classNames)} {...restProps}>
+<Card.Root class={clsx("", classNames)} {...restProps}>
 	<Card.Header>
 		<Card.Title>Membres</Card.Title>
 	</Card.Header>
@@ -25,7 +25,7 @@
 						class="flex w-full justify-start"
 						variant="ghost"
 					>
-						{#if assoc.actor.type == 'Org'}
+						{#if assoc.actor.type == "Org"}
 							<Org class="inline" />
 						{:else}
 							<Person class="inline" />

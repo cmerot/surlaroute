@@ -7,15 +7,10 @@
 </script>
 
 <script lang="ts">
-	import type { WithoutChildrenOrChild } from 'bits-ui';
-	import type { SVGAttributes } from 'svelte/elements';
-	import Logo2 from './logo.svelte';
-	let {
-		size = 24,
-		background = 'none',
-		title = 'Sur la route',
-		...restProps
-	}: LogotextProps = $props();
+	import type { WithoutChildrenOrChild } from "bits-ui";
+	import type { SVGAttributes } from "svelte/elements";
+	import Logo2 from "./logo.svelte";
+	let { size = 24, title = "Sur la route", ...restProps }: LogotextProps = $props();
 </script>
 
 <svg

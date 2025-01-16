@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { OrgPublic, PersonPublic, TourPublic } from '$lib/backend/client';
-	import { Button } from '$lib/components/ui/button';
-	import { buttonVariants } from '$lib/components/ui/button/index.js';
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	import { ShieldEllipsis } from 'lucide-svelte';
-	import Permission from './permission.svelte';
+	import type { OrgPublic, PersonPublic, TourPublic } from "$lib/backend/client";
+	import { Button } from "$lib/components/ui/button";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
+	import * as Sheet from "$lib/components/ui/sheet/index.js";
+	import { ShieldEllipsis } from "lucide-svelte";
+	import Permission from "./permission.svelte";
 
 	type PermissionsProps = {
 		entity: OrgPublic | PersonPublic | TourPublic;
@@ -14,7 +14,7 @@
 </script>
 
 <Sheet.Root>
-	<Sheet.Trigger class={buttonVariants({ variant: 'outline' })}>
+	<Sheet.Trigger class={buttonVariants({ variant: "outline" })}>
 		<ShieldEllipsis class="size-5" />
 	</Sheet.Trigger>
 	<Sheet.Content side="right">

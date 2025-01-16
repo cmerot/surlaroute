@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { Logotext } from '$lib/components/icons';
-	import Button from '$lib/components/ui/button/button.svelte';
+	import { Logotext } from "$lib/components/icons";
+	import Button from "$lib/components/ui/button/button.svelte";
 
 	const { mode, theme }: { mode?: string; theme?: string } = $props();
 </script>
