@@ -1,24 +1,22 @@
 <script lang="ts">
-import type { ContactPublic } from "$lib/backend/client";
-import * as Card from "$lib/components/ui/card/index.js";
-import { MapPinned } from "lucide-svelte";
-import type { SvelteHTMLElements } from "svelte/elements";
-import { EmailAddress, PhoneNumber, Website } from "../icons";
+	import type { ContactPublic } from '$lib/backend/client';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { MapPinned } from 'lucide-svelte';
+	import type { SvelteHTMLElements } from 'svelte/elements';
+	import { EmailAddress, PhoneNumber, Website } from '../icons';
 
-type ContactProps = SvelteHTMLElements["div"] & {
-	contact?: ContactPublic | null;
-};
+	type ContactProps = SvelteHTMLElements['div'] & {
+		contact?: ContactPublic | null;
+	};
 
-const { contact, class: classNames, ...restProps }: ContactProps = $props();
+	const { contact, class: classNames, ...restProps }: ContactProps = $props();
 
-let showContact = $state(false);
-if (contact) {
-	if (
-		Object.keys(contact).find((k) => contact[k as keyof typeof contact] != null)
-	) {
-		showContact = true;
+	let showContact = $state(false);
+	if (contact) {
+		if (Object.keys(contact).find((k) => contact[k as keyof typeof contact] != null)) {
+			showContact = true;
+		}
 	}
-}
 </script>
 
 <Card.Root {...restProps}>

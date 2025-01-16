@@ -1,31 +1,31 @@
 <script lang="ts">
-import type { PersonPublic } from "$lib/backend/client";
+	import type { PersonPublic } from '$lib/backend/client';
 
-import { Org, Person } from "$lib/components/icons";
-import { Button } from "$lib/components/ui/button";
-import * as Card from "$lib/components/ui/card";
-import { onMount } from "svelte";
-import type { SvelteHTMLElements } from "svelte/elements";
-import ContactDetails from "./contact-result.svelte";
+	import { Org, Person } from '$lib/components/icons';
+	import { Button } from '$lib/components/ui/button';
+	import * as Card from '$lib/components/ui/card';
+	import { onMount } from 'svelte';
+	import type { SvelteHTMLElements } from 'svelte/elements';
+	import ContactDetails from './contact-result.svelte';
 
-type ActorProps = SvelteHTMLElements["div"] & {
-	person: PersonPublic;
-};
+	type ActorProps = SvelteHTMLElements['div'] & {
+		person: PersonPublic;
+	};
 
-const { person, class: classNames, ...restProps }: ActorProps = $props();
+	const { person, class: classNames, ...restProps }: ActorProps = $props();
 
-const href = $derived(`/directory/people/${person.id}`);
+	const href = $derived(`/directory/people/${person.id}`);
 
-const description = $derived.by(() => {
-	const parts = [];
-	if (person.role) {
-		parts.push(person.role);
-	}
-	if (person.contact?.address?.q) {
-		parts.push(person.contact.address.q);
-	}
-	return parts.join(", ");
-});
+	const description = $derived.by(() => {
+		const parts = [];
+		if (person.role) {
+			parts.push(person.role);
+		}
+		if (person.contact?.address?.q) {
+			parts.push(person.contact.address.q);
+		}
+		return parts.join(', ');
+	});
 </script>
 
 <Card.Root {...restProps}>

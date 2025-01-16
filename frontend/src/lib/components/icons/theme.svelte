@@ -1,22 +1,15 @@
 <script lang="ts" module>
-export type ThemeProps = WithoutChildrenOrChild<
-	SVGAttributes<SVGSVGElement>
-> & {
-	theme: string;
-	size?: number | string;
-};
+	export type ThemeProps = WithoutChildrenOrChild<SVGAttributes<SVGSVGElement>> & {
+		theme: string;
+		size?: number | string;
+	};
 </script>
 
 <script lang="ts">
-	import { cn } from "$lib/utils";
-	import type { WithoutChildrenOrChild } from "bits-ui";
-	import type { SVGAttributes } from "svelte/elements";
-	let {
-		class: className,
-		theme,
-		size = 24,
-		...restProps
-	}: ThemeProps = $props();
+	import { cn } from '$lib/utils';
+	import type { WithoutChildrenOrChild } from 'bits-ui';
+	import type { SVGAttributes } from 'svelte/elements';
+	let { class: className, theme, size = 24, ...restProps }: ThemeProps = $props();
 </script>
 
 <svg
@@ -27,16 +20,7 @@ export type ThemeProps = WithoutChildrenOrChild<
 	class={cn(`${theme}`, className)}
 	{...restProps}
 >
-	<rect
-		x="0"
-		y="0"
-		width="24"
-		height="24"
-		fill="currentColor"
-		rx="3"
-		ry="3"
-		class="text-primary"
-	/>
+	<rect x="0" y="0" width="24" height="24" fill="currentColor" rx="3" ry="3" class="text-primary" />
 	<rect
 		class="text-secondary"
 		x="4"

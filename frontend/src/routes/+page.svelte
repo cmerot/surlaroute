@@ -1,7 +1,7 @@
 <script>
-import { Logotext } from "$lib/components/icons";
-import * as Page from "$lib/components/page";
-import { Button } from "$lib/components/ui/button";
+	import { Logotext } from '$lib/components/icons';
+	import * as Page from '$lib/components/page';
+	import { Button } from '$lib/components/ui/button';
 </script>
 
 <Page.Root>
@@ -12,35 +12,29 @@ import { Button } from "$lib/components/ui/button";
 				L'atlas des tournées artistiques à modes doux
 			</h1>
 			<p class="text-center">
-				<Button
-					href="/tours"
-					variant="secondary"
-					class="rounded text-xl"
-					size="lg">Explorer</Button
+				<Button href="/tours" variant="secondary" class="rounded text-xl" size="lg">Explorer</Button
 				>
 			</p>
 			<div class="prose m-auto text-lg text-couleur-fg">
 				<p>
-					Le mouvement des arts à modes doux se développe partout en Europe. Des
-					centaines d’artistes et de compagnies ont choisi, pour réduire leur
-					empreinte environnementale, de tourner leurs spectacles en mobilités
-					douces : à vélo, à cheval, à pieds ou à la voile.
+					Le mouvement des arts à modes doux se développe partout en Europe. Des centaines
+					d’artistes et de compagnies ont choisi, pour réduire leur empreinte environnementale, de
+					tourner leurs spectacles en mobilités douces : à vélo, à cheval, à pieds ou à la voile.
 				</p>
 				<p>
-					« Sur la route » est un projet imaginé par Slowfest et le réseau
-					ARMODO pour recenser et cartographier les tournées artistiques en
-					mobilités douces. C’est une plateforme collaborative et numérique dont
-					les objectifs sont :
+					« Sur la route » est un projet imaginé par Slowfest et le réseau ARMODO pour recenser et
+					cartographier les tournées artistiques en mobilités douces. C’est une plateforme
+					collaborative et numérique dont les objectifs sont :
 				</p>
 				<ul>
 					<li>🔆 Visibiliser et valoriser les tournées en modes doux.</li>
 					<li>
-						🔆 Faire baisser les temps de production et susciter des vocations
-						par la mutualisation des données.
+						🔆 Faire baisser les temps de production et susciter des vocations par la mutualisation
+						des données.
 					</li>
 					<li>
-						🔆 Accélérer la mutualisation de matériel spécifique aux modes doux
-						(vélogistique, autonomie énergétique).
+						🔆 Accélérer la mutualisation de matériel spécifique aux modes doux (vélogistique,
+						autonomie énergétique).
 					</li>
 				</ul>
 				<p>
@@ -50,9 +44,7 @@ import { Button } from "$lib/components/ui/button";
 						European Network of Cultural Centres
 					</a>
 					pour ce projet, soutenu par la
-					<a
-						href="https://www.linkedin.com/company/conseil-r-gional-nouvelle-aquitaine/"
-					>
+					<a href="https://www.linkedin.com/company/conseil-r-gional-nouvelle-aquitaine/">
 						Région Nouvelle-Aquitaine
 					</a>
 					au titre de la sobriété numérique et l’Union Européenne pour le programme
@@ -61,22 +53,15 @@ import { Button } from "$lib/components/ui/button";
 				<hr />
 				<ul class="m-auto">
 					<li>
-						<a
-							href="https://www.slowfest.org/"
-							class=" text-white no-underline"
-						>
+						<a href="https://www.slowfest.org/" class=" text-white no-underline">
 							<span class="no-underline">Slowfest</span><br />
-							<span class="no-underline opacity-40"
-								>https://www.slowfest.org/</span
-							>
+							<span class="no-underline opacity-40">https://www.slowfest.org/</span>
 						</a>
 					</li>
 					<li>
 						<a href="https://www.armodo.org/" class=" text-white no-underline">
 							<span class="no-underline">ArMoDo</span><br />
-							<span class="no-underline opacity-40"
-								>https://www.armodo.org/</span
-							>
+							<span class="no-underline opacity-40">https://www.armodo.org/</span>
 						</a>
 					</li>
 				</ul>

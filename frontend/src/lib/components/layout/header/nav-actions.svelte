@@ -1,43 +1,28 @@
 <script lang="ts">
-import { enhance } from "$app/forms";
-import { Theme } from "$lib/components/icons";
-import { Button } from "$lib/components/ui/button/index.js";
-import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-import {
-	CircleUser,
-	LogIn,
-	LogOut,
-	MonitorCog,
-	Moon,
-	Palette,
-	Sun,
-} from "lucide-svelte";
-import { mode, ModeWatcher, setMode, setTheme, theme } from "mode-watcher";
+	import { enhance } from "$app/forms";
+	import { Theme } from "$lib/components/icons";
+	import { Button } from "$lib/components/ui/button/index.js";
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { CircleUser, LogIn, LogOut, MonitorCog, Moon, Palette, Sun } from "lucide-svelte";
+	import { mode, ModeWatcher, setMode, setTheme, theme } from "mode-watcher";
 
-import { auth } from "$lib/stores/auth";
-const user = $derived($auth.user);
+	import { auth } from "$lib/stores/auth";
+	const user = $derived($auth.user);
 
-// biome-ignore lint/style/useConst: <explanation>
-let modeValue = $state($mode || "light");
-// biome-ignore lint/style/useConst: <explanation>
-let themeValue: string = $state($theme || "nb");
+	let modeValue = $state($mode || "light");
+	let themeValue: string = $state($theme || "nb");
 
-$effect(() => {
-	setTheme(themeValue);
-	setMode(modeValue);
-});
+	$effect(() => {
+		setTheme(themeValue);
+		setMode(modeValue);
+	});
 </script>
 
 <div class="flex items-center gap-2">
 	<DropdownMenu.Root>
 		<DropdownMenu.Trigger>
 			{#snippet child({ props })}
-				<Button
-					{...props}
-					variant="ghost"
-					size="icon"
-					class="data-[state=open]:bg-accent"
-				>
+				<Button {...props} variant="ghost" size="icon" class="data-[state=open]:bg-accent">
 					<CircleUser />
 				</Button>
 			{/snippet}
@@ -45,9 +30,7 @@ $effect(() => {
 		<DropdownMenu.Content align="end">
 			<DropdownMenu.Group>
 				{#if user}
-					<DropdownMenu.GroupHeading
-						class="px-5 py-3 text-xs font-normal text-muted-foreground"
-					>
+					<DropdownMenu.GroupHeading class="px-5 py-3 text-xs font-normal text-muted-foreground">
 						{user.email}
 					</DropdownMenu.GroupHeading>
 					<DropdownMenu.Item class="px-5 py-3">
@@ -78,9 +61,7 @@ $effect(() => {
 				{/if}
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
-					<DropdownMenu.GroupHeading
-						class="px-5 py-3 text-xs font-normal text-muted-foreground"
-					>
+					<DropdownMenu.GroupHeading class="px-5 py-3 text-xs font-normal text-muted-foreground">
 						Appararence
 					</DropdownMenu.GroupHeading>
 
@@ -99,9 +80,7 @@ $effect(() => {
 						</DropdownMenu.SubTrigger>
 						<DropdownMenu.SubContent>
 							<DropdownMenu.RadioGroup bind:value={modeValue}>
-								<DropdownMenu.GroupHeading
-									class="py-3 text-xs font-normal text-muted-foreground"
-								>
+								<DropdownMenu.GroupHeading class="py-3 text-xs font-normal text-muted-foreground">
 									Mode
 								</DropdownMenu.GroupHeading>
 								<DropdownMenu.RadioItem value="light" class="py-3 pr-5">
@@ -126,9 +105,7 @@ $effect(() => {
 						</DropdownMenu.SubTrigger>
 						<DropdownMenu.SubContent>
 							<DropdownMenu.RadioGroup bind:value={themeValue}>
-								<DropdownMenu.GroupHeading
-									class="py-3 text-xs font-normal text-muted-foreground"
-								>
+								<DropdownMenu.GroupHeading class="py-3 text-xs font-normal text-muted-foreground">
 									Thème
 								</DropdownMenu.GroupHeading>
 								<DropdownMenu.RadioItem value="nb" class="py-3 pr-5">

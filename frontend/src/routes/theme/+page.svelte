@@ -1,9 +1,9 @@
 <script lang="ts">
-import { Bateau, Equestre, Logo, Marche, Velo } from "$lib/components/icons";
-import * as Page from "$lib/components/page";
-import Declinaison from "./declinaison.svelte";
-import Section from "./section.svelte";
-import ThemeSample from "./theme-sample.svelte";
+	import { Bateau, Equestre, Logo, Marche, Velo } from '$lib/components/icons';
+	import * as Page from '$lib/components/page';
+	import Declinaison from './declinaison.svelte';
+	import Section from './section.svelte';
+	import ThemeSample from './theme-sample.svelte';
 </script>
 
 <Page.Root title="Theme" id="page">
@@ -20,43 +20,26 @@ import ThemeSample from "./theme-sample.svelte";
 				<div
 					class="relative flex h-[400px] items-center justify-center bg-couleur-bg text-couleur-fg"
 				>
-					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">
-						Version Couleur
-					</h1>
+					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">Version Couleur</h1>
 					<Logo size="40%" />
 				</div>
 				<div
 					class="relative flex h-[400px] items-center justify-center bg-nb-bg text-nb-fg"
 					style="font-color: white"
 				>
-					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">
-						Version Noir & Blanc
-					</h1>
+					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">Version Noir & Blanc</h1>
 					<Logo size="40%" />
 				</div>
-				<div
-					class="relative flex h-[400px] items-center justify-center bg-neg-bg text-neg-fg"
-				>
-					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">
-						Version Negative
-					</h1>
+				<div class="relative flex h-[400px] items-center justify-center bg-neg-bg text-neg-fg">
+					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">Version Negative</h1>
 					<Logo size="40%" />
 				</div>
-				<div
-					class="relative flex h-[400px] items-center justify-center bg-gris-bg text-gris-fg"
-				>
-					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">
-						Version niveau de gris
-					</h1>
+				<div class="relative flex h-[400px] items-center justify-center bg-gris-bg text-gris-fg">
+					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl">Version niveau de gris</h1>
 					<Logo size="40%" />
 				</div>
-				<div
-					class="relative flex h-[400px] items-center justify-center bg-nb-bg"
-				>
-					<h1
-						class="absolute left-0 top-0 p-10 font-logo text-3xl"
-						style="color:#BC002D"
-					>
+				<div class="relative flex h-[400px] items-center justify-center bg-nb-bg">
+					<h1 class="absolute left-0 top-0 p-10 font-logo text-3xl" style="color:#BC002D">
 						Version Japon
 					</h1>
 					<Logo size="40%" background="#BC002D" class="text-white" />

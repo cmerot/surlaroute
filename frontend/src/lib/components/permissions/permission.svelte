@@ -1,14 +1,14 @@
 <script lang="ts">
-import { Badge } from "$lib/components/ui/badge";
-import { Ban, Check } from "lucide-svelte";
-import { Button } from "$lib/components/ui/button";
+	import { Badge } from '$lib/components/ui/badge';
+	import { Ban, Check } from 'lucide-svelte';
+	import { Button } from '$lib/components/ui/button';
 
-interface PermissionProps {
-	name: string;
-	value?: boolean;
-}
+	interface PermissionProps {
+		name: string;
+		value?: boolean;
+	}
 
-const { name, value }: PermissionProps = $props();
+	const { name, value }: PermissionProps = $props();
 </script>
 
 {#if value}

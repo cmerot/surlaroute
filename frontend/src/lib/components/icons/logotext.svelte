@@ -1,21 +1,19 @@
 <script lang="ts" module>
-export type LogotextProps = WithoutChildrenOrChild<
-	SVGAttributes<SVGSVGElement>
-> & {
-	size?: number | string;
-	background?: string;
-	title?: string;
-};
+	export type LogotextProps = WithoutChildrenOrChild<SVGAttributes<SVGSVGElement>> & {
+		size?: number | string;
+		background?: string;
+		title?: string;
+	};
 </script>
 
 <script lang="ts">
-	import type { WithoutChildrenOrChild } from "bits-ui";
-	import type { SVGAttributes } from "svelte/elements";
-	import Logo2 from "./logo.svelte";
+	import type { WithoutChildrenOrChild } from 'bits-ui';
+	import type { SVGAttributes } from 'svelte/elements';
+	import Logo2 from './logo.svelte';
 	let {
 		size = 24,
-		background = "none",
-		title = "Sur la route",
+		background = 'none',
+		title = 'Sur la route',
 		...restProps
 	}: LogotextProps = $props();
 </script>
@@ -28,14 +26,7 @@ export type LogotextProps = WithoutChildrenOrChild<
 	viewBox="0 0 300 300"
 	{...restProps}
 >
-	<circle
-		id="a"
-		cx="-171.62"
-		cy="124.69"
-		r="118.75"
-		fill="none"
-		transform="rotate(-99)"
-	/>
+	<circle id="a" cx="-171.62" cy="124.69" r="118.75" fill="none" transform="rotate(-99)" />
 	<text>
 		<textPath
 			xlink:href="#a"

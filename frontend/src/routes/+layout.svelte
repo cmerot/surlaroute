@@ -1,30 +1,30 @@
 <script lang="ts">
-import { navigating } from "$app/state";
-import Layout from "$lib/components/layout/layout.svelte";
-import { auth } from "$lib/stores/auth";
-import type { Snippet } from "svelte";
-import "../app.css";
-import type { LayoutData } from "./$types";
+	import { navigating } from '$app/state';
+	import Layout from '$lib/components/layout/layout.svelte';
+	import { auth } from '$lib/stores/auth';
+	import type { Snippet } from 'svelte';
+	import '../app.css';
+	import type { LayoutData } from './$types';
 
-type Props = { children: Snippet; data: LayoutData };
+	type Props = { children: Snippet; data: LayoutData };
 
-const { children, data }: Props = $props();
+	const { children, data }: Props = $props();
 
-let opacity = $state("opacity-0");
+	let opacity = $state('opacity-0');
 
-$effect(() => {
-	// Show loading bar when navigation is in progress (from and to are not null)
-	opacity = navigating?.from && navigating?.to ? "opacity-100" : "opacity-0";
-});
+	$effect(() => {
+		// Show loading bar when navigation is in progress (from and to are not null)
+		opacity = navigating?.from && navigating?.to ? 'opacity-100' : 'opacity-0';
+	});
 
-// Separate effect for auth logic
-$effect(() => {
-	if (data.user && data.authToken) {
-		auth.login(data.user, data.authToken);
-	} else {
-		auth.logout();
-	}
-});
+	// Separate effect for auth logic
+	$effect(() => {
+		if (data.user && data.authToken) {
+			auth.login(data.user, data.authToken);
+		} else {
+			auth.logout();
+		}
+	});
 </script>
 
 <div

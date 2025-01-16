@@ -939,10 +939,7 @@
 				"properties": {
 					"q": { "type": "string", "title": "Q" },
 					"geom_point": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/Point" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/Point" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
@@ -953,10 +950,7 @@
 			"Body_login-access_token": {
 				"properties": {
 					"grant_type": {
-						"anyOf": [
-							{ "type": "string", "pattern": "password" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "pattern": "password" }, { "type": "null" }],
 						"title": "Grant Type"
 					},
 					"username": { "type": "string", "title": "Username" },
@@ -986,10 +980,7 @@
 						"title": "Phone Number"
 					},
 					"address": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/AddressPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/AddressPublic" }, { "type": "null" }]
 					},
 					"website": {
 						"anyOf": [{ "type": "string" }, { "type": "null" }],
@@ -1008,30 +999,18 @@
 			"EventPublic": {
 				"properties": {
 					"owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Owner Id"
 					},
 					"owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/OwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/OwnerPublic" }, { "type": "null" }]
 					},
 					"group_owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Group Owner Id"
 					},
 					"group_owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/GroupOwnerPublic" }, { "type": "null" }]
 					},
 					"other_read": { "type": "boolean", "title": "Other Read" },
 					"member_read": { "type": "boolean", "title": "Member Read" },
@@ -1046,10 +1025,7 @@
 						"title": "Start Dt"
 					},
 					"end_dt": {
-						"anyOf": [
-							{ "type": "string", "format": "date-time" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "date-time" }, { "type": "null" }],
 						"title": "End Dt"
 					},
 					"actor_assocs": {
@@ -1140,11 +1116,7 @@
 						"title": "Properties"
 					},
 					"id": {
-						"anyOf": [
-							{ "type": "integer" },
-							{ "type": "string" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "integer" }, { "type": "string" }, { "type": "null" }],
 						"title": "Id"
 					}
 				},
@@ -1556,30 +1528,18 @@
 			"OrgPublic": {
 				"properties": {
 					"owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Owner Id"
 					},
 					"owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/OwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/OwnerPublic" }, { "type": "null" }]
 					},
 					"group_owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Group Owner Id"
 					},
 					"group_owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/GroupOwnerPublic" }, { "type": "null" }]
 					},
 					"other_read": { "type": "boolean", "title": "Other Read" },
 					"member_read": { "type": "boolean", "title": "Member Read" },
@@ -1587,10 +1547,7 @@
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"name": { "type": "string", "title": "Name" },
 					"contact": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/ContactPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
 					},
 					"membership_assocs": {
 						"items": { "$ref": "#/components/schemas/OrgAssocPublic" },
@@ -1652,10 +1609,7 @@
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"email": { "type": "string", "title": "Email" },
 					"person": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/OwnerPersonPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/OwnerPersonPublic" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
@@ -1730,30 +1684,18 @@
 			"PersonPublic": {
 				"properties": {
 					"owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Owner Id"
 					},
 					"owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/OwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/OwnerPublic" }, { "type": "null" }]
 					},
 					"group_owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Group Owner Id"
 					},
 					"group_owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/GroupOwnerPublic" }, { "type": "null" }]
 					},
 					"other_read": { "type": "boolean", "title": "Other Read" },
 					"member_read": { "type": "boolean", "title": "Member Read" },
@@ -1761,10 +1703,7 @@
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"name": { "type": "string", "title": "Name" },
 					"contact": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/ContactPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/ContactPublic" }, { "type": "null" }]
 					},
 					"membership_assocs": {
 						"items": { "$ref": "#/components/schemas/OrgAssocPublic" },
@@ -1956,30 +1895,18 @@
 			"TourPublic": {
 				"properties": {
 					"owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Owner Id"
 					},
 					"owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/OwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/OwnerPublic" }, { "type": "null" }]
 					},
 					"group_owner_id": {
-						"anyOf": [
-							{ "type": "string", "format": "uuid" },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "format": "uuid" }, { "type": "null" }],
 						"title": "Group Owner Id"
 					},
 					"group_owner": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/GroupOwnerPublic" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/GroupOwnerPublic" }, { "type": "null" }]
 					},
 					"other_read": { "type": "boolean", "title": "Other Read" },
 					"member_read": { "type": "boolean", "title": "Member Read" },
@@ -2016,10 +1943,7 @@
 						"title": "Events"
 					},
 					"geojson": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/FeatureCollection" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/FeatureCollection" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
@@ -2124,10 +2048,7 @@
 					"is_member": { "type": "boolean", "title": "Is Member" },
 					"id": { "type": "string", "format": "uuid", "title": "Id" },
 					"person": {
-						"anyOf": [
-							{ "$ref": "#/components/schemas/UserPerson" },
-							{ "type": "null" }
-						]
+						"anyOf": [{ "$ref": "#/components/schemas/UserPerson" }, { "type": "null" }]
 					}
 				},
 				"type": "object",
@@ -2178,10 +2099,7 @@
 						"default": false
 					},
 					"password": {
-						"anyOf": [
-							{ "type": "string", "maxLength": 40, "minLength": 8 },
-							{ "type": "null" }
-						],
+						"anyOf": [{ "type": "string", "maxLength": 40, "minLength": 8 }, { "type": "null" }],
 						"title": "Password"
 					}
 				},

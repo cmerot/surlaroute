@@ -1,9 +1,9 @@
 <script lang="ts">
-const { children } = $props();
+	const { children } = $props();
 
-import AppSidebar from "$lib/components/layout/sidebar.svelte";
-import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-import Header from "./header.svelte";
+	import AppSidebar from '$lib/components/layout/sidebar.svelte';
+	import * as Sidebar from '$lib/components/ui/sidebar/index.js';
+	import Header from './header.svelte';
 </script>
 
 <Sidebar.Provider>

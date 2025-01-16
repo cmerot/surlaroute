@@ -1,25 +1,23 @@
 <script lang="ts">
-// biome-ignore lint/style/useImportType: <explanation>
-import * as Sidebar from "$lib/components/ui/sidebar";
-import type { ComponentProps, Component } from "svelte";
+	import * as Sidebar from "$lib/components/ui/sidebar";
+	import type { ComponentProps } from "svelte";
 
-// biome-ignore lint/style/useConst: <explanation>
-let {
-	ref = $bindable(null),
-	title,
-	items,
-	...restProps
-}: ComponentProps<typeof Sidebar.Group> & {
-	items: {
-		title: string;
-		url: string;
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		icon: any;
-		badge?: string;
-		isActive?: boolean;
-	}[];
-} = $props();
+	let {
+		ref = $bindable(null),
+		title,
+		items,
+		...restProps
+	}: ComponentProps<typeof Sidebar.Group> & {
+		items: {
+			title: string;
+			url: string;
+			icon: any;
+			badge?: string;
+			isActive?: boolean;
+		}[];
+	} = $props();
 </script>
+
 <Sidebar.Group bind:ref {...restProps}>
 	<Sidebar.GroupLabel>{title}</Sidebar.GroupLabel>
 	<Sidebar.GroupContent>

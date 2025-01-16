@@ -1,20 +1,15 @@
 <script lang="ts" module>
-export type LogoProps = WithoutChildrenOrChild<SVGAttributes<SVGSVGElement>> & {
-	size?: number | string;
-	withText?: boolean;
-	background?: string;
-};
+	export type LogoProps = WithoutChildrenOrChild<SVGAttributes<SVGSVGElement>> & {
+		size?: number | string;
+		withText?: boolean;
+		background?: string;
+	};
 </script>
 
 <script lang="ts">
-	import type { WithoutChildrenOrChild } from "bits-ui";
-	import type { SVGAttributes } from "svelte/elements";
-	let {
-		size = 24,
-		background = "none",
-		withText = false,
-		...restProps
-	}: LogoProps = $props();
+	import type { WithoutChildrenOrChild } from 'bits-ui';
+	import type { SVGAttributes } from 'svelte/elements';
+	let { size = 24, background = 'none', withText = false, ...restProps }: LogoProps = $props();
 
 	type SizeProps = {
 		viewBox: string;
@@ -24,8 +19,8 @@ export type LogoProps = WithoutChildrenOrChild<SVGAttributes<SVGSVGElement>> & {
 
 	let sizeProps: SizeProps | undefined = $state();
 
-	const logoViewBox = "50 50 200 200";
-	const logoWithTextViewBox = "0 0 300 300";
+	const logoViewBox = '50 50 200 200';
+	const logoWithTextViewBox = '0 0 300 300';
 
 	if (withText) {
 		sizeProps = { viewBox: logoWithTextViewBox };
