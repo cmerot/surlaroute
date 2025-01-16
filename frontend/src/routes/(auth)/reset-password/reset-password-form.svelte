@@ -1,10 +1,10 @@
 <script lang="ts">
-	import FormActionError from '$lib/components/form/action-error.svelte';
-	import InputPassword from '$lib/components/input-password/input-password.svelte';
-	import * as Form from '$lib/components/ui/form';
-	import { formSchema, type FormSchema } from './schema';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import FormActionError from "$lib/components/form/action-error.svelte";
+	import InputPassword from "$lib/components/input-password/input-password.svelte";
+	import * as Form from "$lib/components/ui/form";
+	import { formSchema, type FormSchema } from "./schema";
+	import { type SuperValidated, type Infer, superForm } from "sveltekit-superforms";
+	import { zodClient } from "sveltekit-superforms/adapters";
 
 	const { data } = $props<{
 		data: SuperValidated<Infer<FormSchema>>;
@@ -14,7 +14,7 @@
 		validators: zodClient(formSchema),
 		onError({ result }) {
 			error = result.error.message;
-		}
+		},
 	});
 
 	const { form: formData, enhance } = form;

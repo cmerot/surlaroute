@@ -1,7 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-import type { UserPublic } from '$lib/backend/client';
-import type { Session } from '$lib/server/sessionStore';
+import type { UserPublic } from "$lib/backend/client";
 
 declare global {
 	namespace App {

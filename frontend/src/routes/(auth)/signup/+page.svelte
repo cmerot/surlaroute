@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
-	import SignupForm from './signup-form.svelte';
+	import type { PageData } from "./$types.js";
+	import SignupForm from "./signup-form.svelte";
 	export let data: PageData;
 </script>
 

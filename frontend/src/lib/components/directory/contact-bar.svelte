@@ -1,18 +1,18 @@
 <script lang="ts">
-	import type { ContactPublic } from '$lib/backend/client';
-	import clsx from 'clsx';
-	import { MapPinned } from 'lucide-svelte';
-	import type { SvelteHTMLElements } from 'svelte/elements';
-	import { EmailAddress, PhoneNumber, Website } from '../icons';
-	import { Button } from '../ui/button';
+	import type { ContactPublic } from "$lib/backend/client";
+	import clsx from "clsx";
+	import { MapPinned } from "lucide-svelte";
+	import type { SvelteHTMLElements } from "svelte/elements";
+	import { EmailAddress, PhoneNumber, Website } from "../icons";
+	import { Button } from "../ui/button";
 
-	type ContactBarProps = SvelteHTMLElements['span'] & {
+	type ContactBarProps = SvelteHTMLElements["span"] & {
 		contact?: ContactPublic | null;
 	};
 	const { contact, class: classNames, ...restProps }: ContactBarProps = $props();
 </script>
 
-<span class={clsx('flex gap-2', classNames)} {...restProps}>
+<span class={clsx("flex gap-2", classNames)} {...restProps}>
 	{#if contact?.address?.q}
 		<Button
 			class="flex-1"

@@ -1,5 +1,5 @@
-import { dev } from '$app/environment';
-import type { UserPublic } from '$lib/backend/client';
+import { dev } from "$app/environment";
+import type { UserPublic } from "$lib/backend/client";
 export interface Session {
 	id: string;
 	data?: SessionData;

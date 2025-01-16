@@ -1,9 +1,8 @@
 <script lang="ts" module>
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import type { WithChildren } from 'bits-ui';
-	import clsx from 'clsx';
-	import type { HTMLAttributes } from 'svelte/elements';
+	import { Button } from "$lib/components/ui/button";
+	import type { WithChildren } from "bits-ui";
+	import clsx from "clsx";
+	import type { HTMLAttributes } from "svelte/elements";
 	export type ColorSetProps = WithChildren<
 		HTMLAttributes<HTMLDivElement> & {
 			name: string;
@@ -13,12 +12,12 @@
 </script>
 
 <script lang="ts">
-	import { ArrowBigUp, Hash } from 'lucide-svelte';
+	import { ArrowBigUp, Hash } from "lucide-svelte";
 
 	const { name, class: className, title, children, ...restProps }: ColorSetProps = $props();
 </script>
 
-<div class={clsx('', className)} {...restProps}>
+<div class={clsx("", className)} {...restProps}>
 	<div class="relative">
 		{#if title}
 			<h1 id={name} class="mb-4 mt-8 font-logo text-2xl">

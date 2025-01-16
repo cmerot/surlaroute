@@ -3,10 +3,10 @@
 	import { Theme } from "$lib/components/icons";
 	import { Button } from "$lib/components/ui/button/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import { auth } from "$lib/stores/auth";
 	import { CircleUser, LogIn, LogOut, MonitorCog, Moon, Palette, Sun } from "lucide-svelte";
 	import { mode, ModeWatcher, setMode, setTheme, theme } from "mode-watcher";
 
-	import { auth } from "$lib/stores/auth";
 	const user = $derived($auth.user);
 
 	let modeValue = $state($mode || "light");

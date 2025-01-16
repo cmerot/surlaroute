@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { OrgPublic } from '$lib/backend/client';
-	import { ActivityBadge } from '$lib/components/activity-badge';
-	import { Org, Person } from '$lib/components/icons';
-	import { Button } from '$lib/components/ui/button';
-	import * as Card from '$lib/components/ui/card';
-	import clsx from 'clsx';
-	import type { SvelteHTMLElements } from 'svelte/elements';
-	import ContactDetails from './contact-result.svelte';
+	import type { OrgPublic } from "$lib/backend/client";
+	import { ActivityBadge } from "$lib/components/activity-badge";
+	import { Org, Person } from "$lib/components/icons";
+	import { Button } from "$lib/components/ui/button";
+	import * as Card from "$lib/components/ui/card";
+	import clsx from "clsx";
+	import type { SvelteHTMLElements } from "svelte/elements";
+	import ContactDetails from "./contact-result.svelte";
 
-	type ActorProps = SvelteHTMLElements['div'] & {
+	type ActorProps = SvelteHTMLElements["div"] & {
 		org: OrgPublic;
 	};
 
@@ -17,7 +17,7 @@
 	const href = $derived(`/directory/orgs/${org.id}`);
 </script>
 
-<Card.Root class={clsx('min-h-24', classNames)} {...restProps}>
+<Card.Root class={clsx("min-h-24", classNames)} {...restProps}>
 	<Card.Header>
 		<Card.Title class="flex font-normal">
 			<span class="grow hover:underline">
@@ -54,7 +54,7 @@
 					href="/directory/{assoc.actor.type == 'Org' ? 'orgs' : 'people'}/{assoc.actor.id}"
 					variant="outline"
 				>
-					{#if assoc.actor.type == 'Org'}
+					{#if assoc.actor.type == "Org"}
 						<Org class="inline" />
 					{:else}
 						<Person class="inline" />

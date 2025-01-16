@@ -6,9 +6,9 @@
 </script>
 
 <script lang="ts">
-	import { cn } from '$lib/utils';
-	import type { WithoutChildrenOrChild } from 'bits-ui';
-	import type { SVGAttributes } from 'svelte/elements';
+	import { cn } from "$lib/utils";
+	import type { WithoutChildrenOrChild } from "bits-ui";
+	import type { SVGAttributes } from "svelte/elements";
 	let { class: className, theme, size = 24, ...restProps }: ThemeProps = $props();
 </script>
 

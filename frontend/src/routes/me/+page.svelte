@@ -1,13 +1,13 @@
 <script lang="ts">
-	import Contact from '$lib/components/directory/contact.svelte';
-	import PersonOrganisations from '$lib/components/directory/page/person-organisations.svelte';
-	import { Account } from '$lib/components/icons';
-	import * as Page from '$lib/components/page';
-	import Permissions from '$lib/components/permissions/permissions.svelte';
-	import Button from '$lib/components/ui/button/button.svelte';
-	import * as Card from '$lib/components/ui/card';
-	import { Skeleton } from '$lib/components/ui/skeleton';
-	import type { PageData } from './$types';
+	import Contact from "$lib/components/directory/contact.svelte";
+	import PersonOrganisations from "$lib/components/directory/page/person-organisations.svelte";
+	import { Account } from "$lib/components/icons";
+	import * as Page from "$lib/components/page";
+	import Permissions from "$lib/components/permissions/permissions.svelte";
+	import Button from "$lib/components/ui/button/button.svelte";
+	import * as Card from "$lib/components/ui/card";
+	import { Skeleton } from "$lib/components/ui/skeleton";
+	import type { PageData } from "./$types";
 	const { data }: { data: PageData } = $props();
 
 	const { user, person } = data;

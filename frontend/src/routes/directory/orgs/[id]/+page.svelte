@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { ActivityBadge } from '$lib/components/activity-badge';
-	import ContactBar from '$lib/components/directory/contact-bar.svelte';
-	import Contact from '$lib/components/directory/contact.svelte';
-	import OrgInformations from '$lib/components/directory/page/org-informations.svelte';
-	import OrgMembers from '$lib/components/directory/page/org-members.svelte';
-	import OrgTours from '$lib/components/directory/page/org-tours.svelte';
-	import { Org } from '$lib/components/icons';
-	import * as Page from '$lib/components/page';
-	import Permissions from '$lib/components/permissions/permissions.svelte';
-	import type { PageData } from './$types';
+	import { ActivityBadge } from "$lib/components/activity-badge";
+	import ContactBar from "$lib/components/directory/contact-bar.svelte";
+	import Contact from "$lib/components/directory/contact.svelte";
+	import OrgInformations from "$lib/components/directory/page/org-informations.svelte";
+	import OrgMembers from "$lib/components/directory/page/org-members.svelte";
+	import OrgTours from "$lib/components/directory/page/org-tours.svelte";
+	import { Org } from "$lib/components/icons";
+	import * as Page from "$lib/components/page";
+	import Permissions from "$lib/components/permissions/permissions.svelte";
+	import type { PageData } from "./$types";
 
 	const { data }: { data: PageData } = $props();
 	const org = data.org;
@@ -23,7 +23,7 @@
 				<ActivityBadge {activity} class="align-middle" />
 			{/each}
 			<span class="capitalize">
-				{description.join(', ')}
+				{description.join(", ")}
 			</span>
 		</Page.Description>
 	{/if}

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { PageData } from './$types.js';
-	import LoginForm from './login-form.svelte';
+	import type { PageData } from "./$types.js";
+	import LoginForm from "./login-form.svelte";
 
 	const { data }: { data: PageData } = $props();
 </script>

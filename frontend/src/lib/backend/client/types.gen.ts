@@ -58,7 +58,7 @@ export type EventPublic = {
  */
 export type Feature = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'Feature';
+	type: "Feature";
 	geometry:
 		| (
 				| Point
@@ -79,31 +79,31 @@ export type Feature = {
 	id?: number | string | null;
 };
 
-export type type = 'Feature';
+export type type = "Feature";
 
 /**
  * FeatureCollection Model
  */
 export type FeatureCollection = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'FeatureCollection';
+	type: "FeatureCollection";
 	features: Array<Feature>;
 };
 
-export type type2 = 'FeatureCollection';
+export type type2 = "FeatureCollection";
 
 /**
  * GeometryCollection Model
  */
 export type GeometryCollection = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'GeometryCollection';
+	type: "GeometryCollection";
 	geometries: Array<
 		Point | MultiPoint | LineString | MultiLineString | Polygon | MultiPolygon | GeometryCollection
 	>;
 };
 
-export type type3 = 'GeometryCollection';
+export type type3 = "GeometryCollection";
 
 export type GroupOwnerPublic = {
 	id: string;
@@ -119,11 +119,11 @@ export type HTTPValidationError = {
  */
 export type LineString = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'LineString';
+	type: "LineString";
 	coordinates: Array<Position2D | Position3D>;
 };
 
-export type type4 = 'LineString';
+export type type4 = "LineString";
 
 export type Message = {
 	message: string;
@@ -134,33 +134,33 @@ export type Message = {
  */
 export type MultiLineString = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'MultiLineString';
+	type: "MultiLineString";
 	coordinates: Array<Array<Position2D | Position3D>>;
 };
 
-export type type5 = 'MultiLineString';
+export type type5 = "MultiLineString";
 
 /**
  * MultiPoint Model
  */
 export type MultiPoint = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'MultiPoint';
+	type: "MultiPoint";
 	coordinates: Array<Position2D | Position3D>;
 };
 
-export type type6 = 'MultiPoint';
+export type type6 = "MultiPoint";
 
 /**
  * MultiPolygon Model
  */
 export type MultiPolygon = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'MultiPolygon';
+	type: "MultiPolygon";
 	coordinates: Array<Array<Array<Position2D | Position3D>>>;
 };
 
-export type type7 = 'MultiPolygon';
+export type type7 = "MultiPolygon";
 
 export type NewPassword = {
 	token: string;
@@ -187,13 +187,13 @@ export type OrgPublic = {
 	contact?: ContactPublic | null;
 	membership_assocs: Array<OrgAssocPublic>;
 	tour_assocs: Array<TourAssocPublic>;
-	type: 'Org';
+	type: "Org";
 	description?: string | null;
 	activities: Array<TreePublic>;
 	member_assocs: Array<ActorAssocPublic>;
 };
 
-export type type8 = 'Org';
+export type type8 = "Org";
 
 export type OwnerPersonPublic = {
 	id: string;
@@ -247,33 +247,33 @@ export type PersonPublic = {
 	contact?: ContactPublic | null;
 	membership_assocs: Array<OrgAssocPublic>;
 	tour_assocs: Array<TourAssocPublic>;
-	type: 'Person';
+	type: "Person";
 	role?: string | null;
 };
 
-export type type9 = 'Person';
+export type type9 = "Person";
 
 /**
  * Point Model
  */
 export type Point = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'Point';
+	type: "Point";
 	coordinates: Position2D | Position3D;
 };
 
-export type type10 = 'Point';
+export type type10 = "Point";
 
 /**
  * Polygon Model
  */
 export type Polygon = {
 	bbox?: [number, number, number, number] | [number, number, number, number, number, number] | null;
-	type: 'Polygon';
+	type: "Polygon";
 	coordinates: Array<Array<Position2D | Position3D>>;
 };
 
-export type type11 = 'Polygon';
+export type type11 = "Polygon";
 
 export type Position2D = [number, number];
 

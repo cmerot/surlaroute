@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Bateau, Equestre, Logo, Marche, Velo } from '$lib/components/icons';
-	import * as Page from '$lib/components/page';
-	import Declinaison from './declinaison.svelte';
-	import Section from './section.svelte';
-	import ThemeSample from './theme-sample.svelte';
+	import { Bateau, Equestre, Logo, Marche, Velo } from "$lib/components/icons";
+	import * as Page from "$lib/components/page";
+	import Declinaison from "./declinaison.svelte";
+	import Section from "./section.svelte";
+	import ThemeSample from "./theme-sample.svelte";
 </script>
 
 <Page.Root title="Theme" id="page">

@@ -1,6 +1,6 @@
 <script>
-	import * as Alert from '$lib/components/ui/alert';
-	import { CircleAlert } from 'lucide-svelte';
+	import * as Alert from "$lib/components/ui/alert";
+	import { CircleAlert } from "lucide-svelte";
 
 	const { error } = $props();
 </script>
