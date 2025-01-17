@@ -1,5 +1,6 @@
 <script lang="ts">
 	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
+	import { getCookie } from "$lib/slr-utils.js";
 	import { cn } from "$lib/utils.js";
 	import type { WithElementRef } from "bits-ui";
 	import type { HTMLAttributes } from "svelte/elements";
@@ -13,7 +14,7 @@
 
 	let {
 		ref = $bindable(null),
-		open = $bindable(true),
+		open = $bindable(typeof document !== "undefined" && getCookie("sidebar:state") === "true"),
 		onOpenChange = () => {},
 		class: className,
 		style,
