@@ -2,7 +2,7 @@
 	import { goto } from "$app/navigation";
 	import OrgResult from "$lib/components/directory/result/org-result.svelte";
 	import PersonResult from "$lib/components/directory/result/person-result.svelte";
-	import { Directory } from "$lib/components/icons";
+	import { Activity, Directory } from "$lib/components/icons";
 	import * as Page from "$lib/components/page";
 	import { Button } from "$lib/components/ui/button";
 	import { Input } from "$lib/components/ui/input";
@@ -90,6 +90,7 @@
 						<Select.Content class="w-48">
 							{#each activityList as activity}
 								<Select.Item value={activity.path}>
+									<Activity {activity} class="mr-2" />
 									{activity.name}
 								</Select.Item>
 							{/each}
