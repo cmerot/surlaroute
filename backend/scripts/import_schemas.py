@@ -102,7 +102,7 @@ class AddressGeoImport(Base):
 
         try:
             lat, lon = map(float, v.split(",", 1))
-            v = shapely.geometry.Point((lat, lon))  # type: ignore[assignment]
+            v = shapely.geometry.Point((lon, lat))  # type: ignore[assignment]
         except ValueError:
             raise ValueError(
                 "geom_point must be a string in the format 'lat, lon' eg: '1.1, 2.2'"

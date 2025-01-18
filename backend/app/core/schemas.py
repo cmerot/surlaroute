@@ -162,7 +162,7 @@ class AddressPublic(Base):
         shape = geoalchemy2.shape.to_shape(v)
 
         coords = geojson_pydantic.types.Position2D(
-            latitude=shape.coords[0][0], longitude=shape.coords[0][1]
+            longitude=shape.coords[0][0], latitude=shape.coords[0][1]
         )
         return geojson_pydantic.Point(type="Point", coordinates=coords)
 
