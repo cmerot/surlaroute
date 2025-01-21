@@ -10,16 +10,19 @@
 		contact?: ContactPublic | null;
 	};
 	const { contact, class: classNames, ...restProps }: ContactBarProps = $props();
+	const locationHref = $derived.by(() => {
+		if (contact?.address?.geom_point) {
+			return `/explore?c=${contact.address.geom_point.coordinates[1]},${contact.address.geom_point.coordinates[0]},10z&a=`;
+		} else if (contact?.address?.q) {
+			return `/explore?q=${contact.address.q}&a=`;
+		}
+		return null;
+	});
 </script>
 
 <span class={clsx("flex gap-2", classNames)} {...restProps}>
-	{#if contact?.address?.q}
-		<Button
-			class="flex-1"
-			size="lg"
-			target="_blank"
-			href="https://www.google.com/maps?q={contact.address?.q}"
-		>
+	{#if locationHref}
+		<Button class="flex-1" size="lg" href={locationHref}>
 			<MapPinned />
 		</Button>
 	{:else}

@@ -145,7 +145,7 @@
 				</Card.Header>
 				<Card.Content class="space-y-4">
 					{#if tour.description}
-						<p class="prose text-xl">{@html tour.description}</p>
+						<p class="prose text-xl">{tour.description}</p>
 					{/if}
 					{#if producers.length > 0}
 						<p>
@@ -165,29 +165,23 @@
 				</Card.Header>
 				<Card.Content class="p-2">
 					{#each tour.events as event, event_index}
-						{#if event.actor_assocs}
-							<ul>
-								{#each event.actor_assocs as assoc}
-									<li>
-										<Button
-											href={`/directory/${assoc.actor.type == "Person" ? "people" : "orgs"}/${assoc.actor.id}`}
-											class="flex w-full justify-start"
-											variant="ghost"
-										>
-											<div class="w-40">
-												{new Date(event.start_dt).toLocaleDateString(undefined, {
-													year: "numeric",
-													month: "long",
-													day: "numeric",
-												})}
-											</div>
-											<Badge>{event_index + 1}</Badge>
-											{assoc.actor.name}
-										</Button>
-									</li>
-								{/each}
-							</ul>
-						{/if}
+						{#each event.actor_assocs as assoc}
+							<Button
+								href={`/directory/${assoc.actor.type == "Person" ? "people" : "orgs"}/${assoc.actor.id}`}
+								class="flex w-full justify-start"
+								variant="ghost"
+							>
+								<Badge>{event_index + 1}</Badge>
+								<div class="w-40">
+									{new Date(event.start_dt).toLocaleDateString(undefined, {
+										year: "numeric",
+										month: "long",
+										day: "numeric",
+									})}
+								</div>
+								{assoc.actor.name}
+							</Button>
+						{/each}
 					{/each}
 				</Card.Content>
 			</Card.Root>

@@ -5,15 +5,14 @@ from datetime import datetime
 from typing import Any
 
 from geoalchemy2 import Geometry
+from geoalchemy2.functions import ST_Envelope, ST_Union
 from sqlalchemy import (
     Column,
     ColumnElement,
     DateTime,
-    Extract,
     ForeignKey,
     Select,
     and_,
-    extract,
     func,
     or_,
     select,
@@ -32,7 +31,8 @@ from sqlalchemy.orm import (
 )
 from sqlalchemy.orm.session import ORMExecuteState
 from sqlalchemy.sql.elements import BooleanClauseList
-from sqlalchemy_utils import Ltree, LtreeType
+from sqlalchemy_utils import Ltree
+from sqlalchemy_utils.types import LtreeType
 
 #
 # Bases, mixins and user
@@ -314,13 +314,54 @@ class Tour(Base, PermissionsMixin):
         return None
 
     @year.expression
-    def year_expression(cls) -> Extract:
-        subquery = (
-            select(func.min(Event.start_dt).label("first_event_date"))
+    def year(cls):
+        return (
+            select(func.extract("year", func.min(Event.start_dt)))
             .where(Event.tour_id == cls.id)
+            .correlate(cls)
+            .label("year")
+        )
+
+    @hybrid_property
+    def producers(self) -> list[Actor]:
+        if self.actor_assocs:
+            return [
+                a.actor
+                for a in self.actor_assocs
+                if a.data and a.data.get("role") == "producer"
+            ]
+        return []
+
+    @producers.expression
+    def producers(cls):
+        return (
+            select(Actor)
+            .join(TourActorAssoc, Actor.id == TourActorAssoc.actor_id)
+            .join(Tour, Tour.id == TourActorAssoc.tour_id)
+            .where(Tour.id == cls.id)
+            .where(
+                func.jsonb_extract_path_text(TourActorAssoc.data, "role") == "producer"
+            )
+            .subquery()
+        )
+
+    @hybrid_property
+    def bbox(self):
+        """Returns the bounding box of all address points associated with the tour"""
+        raise NotImplementedError("Hybrid properties can't execute complex SQL")
+
+    @bbox.expression
+    def bbox(cls):
+        """SQL expression for calculating the tour's bounding box"""
+        return (
+            select(ST_Envelope(ST_Union(AddressGeo.geom_point)))
+            .join(Contact, AddressGeo.id == Contact.address_id)
+            .join(Actor, Contact.id == Actor.contact_id)
+            .join(EventActorAssoc, Actor.id == EventActorAssoc.actor_id)
+            .join(Event, EventActorAssoc.event_id == Event.id)
+            .filter(Event.tour_id == cls.id)
             .scalar_subquery()
         )
-        return extract("year", subquery)
 
     def __repr__(self) -> str:
         if not self.name:
@@ -345,6 +386,30 @@ class Event(Base, PermissionsMixin):
     actor_assocs: Mapped[list[EventActorAssoc]] = relationship(
         cascade="all, delete-orphan",
     )
+
+    @hybrid_property
+    def event_venues(self) -> list[Actor]:
+        if self.actor_assocs:
+            return [
+                a.actor
+                for a in self.actor_assocs
+                if a.data and a.data.get("role") == "diffusion"
+            ]
+        return []
+
+    @event_venues.expression
+    def event_venues(cls):
+        return (
+            select(Actor)
+            .join(EventActorAssoc, Actor.id == EventActorAssoc.actor_id)
+            .join(Event, Event.id == EventActorAssoc.tour_id)
+            .where(Event.id == cls.id)
+            .where(
+                func.jsonb_extract_path_text(EventActorAssoc.data, "role")
+                == "diffusion"
+            )
+            .subquery()
+        )
 
 
 #

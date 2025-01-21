@@ -19,6 +19,7 @@
 		type="submit"
 		class="absolute right-0 top-1/2 -translate-y-1/2 rounded-l-none rounded-r-full"
 		disabled={loading}
+		variant="secondary"
 	>
 		{#if loading}
 			<Loader class="h-5 w-5 animate-spin" />

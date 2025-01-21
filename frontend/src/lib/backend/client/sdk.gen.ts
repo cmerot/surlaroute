@@ -3,88 +3,117 @@
 import {
 	createClient,
 	createConfig,
-	type OptionsLegacyParser,
+	type Options,
 	urlSearchParamsBodySerializer,
 } from "@hey-api/client-fetch";
 import type {
-	ActivitiesGetActivitiesByPathData,
-	ActivitiesGetActivitiesByPathError,
-	ActivitiesGetActivitiesByPathResponse,
-	ActivitiesGetActivitiesData,
-	ActivitiesGetActivitiesError,
-	ActivitiesGetActivitiesResponse,
-	DirectoryGetAllActorsData,
-	DirectoryGetAllActorsError,
-	DirectoryGetAllActorsResponse,
-	DirectoryGetOrgData,
-	DirectoryGetOrgError,
-	DirectoryGetOrgResponse,
-	DirectoryGetPersonData,
-	DirectoryGetPersonError,
-	DirectoryGetPersonResponse,
-	LoginAccessTokenData,
-	LoginAccessTokenError,
-	LoginAccessTokenResponse,
-	LoginRecoverPasswordData,
-	LoginRecoverPasswordError,
-	LoginRecoverPasswordHtmlContentData,
-	LoginRecoverPasswordHtmlContentError,
-	LoginRecoverPasswordHtmlContentResponse,
-	LoginRecoverPasswordResponse,
-	LoginResetPasswordData,
-	LoginResetPasswordError,
-	LoginResetPasswordResponse,
-	LoginTestTokenError,
-	LoginTestTokenResponse,
+	ExploreGetDataData,
+	ExploreGetDataResponse,
+	ExploreGetDataError,
 	ToursGetAllToursData,
-	ToursGetAllToursError,
 	ToursGetAllToursResponse,
+	ToursGetAllToursError,
 	ToursGetTourData,
-	ToursGetTourError,
 	ToursGetTourResponse,
-	UsersCreateData,
-	UsersCreateError,
-	UsersCreateResponse,
-	UsersDeleteData,
-	UsersDeleteError,
-	UsersDeleteResponse,
-	UsersReadByIdData,
-	UsersReadByIdError,
-	UsersReadByIdResponse,
+	ToursGetTourError,
+	DirectoryGetAllActorsData,
+	DirectoryGetAllActorsResponse,
+	DirectoryGetAllActorsError,
+	DirectoryGetOrgData,
+	DirectoryGetOrgResponse,
+	DirectoryGetOrgError,
+	DirectoryGetPersonData,
+	DirectoryGetPersonResponse,
+	DirectoryGetPersonError,
+	LoginAccessTokenData,
+	LoginAccessTokenResponse,
+	LoginAccessTokenError,
+	LoginTestTokenData,
+	LoginTestTokenResponse,
+	LoginRecoverPasswordData,
+	LoginRecoverPasswordResponse,
+	LoginRecoverPasswordError,
+	LoginResetPasswordData,
+	LoginResetPasswordResponse,
+	LoginResetPasswordError,
+	LoginRecoverPasswordHtmlContentData,
+	LoginRecoverPasswordHtmlContentResponse,
+	LoginRecoverPasswordHtmlContentError,
 	UsersReadData,
-	UsersReadError,
 	UsersReadResponse,
-	UsersReadUserMeError,
+	UsersReadError,
+	UsersCreateData,
+	UsersCreateResponse,
+	UsersCreateError,
+	UsersReadUserMeData,
 	UsersReadUserMeResponse,
 	UsersRegisterData,
-	UsersRegisterError,
 	UsersRegisterResponse,
+	UsersRegisterError,
+	UsersDeleteData,
+	UsersDeleteResponse,
+	UsersDeleteError,
+	UsersReadByIdData,
+	UsersReadByIdResponse,
+	UsersReadByIdError,
 	UsersUpdateData,
-	UsersUpdateError,
 	UsersUpdateResponse,
-	UtilsHealthCheckError,
-	UtilsHealthCheckResponse,
+	UsersUpdateError,
 	UtilsTestEmailData,
-	UtilsTestEmailError,
 	UtilsTestEmailResponse,
+	UtilsTestEmailError,
+	UtilsHealthCheckData,
+	UtilsHealthCheckResponse,
+	ActivitiesGetActivitiesByPathData,
+	ActivitiesGetActivitiesByPathResponse,
+	ActivitiesGetActivitiesByPathError,
+	ActivitiesGetActivitiesData,
+	ActivitiesGetActivitiesResponse,
+	ActivitiesGetActivitiesError,
 } from "./types.gen";
 
 export const client = createClient(createConfig());
+
+/**
+ * Get Data
+ */
+export const exploreGetData = <ThrowOnError extends boolean = false>(
+	options: Options<ExploreGetDataData, ThrowOnError>,
+) => {
+	return (options?.client ?? client).get<ExploreGetDataResponse, ExploreGetDataError, ThrowOnError>(
+		{
+			security: [
+				{
+					scheme: "bearer",
+					type: "http",
+				},
+			],
+			url: "/api/explore/",
+			...options,
+		},
+	);
+};
 
 /**
  * Get All Tours
  * Paginated list of tours
  */
 export const toursGetAllTours = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<ToursGetAllToursData, ThrowOnError>,
+	options?: Options<ToursGetAllToursData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<
 		ToursGetAllToursResponse,
 		ToursGetAllToursError,
 		ThrowOnError
 	>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/tours/",
+		...options,
 	});
 };
 
@@ -93,11 +122,17 @@ export const toursGetAllTours = <ThrowOnError extends boolean = false>(
  * Tour details
  */
 export const toursGetTour = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<ToursGetTourData, ThrowOnError>,
+	options: Options<ToursGetTourData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<ToursGetTourResponse, ToursGetTourError, ThrowOnError>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/tours/tours/{id}",
+		...options,
 	});
 };
 
@@ -106,15 +141,21 @@ export const toursGetTour = <ThrowOnError extends boolean = false>(
  * Paginated list of actors
  */
 export const directoryGetAllActors = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<DirectoryGetAllActorsData, ThrowOnError>,
+	options?: Options<DirectoryGetAllActorsData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<
 		DirectoryGetAllActorsResponse,
 		DirectoryGetAllActorsError,
 		ThrowOnError
 	>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/directory/",
+		...options,
 	});
 };
 
@@ -123,15 +164,21 @@ export const directoryGetAllActors = <ThrowOnError extends boolean = false>(
  * Org details
  */
 export const directoryGetOrg = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<DirectoryGetOrgData, ThrowOnError>,
+	options: Options<DirectoryGetOrgData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<
 		DirectoryGetOrgResponse,
 		DirectoryGetOrgError,
 		ThrowOnError
 	>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/directory/orgs/{id}",
+		...options,
 	});
 };
 
@@ -140,15 +187,21 @@ export const directoryGetOrg = <ThrowOnError extends boolean = false>(
  * Person details
  */
 export const directoryGetPerson = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<DirectoryGetPersonData, ThrowOnError>,
+	options: Options<DirectoryGetPersonData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<
 		DirectoryGetPersonResponse,
 		DirectoryGetPersonError,
 		ThrowOnError
 	>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/directory/people/{id}",
+		...options,
 	});
 };
 
@@ -157,20 +210,20 @@ export const directoryGetPerson = <ThrowOnError extends boolean = false>(
  * OAuth2 compatible token login, get an access token for future requests
  */
 export const loginAccessToken = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<LoginAccessTokenData, ThrowOnError>,
+	options: Options<LoginAccessTokenData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<
 		LoginAccessTokenResponse,
 		LoginAccessTokenError,
 		ThrowOnError
 	>({
-		...options,
 		...urlSearchParamsBodySerializer,
+		url: "/api/login/access-token",
+		...options,
 		headers: {
 			"Content-Type": "application/x-www-form-urlencoded",
 			...options?.headers,
 		},
-		url: "/api/login/access-token",
 	});
 };
 
@@ -179,15 +232,17 @@ export const loginAccessToken = <ThrowOnError extends boolean = false>(
  * Test access token
  */
 export const loginTestToken = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<unknown, ThrowOnError>,
+	options?: Options<LoginTestTokenData, ThrowOnError>,
 ) => {
-	return (options?.client ?? client).post<
-		LoginTestTokenResponse,
-		LoginTestTokenError,
-		ThrowOnError
-	>({
-		...options,
+	return (options?.client ?? client).post<LoginTestTokenResponse, unknown, ThrowOnError>({
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/login/test-token",
+		...options,
 	});
 };
 
@@ -196,15 +251,15 @@ export const loginTestToken = <ThrowOnError extends boolean = false>(
  * Password Recovery
  */
 export const loginRecoverPassword = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<LoginRecoverPasswordData, ThrowOnError>,
+	options: Options<LoginRecoverPasswordData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<
 		LoginRecoverPasswordResponse,
 		LoginRecoverPasswordError,
 		ThrowOnError
 	>({
-		...options,
 		url: "/api/password-recovery/{email}",
+		...options,
 	});
 };
 
@@ -213,15 +268,19 @@ export const loginRecoverPassword = <ThrowOnError extends boolean = false>(
  * Reset password
  */
 export const loginResetPassword = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<LoginResetPasswordData, ThrowOnError>,
+	options: Options<LoginResetPasswordData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<
 		LoginResetPasswordResponse,
 		LoginResetPasswordError,
 		ThrowOnError
 	>({
-		...options,
 		url: "/api/reset-password/",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options?.headers,
+		},
 	});
 };
 
@@ -230,15 +289,21 @@ export const loginResetPassword = <ThrowOnError extends boolean = false>(
  * HTML Content for Password Recovery
  */
 export const loginRecoverPasswordHtmlContent = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<LoginRecoverPasswordHtmlContentData, ThrowOnError>,
+	options: Options<LoginRecoverPasswordHtmlContentData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<
 		LoginRecoverPasswordHtmlContentResponse,
 		LoginRecoverPasswordHtmlContentError,
 		ThrowOnError
 	>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/password-recovery-html-content/{email}",
+		...options,
 	});
 };
 
@@ -247,11 +312,17 @@ export const loginRecoverPasswordHtmlContent = <ThrowOnError extends boolean = f
  * Read users.
  */
 export const usersRead = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<UsersReadData, ThrowOnError>,
+	options?: Options<UsersReadData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<UsersReadResponse, UsersReadError, ThrowOnError>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/users/",
+		...options,
 	});
 };
 
@@ -260,11 +331,21 @@ export const usersRead = <ThrowOnError extends boolean = false>(
  * Create new user.
  */
 export const usersCreate = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<UsersCreateData, ThrowOnError>,
+	options: Options<UsersCreateData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<UsersCreateResponse, UsersCreateError, ThrowOnError>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/users/",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options?.headers,
+		},
 	});
 };
 
@@ -273,15 +354,17 @@ export const usersCreate = <ThrowOnError extends boolean = false>(
  * Get current user.
  */
 export const usersReadUserMe = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<unknown, ThrowOnError>,
+	options?: Options<UsersReadUserMeData, ThrowOnError>,
 ) => {
-	return (options?.client ?? client).get<
-		UsersReadUserMeResponse,
-		UsersReadUserMeError,
-		ThrowOnError
-	>({
-		...options,
+	return (options?.client ?? client).get<UsersReadUserMeResponse, unknown, ThrowOnError>({
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/users/me",
+		...options,
 	});
 };
 
@@ -290,37 +373,15 @@ export const usersReadUserMe = <ThrowOnError extends boolean = false>(
  * Create new user without the need to be logged in.
  */
 export const usersRegister = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<UsersRegisterData, ThrowOnError>,
+	options: Options<UsersRegisterData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<UsersRegisterResponse, UsersRegisterError, ThrowOnError>({
-		...options,
 		url: "/api/users/signup",
-	});
-};
-
-/**
- * Read By Id
- * Get a specific user by id.
- */
-export const usersReadById = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<UsersReadByIdData, ThrowOnError>,
-) => {
-	return (options?.client ?? client).get<UsersReadByIdResponse, UsersReadByIdError, ThrowOnError>({
 		...options,
-		url: "/api/users/{user_id}",
-	});
-};
-
-/**
- * Update
- * Update a user.
- */
-export const usersUpdate = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<UsersUpdateData, ThrowOnError>,
-) => {
-	return (options?.client ?? client).patch<UsersUpdateResponse, UsersUpdateError, ThrowOnError>({
-		...options,
-		url: "/api/users/{user_id}",
+		headers: {
+			"Content-Type": "application/json",
+			...options?.headers,
+		},
 	});
 };
 
@@ -329,11 +390,59 @@ export const usersUpdate = <ThrowOnError extends boolean = false>(
  * Delete a user.
  */
 export const usersDelete = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<UsersDeleteData, ThrowOnError>,
+	options: Options<UsersDeleteData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).delete<UsersDeleteResponse, UsersDeleteError, ThrowOnError>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/users/{user_id}",
+		...options,
+	});
+};
+
+/**
+ * Read By Id
+ * Get a specific user by id.
+ */
+export const usersReadById = <ThrowOnError extends boolean = false>(
+	options: Options<UsersReadByIdData, ThrowOnError>,
+) => {
+	return (options?.client ?? client).get<UsersReadByIdResponse, UsersReadByIdError, ThrowOnError>({
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
+		url: "/api/users/{user_id}",
+		...options,
+	});
+};
+
+/**
+ * Update
+ * Update a user.
+ */
+export const usersUpdate = <ThrowOnError extends boolean = false>(
+	options: Options<UsersUpdateData, ThrowOnError>,
+) => {
+	return (options?.client ?? client).patch<UsersUpdateResponse, UsersUpdateError, ThrowOnError>({
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
+		url: "/api/users/{user_id}",
+		...options,
+		headers: {
+			"Content-Type": "application/json",
+			...options?.headers,
+		},
 	});
 };
 
@@ -342,15 +451,21 @@ export const usersDelete = <ThrowOnError extends boolean = false>(
  * Test emails.
  */
 export const utilsTestEmail = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<UtilsTestEmailData, ThrowOnError>,
+	options: Options<UtilsTestEmailData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).post<
 		UtilsTestEmailResponse,
 		UtilsTestEmailError,
 		ThrowOnError
 	>({
-		...options,
+		security: [
+			{
+				scheme: "bearer",
+				type: "http",
+			},
+		],
 		url: "/api/utils/test-email/",
+		...options,
 	});
 };
 
@@ -358,15 +473,11 @@ export const utilsTestEmail = <ThrowOnError extends boolean = false>(
  * Health Check
  */
 export const utilsHealthCheck = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<unknown, ThrowOnError>,
+	options?: Options<UtilsHealthCheckData, ThrowOnError>,
 ) => {
-	return (options?.client ?? client).get<
-		UtilsHealthCheckResponse,
-		UtilsHealthCheckError,
-		ThrowOnError
-	>({
-		...options,
+	return (options?.client ?? client).get<UtilsHealthCheckResponse, unknown, ThrowOnError>({
 		url: "/api/utils/health-check/",
+		...options,
 	});
 };
 
@@ -375,15 +486,15 @@ export const utilsHealthCheck = <ThrowOnError extends boolean = false>(
  * Read activities from a path.
  */
 export const activitiesGetActivitiesByPath = <ThrowOnError extends boolean = false>(
-	options: OptionsLegacyParser<ActivitiesGetActivitiesByPathData, ThrowOnError>,
+	options: Options<ActivitiesGetActivitiesByPathData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<
 		ActivitiesGetActivitiesByPathResponse,
 		ActivitiesGetActivitiesByPathError,
 		ThrowOnError
 	>({
-		...options,
 		url: "/api/activities/{path}",
+		...options,
 	});
 };
 
@@ -392,14 +503,14 @@ export const activitiesGetActivitiesByPath = <ThrowOnError extends boolean = fal
  * Read all activities.
  */
 export const activitiesGetActivities = <ThrowOnError extends boolean = false>(
-	options?: OptionsLegacyParser<ActivitiesGetActivitiesData, ThrowOnError>,
+	options?: Options<ActivitiesGetActivitiesData, ThrowOnError>,
 ) => {
 	return (options?.client ?? client).get<
 		ActivitiesGetActivitiesResponse,
 		ActivitiesGetActivitiesError,
 		ThrowOnError
 	>({
-		...options,
 		url: "/api/activities/",
+		...options,
 	});
 };
