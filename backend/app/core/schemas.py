@@ -207,6 +207,7 @@ class EventPublic(Base, PermissionMixin):
     Used for the /tours/{id} endpoint
     """
 
+    id: uuid.UUID
     description: str | None = None
     start_dt: datetime
     end_dt: datetime | None = None
@@ -214,7 +215,7 @@ class EventPublic(Base, PermissionMixin):
         list[ActorAssocPublic],
         WrapValidator(drop_cyclic_references),
         BeforeValidator(remove_uncomplete_assocs),
-    ] = []
+    ]
 
 
 class TourPublic(Base, PermissionMixin):
@@ -232,7 +233,7 @@ class TourPublic(Base, PermissionMixin):
         list[ActorAssocPublic],
         WrapValidator(drop_cyclic_references),
         BeforeValidator(remove_uncomplete_assocs),
-    ] = []
+    ]
     events: list[EventPublic]
 
     geojson: geojson_pydantic.FeatureCollection | None = None
