@@ -38,33 +38,30 @@ export const styles: Styles = {
 			],
 		},
 	},
+	stadia_alidade_smooth: {
+		title: "Stadia Alidade Smooth",
+		style: "https://tiles-eu.stadiamaps.com/styles/alidade_smooth.json",
+	},
+	stadia_alidade_smooth_dark: {
+		title: "Stadia Alidade Smooth Dark",
+		style: "https://tiles-eu.stadiamaps.com/styles/alidade_smooth_dark.json",
+	},
+	stadia_outdoors: {
+		title: "Stadia Outdoors",
+		style: "https://tiles-eu.stadiamaps.com/styles/outdoors.json",
+	},
+	stamen_terrain: {
+		title: "Stamen Terrain",
+		style: "https://tiles-eu.stadiamaps.com/styles/stamen_terrain.json",
+	},
+
 	stamen_watercolor: {
 		title: "Stamen Watercolor",
-		style: {
-			version: 8,
-			sources: {
-				"raster-tiles": {
-					type: "raster",
-					tiles: [
-						// NOTE: Layers from Stadia Maps do not require an API key for localhost development or most production
-						// web deployments. See https://docs.stadiamaps.com/authentication/ for details.
-						"https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}.jpg",
-					],
-					tileSize: 256,
-					attribution:
-						'Map tiles by <a target="_blank" href="https://stamen.com">Stamen Design</a>; Hosting by <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>. Data &copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> contributors',
-				},
-			},
-			layers: [
-				{
-					id: "simple-tiles",
-					type: "raster",
-					source: "raster-tiles",
-					minzoom: 0,
-					maxzoom: 22,
-				},
-			],
-		},
+		style: "https://tiles-eu.stadiamaps.com/styles/stamen_watercolor.json",
+	},
+	osm_bright: {
+		title: "OSM Bright",
+		style: "https://tiles-eu.stadiamaps.com/styles/osm_bright.json",
 	},
 	carto_voyager: {
 		style: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json",
@@ -1099,6 +1096,6 @@ export function getStyleName(mode: "light" | "dark" | undefined): keyof Styles {
 		case "dark":
 			return "carto_dark_matter";
 		default:
-			return "stamen_watercolor";
+			return "carto_positron";
 	}
 }

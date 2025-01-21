@@ -12,8 +12,9 @@
 				L'atlas des tournées artistiques à modes doux
 			</h1>
 			<p class="text-center">
-				<Button href="/tours" variant="secondary" class="rounded text-xl" size="lg">Explorer</Button
-				>
+				<Button href="/explore" variant="secondary" class="rounded text-xl" size="lg">
+					Explorer
+				</Button>
 			</p>
 			<div class="prose m-auto text-lg text-couleur-fg">
 				<p>
