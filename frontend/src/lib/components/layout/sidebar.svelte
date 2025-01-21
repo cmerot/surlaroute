@@ -24,12 +24,12 @@
 		navMain: [
 			{ title: "Accueil", url: "/", icon: Home },
 			{ title: "Explorer", url: "/explore", icon: LucidMap },
+			{ title: "Tournées", url: "/tours", icon: Tour },
 			{
 				title: "Annuaire",
 				url: "/directory",
 				icon: Directory,
 			},
-			{ title: "Tournées", url: "/tours", icon: Tour },
 		],
 		navFavorites: [{ title: "Theme", url: "/theme", icon: Palette }],
 		navAdmin: [

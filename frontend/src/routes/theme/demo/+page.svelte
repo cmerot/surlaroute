@@ -2,28 +2,41 @@
 	import DisciplineBadge from "$lib/components/discipline-badge/discipline-badge.svelte";
 	import { Activity, MapPin, Mobility } from "$lib/components/icons";
 	import MobilityBadge from "$lib/components/mobility-badge/mobility-badge.svelte";
+	import { Button } from "$lib/components/ui/button";
 	import Section from "../section.svelte";
 </script>
 
 <hr class="my-10" />
 <Section name="mobilities" title="Mobilités" class="sdpace-y-10">
-	<h3 class="mb-4 font-bold">Badges et icônes</h3>
+	<h3 class="mb-4 font-bold">Badges, icônes et boutons</h3>
 	<div class="flex gap-4">
 		<div class="space-y-2">
 			<Mobility mobility={{ name: "Bateau", path: "Bateau" }} />
 			<MobilityBadge mobility={{ name: "Bateau", path: "Bateau" }} />
+			<Button variant="Bateau" size="icon">
+				<Mobility mobility={{ name: "Bateau", path: "Bateau" }} />
+			</Button>
 		</div>
 		<div class="space-y-2">
 			<Mobility mobility={{ name: "Équestre", path: "Equestre" }} />
 			<MobilityBadge mobility={{ name: "Équestre", path: "Equestre" }} />
+			<Button variant="Equestre" size="icon">
+				<Mobility mobility={{ name: "Équestre", path: "Equestre" }} />
+			</Button>
 		</div>
 		<div class="space-y-2">
 			<Mobility mobility={{ name: "Marche", path: "Marche" }} />
 			<MobilityBadge mobility={{ name: "Marche", path: "Marche" }} />
+			<Button variant="Marche" size="icon">
+				<Mobility mobility={{ name: "Marche", path: "Marche" }} />
+			</Button>
 		</div>
 		<div class="space-y-2">
 			<Mobility mobility={{ name: "Vélo", path: "Velo" }} />
 			<MobilityBadge mobility={{ name: "Vélo", path: "Velo" }} />
+			<Button variant="Velo" size="icon">
+				<Mobility mobility={{ name: "Vélo", path: "Velo" }} />
+			</Button>
 		</div>
 	</div>
 </Section>

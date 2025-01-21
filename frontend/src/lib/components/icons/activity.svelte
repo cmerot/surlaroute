@@ -10,7 +10,7 @@
 	import type { TreePublic } from "$lib/backend/client";
 	import { DefaultCategory, Diffusion, Production, Ressource } from ".";
 	let { activity, ...restProps }: ActivityProps = $props();
-	const { path } = activity;
+	const { path } = $derived(activity);
 </script>
 
 {#if path.match(/^Structure\.Diffusion/)}

@@ -9,7 +9,11 @@ from app.core.config import settings
 
 
 def get_db() -> Generator[Session, None, None]:
-    engine = create_engine(str(settings.SQLALCHEMY_DATABASE_URI), echo=False)
+    engine = create_engine(
+        str(settings.SQLALCHEMY_DATABASE_URI),
+        plugins=["geoalchemy2"],
+        echo=False,
+    )
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     try:
         db = SessionLocal()

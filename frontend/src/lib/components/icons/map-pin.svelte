@@ -4,16 +4,18 @@
 		withText?: boolean;
 		background?: string;
 		activity?: TreePublic;
+		selected?: boolean;
 	};
 </script>
 
 <script lang="ts">
 	import type { TreePublic } from "$lib/backend/client";
 	import type { WithoutChildrenOrChild } from "bits-ui";
+	import clsx from "clsx";
 	import type { SVGAttributes } from "svelte/elements";
 	import Activity from "./activity.svelte";
 
-	let { size = 24, activity, ...restProps }: LogoProps = $props();
+	let { size = 24, activity, selected, class: classNames, ...restProps }: LogoProps = $props();
 
 	type SizeProps = {
 		width?: number | string;
@@ -27,10 +29,11 @@
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 24 24"
 	fill="#b696c6"
-	stroke="#b696c6"
-	stroke-width="1"
+	stroke="#7b6191"
+	stroke-width="1.5"
 	stroke-linecap="round"
 	stroke-linejoin="round"
+	class={clsx(`origin-bottom transition-transform ${selected ? "scale-150" : ""}`, classNames)}
 	{...restProps}
 	{...sizeProps}
 >

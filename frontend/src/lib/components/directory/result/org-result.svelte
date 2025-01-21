@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { OrgPublic } from "$lib/backend/client";
 	import { ActivityBadge } from "$lib/components/activity-badge";
-	import { Org, Person } from "$lib/components/icons";
+	import { Activity, Org, Person } from "$lib/components/icons";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
 	import clsx from "clsx";
@@ -14,6 +14,8 @@
 
 	const { org, class: classNames, ...restProps }: ActorProps = $props();
 
+	const activity = $derived(org.activities[0]);
+
 	const href = $derived(`/directory/orgs/${org.id}`);
 </script>
 
@@ -25,7 +27,7 @@
 					{org.name}
 				</a>
 			</span>
-			<Org class="size-5" />
+			<Activity class="size-5" {activity} />
 		</Card.Title>
 
 		<Card.Description class="ditems-baseline flex">
