@@ -136,7 +136,14 @@
 </script>
 
 <div class="relative h-full w-full">
-	<MapLibre class="h-full w-full overflow-auto" {style} bind:map={mapInstance}>
+	<MapLibre
+		class="h-full w-full overflow-auto"
+		{style}
+		bind:map={mapInstance}
+		bind:bounds
+		bind:center
+		bind:zoom
+	>
 		<Controls bind:styleName />
 		{#each data.results.slr as tourFeactureCollection}
 			<TourFeatureCollection
