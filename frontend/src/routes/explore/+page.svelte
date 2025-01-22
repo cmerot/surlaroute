@@ -14,8 +14,8 @@
 	import { MapLibre } from "svelte-maplibre";
 	import type { PageData } from "./$types";
 	import Controls from "./map/controls.svelte";
-	import FeatureCollection from "./map/feature-collection.svelte";
 	import { getStyleName, styles, type Styles } from "./map/styles";
+	import TourFeatureCollection from "./map/tour-feature-collection.svelte";
 	import Sidebar from "./sidebar/sidebar.svelte";
 	import { boundsTo2D, isLngLatBounds } from "./utils";
 
@@ -98,20 +98,11 @@
 	$effect(() => {
 		if (!selectedMarkerId || !mapInstance) return;
 		for (const tourFeatureCollection of data.results.slr) {
-			const event = tourFeatureCollection.features.find(
+			const feature = tourFeatureCollection.features.find(
 				(feature) => feature.properties.id == selectedMarkerId,
 			);
-			if (event) {
-				mapInstance.panTo(event.geometry.coordinates as LngLatLike, {
-					padding: { left: 484, right: 100, top: 100, bottom: 100 },
-				});
-				return;
-			}
-			const actor = tourFeatureCollection.properties.actor_assocs.features.find(
-				(feature) => feature.properties.id == selectedMarkerId,
-			);
-			if (actor) {
-				mapInstance.panTo(actor.geometry.coordinates as LngLatLike, {
+			if (feature) {
+				mapInstance.panTo(feature.geometry.coordinates as LngLatLike, {
 					padding: { left: 484, right: 100, top: 100, bottom: 100 },
 				});
 				return;
@@ -145,23 +136,14 @@
 </script>
 
 <div class="relative h-full w-full">
-	<MapLibre
-		class="h-full w-full overflow-auto"
-		{style}
-		bind:map={mapInstance}
-		bind:bounds
-		bind:center
-		bind:zoom
-	>
+	<MapLibre class="h-full w-full overflow-auto" {style} bind:map={mapInstance}>
 		<Controls bind:styleName />
 		{#each data.results.slr as tourFeactureCollection}
-			{#if showActors}
-				<FeatureCollection
-					featureCollection={tourFeactureCollection.properties.actor_assocs}
-					bind:selectedMarkerId
-				/>
-			{/if}
-			<FeatureCollection featureCollection={tourFeactureCollection} bind:selectedMarkerId />
+			<TourFeatureCollection
+				featureCollection={tourFeactureCollection}
+				bind:selectedMarkerId
+				{showActors}
+			/>
 		{/each}
 	</MapLibre>
 	<Sidebar

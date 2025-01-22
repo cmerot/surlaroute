@@ -18,7 +18,7 @@
 
 <Marker lngLat={lonLngTo2D(feature.geometry.coordinates)} offset={[0, -16]}>
 	<div class="marker-container hover:cursor-pointer">
-		{#if feature.properties.type == "Org"}
+		{#if feature.properties.actor_type == "Org"}
 			<MapPin
 				activity={feature.properties.activities[0]}
 				size={36}
@@ -26,6 +26,7 @@
 				onclick={() => {
 					toggleSelected(feature.properties.id);
 				}}
+				class={feature.properties.id === selectedMarkerId ? "z-50" : "z-10"}
 			/>
 		{:else}
 			<MapPin

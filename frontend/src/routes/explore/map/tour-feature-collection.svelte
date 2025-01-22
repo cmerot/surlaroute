@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type {
-		ActorAssocFeatureCollection,
 		ActorFeature,
 		EventPointFeature,
 		TourFeatureCollection,
@@ -11,11 +10,12 @@
 	import TourFeatureLineLayer from "./tour-feature-line-layer.svelte";
 
 	type Props = {
-		featureCollection: TourFeatureCollection | ActorAssocFeatureCollection;
+		featureCollection: TourFeatureCollection;
 		selectedMarkerId?: string;
+		showActors?: boolean;
 	};
 
-	let { featureCollection, selectedMarkerId = $bindable() }: Props = $props();
+	let { featureCollection, selectedMarkerId = $bindable(), showActors }: Props = $props();
 
 	function isTourFeature(
 		feature: TourLineFeature | EventPointFeature | ActorFeature,
@@ -23,7 +23,7 @@
 		return feature.properties.type === "tour_line";
 	}
 
-	function isEventFeature(
+	function isEventPointFeature(
 		feature: TourLineFeature | EventPointFeature | ActorFeature,
 	): feature is EventPointFeature {
 		return feature.properties.type === "event_point";
@@ -32,16 +32,16 @@
 	function isActorFeature(
 		feature: TourLineFeature | EventPointFeature | ActorFeature,
 	): feature is ActorFeature {
-		return ["Org", "Person"].includes(feature.properties.type);
+		return ["tour_actor", "event_actor"].includes(feature.properties.type);
 	}
 </script>
 
 {#each featureCollection.features as feature}
 	{#if isTourFeature(feature)}
 		<TourFeatureLineLayer {feature} />
-	{:else if isActorFeature(feature)}
+	{:else if isActorFeature(feature) && showActors}
 		<ActorFeatureMarker {feature} bind:selectedMarkerId />
-	{:else if isEventFeature(feature)}
+	{:else if isEventPointFeature(feature) && !showActors}
 		<EventFeatureMarker {feature} bind:selectedMarkerId />
 	{/if}
 {/each}

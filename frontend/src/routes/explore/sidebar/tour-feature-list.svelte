@@ -1,8 +1,9 @@
 <script lang="ts">
 	import type {
 		EventPointFeatureProperties,
+		OrgFeatureProperties,
+		PersonFeatureProperties,
 		TourFeatureCollection,
-		TourLineFeature,
 	} from "$lib/backend/client";
 	import { DisciplineBadge } from "$lib/components/discipline-badge";
 	import { Activity, Directory, Mobility, Person } from "$lib/components/icons";
@@ -14,12 +15,12 @@
 	type Props = {
 		selectedTourId?: string;
 		selectedMarkerId?: string;
-		results: TourFeatureCollection[];
+		tours: TourFeatureCollection[];
 		showActors?: boolean;
 	};
 
 	let {
-		results,
+		tours: results,
 		selectedTourId = $bindable(),
 		selectedMarkerId = $bindable(),
 		showActors = $bindable(),
@@ -48,9 +49,9 @@
 				.filter((feature) => feature.properties.type === "event_point")
 				.map((event) => event.properties) as Array<EventPointFeatureProperties>;
 
-			const actors = tourFeatureCollection.properties.actor_assocs.features.map(
-				(feature) => feature.properties,
-			);
+			const actors = tourFeatureCollection.features
+				.filter((feature) => feature.properties.type === "tour_actor")
+				.map((actor) => actor.properties) as Array<OrgFeatureProperties | PersonFeatureProperties>;
 
 			return {
 				...tourFeatureCollection.properties,
@@ -156,7 +157,7 @@
 									}}
 								>
 									<span class="min-w-0 flex-grow truncate text-left">
-										{#if actor.type == "Org"}
+										{#if actor.actor_type == "Org"}
 											<Activity size={6} activity={actor.activities[0]} class="inline" />
 										{:else}
 											<Person size={6} />
@@ -165,7 +166,7 @@
 									</span>
 								</Button>
 								<Button
-									href={`/directory/${actor.type == "Person" ? "people" : "orgs"}/${actor.id}`}
+									href={`/directory/${actor.actor_type == "Person" ? "people" : "orgs"}/${actor.id}`}
 									variant="secondary"
 								>
 									<Directory size={6} />
