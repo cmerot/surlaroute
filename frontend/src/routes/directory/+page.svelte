@@ -23,7 +23,6 @@
 	}
 
 	async function search() {
-		loading = true;
 		const searchParams = new URLSearchParams({
 			q: query.q,
 			limit: query.limit.toString(),
@@ -34,7 +33,6 @@
 		await goto(`?${searchParams.toString()}`, {
 			keepFocus: true,
 		});
-		loading = false;
 	}
 
 	function onsubmit(event: Event) {
@@ -54,7 +52,6 @@
 	}
 
 	const { data }: { data: PageData } = $props();
-	let loading = $state(false);
 	const query = $state(data.query);
 	const pageNumber = $state(getPageNumber());
 
@@ -145,32 +142,27 @@
 							search();
 							scrollToElement("search");
 						}}
+						siblingCount={0}
 					>
 						{#snippet children({ pages, currentPage })}
 							<Pagination.Content>
-								<Pagination.Item>
-									<Pagination.PrevButton>
-										<ChevronLeft class="size-4" />
-										<span>Précédent</span>
-									</Pagination.PrevButton>
-								</Pagination.Item>
-								{#each pages as page (page.key)}
-									{#if page.type === "ellipsis"}
-										<Pagination.Item>
-											<Pagination.Ellipsis />
-										</Pagination.Item>
-									{:else}
-										<Pagination.Item>
-											<Pagination.Link {page} isActive={currentPage === page.value} />
-										</Pagination.Item>
-									{/if}
-								{/each}
-								<Pagination.Item>
-									<Pagination.NextButton>
-										<span>Suivant</span>
-										<ChevronRight class="size-4" />
-									</Pagination.NextButton>
-								</Pagination.Item>
+								{#if currentPage > 1}
+									{currentPage}
+									<Pagination.Item>
+										<Pagination.PrevButton>
+											<ChevronLeft class="size-4" />
+											<span>Précédent</span>
+										</Pagination.PrevButton>
+									</Pagination.Item>
+								{/if}
+								{#if currentPage < pages.length}
+									<Pagination.Item>
+										<Pagination.NextButton>
+											<span>Suivant</span>
+											<ChevronRight class="size-4" />
+										</Pagination.NextButton>
+									</Pagination.Item>
+								{/if}
 							</Pagination.Content>
 						{/snippet}
 					</Pagination.Root>
