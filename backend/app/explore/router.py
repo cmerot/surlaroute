@@ -19,6 +19,8 @@ from app.core.db.models import (
     Event,
     EventActorAssoc,
     Mobility,
+    Org,
+    Person,
     Tour,
     TourActorAssoc,
 )
@@ -29,7 +31,6 @@ from app.core.schemas import (
 )
 from app.core.security import CurrentUserOrNoneDep
 from app.explore.schemas import (
-    ActorAssocFeatureCollection,
     ActorFeature,
     EventPointFeature,
     EventPointFeatureProperties,
@@ -196,7 +197,7 @@ def get_tours_in_bbox(
 
 
 def get_tour_feature_collection(tour: Tour) -> TourFeatureCollection:
-    features = []
+    features: list[TourLineFeature | EventPointFeature | ActorFeature] = []
     tour.events.sort(key=lambda e: e.start_dt if e.start_dt is not None else -1)
 
     # Tour feature:
@@ -211,6 +212,7 @@ def get_tour_feature_collection(tour: Tour) -> TourFeatureCollection:
         ),
     )
     features.append(feature)
+    features.extend(get_actor_assoc_features(tour.actor_assocs, "tour_actor", tour.id))
 
     # For each event, an Event feature:
     # - the point that represents the event
@@ -235,6 +237,9 @@ def get_tour_feature_collection(tour: Tour) -> TourFeatureCollection:
             ),
         )
         features.append(event_feature)
+        features.extend(
+            get_actor_assoc_features(tour.actor_assocs, "event_actor", event.id)
+        )
 
     return TourFeatureCollection(
         type="FeatureCollection",
@@ -257,24 +262,15 @@ def get_tour_feature_collection(tour: Tour) -> TourFeatureCollection:
             mobilities=[
                 TreePublic.model_validate(mobility) for mobility in tour.mobilities
             ],
-            actor_assocs=get_actor_assoc_feature_collection(
-                tour.actor_assocs, "tour_actors", tour.id
-            ),
-            event_actor_assocs=[
-                get_actor_assoc_feature_collection(
-                    event.actor_assocs, "event_actors", event.id
-                )
-                for event in tour.events
-            ],
         ),
     )
 
 
-def get_actor_assoc_feature_collection(
+def get_actor_assoc_features(
     actor_assocs: list[TourActorAssoc] | list[EventActorAssoc],
-    type: Literal["tour_actors", "event_actors"],
+    type: Literal["tour_actor", "event_actor"],
     parent_id: uuid.UUID,
-) -> ActorAssocFeatureCollection:
+) -> list[ActorFeature[OrgFeatureProperties | PersonFeatureProperties]]:
     features = []
     for assoc in actor_assocs:
         if (
@@ -283,15 +279,36 @@ def get_actor_assoc_feature_collection(
         ):
             continue
 
-        if assoc.actor.type == "Org":
-            properties = OrgFeatureProperties.model_validate(assoc.actor)
+        properties: OrgFeatureProperties | PersonFeatureProperties
+
+        if isinstance(assoc.actor, Org):
+            properties = OrgFeatureProperties(
+                id=assoc.actor.id,
+                type=type,
+                parent_id=parent_id,
+                name=assoc.actor.name,
+                role=assoc.data.get("role"),
+                description=assoc.actor.description,
+                activities=[
+                    TreePublic.model_validate(activity)
+                    for activity in assoc.actor.activities
+                ],
+            )
+        elif isinstance(assoc.actor, Person):
+            properties = PersonFeatureProperties(
+                id=assoc.actor.id,
+                type=type,
+                parent_id=parent_id,
+                name=assoc.actor.name,
+                role=assoc.data.get("role"),
+            )
         else:
-            properties = PersonFeatureProperties.model_validate(assoc.actor)
+            raise ValueError(f"Unknown actor type: {assoc.actor.__class__.__name__}")
 
         geometry = Point(
             type="Point",
             coordinates=get_center_coordinates_of_wkbelement_list(
-                [assoc.actor.contact.address.geom_point]
+                [assoc.actor.contact.address.geom_point]  # type: ignore[list-item]
             ),
         )
         feature: ActorFeature[
@@ -303,11 +320,7 @@ def get_actor_assoc_feature_collection(
             properties=properties,
         )
         features.append(feature)
-    return ActorAssocFeatureCollection(
-        type="FeatureCollection",
-        features=features,
-        properties={"type": type, "parent_id": str(parent_id)},
-    )
+    return features
 
 
 @router.get(
@@ -334,25 +347,5 @@ def get_data(
 
     for tour in tours:
         results.append(get_tour_feature_collection(tour))
-
-    # for tour in tours:
-    #     tour_data = TourResponse(
-    #         id=tour.id,
-    #         data=get_tour_feature_collection(tour),
-    #         actor_assocs=get_actor_assoc_feature_collection(
-    #             tour.actor_assocs, "tour_actors", tour.id
-    #         ),
-    #         event_actors=[
-    #             TourEventsResponse(
-    #                 id=event.id,
-    #                 actor_assocs=get_actor_assoc_feature_collection(
-    #                     event.actor_assocs, "event_actors", event.id
-    #                 ),
-    #             )
-    #             for event in tour.events
-    #         ],
-    #     )
-
-    #     results.append(tour_data)
 
     return results

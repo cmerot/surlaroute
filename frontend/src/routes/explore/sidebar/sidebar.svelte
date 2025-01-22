@@ -97,7 +97,7 @@
 	</div>
 	<div bind:this={contentDiv} onscroll={checkScroll} class="min-h-0 flex-1 overflow-y-auto">
 		<TourFeatureList
-			results={results.slr}
+			tours={results.slr}
 			bind:selectedTourId
 			bind:selectedMarkerId
 			bind:showActors
