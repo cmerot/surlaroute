@@ -313,7 +313,7 @@ class Tour(Base, PermissionsMixin):
             return min(years) if years else None
         return None
 
-    @year.expression
+    @year.expression  # type: ignore[no-redef]
     def year(cls):
         return (
             select(func.extract("year", func.min(Event.start_dt)))
@@ -332,7 +332,7 @@ class Tour(Base, PermissionsMixin):
             ]
         return []
 
-    @producers.expression
+    @producers.expression  # type: ignore[no-redef]
     def producers(cls):
         return (
             select(Actor)
@@ -350,7 +350,7 @@ class Tour(Base, PermissionsMixin):
         """Returns the bounding box of all address points associated with the tour"""
         raise NotImplementedError("Hybrid properties can't execute complex SQL")
 
-    @bbox.expression
+    @bbox.expression  # type: ignore[no-redef]
     def bbox(cls):
         """SQL expression for calculating the tour's bounding box"""
         return (
@@ -397,7 +397,7 @@ class Event(Base, PermissionsMixin):
             ]
         return []
 
-    @event_venues.expression
+    @event_venues.expression  # type: ignore[no-redef]
     def event_venues(cls):
         return (
             select(Actor)

@@ -21,7 +21,6 @@
 	}
 
 	async function search() {
-		loading = true;
 		const searchParams = new URLSearchParams({
 			q: query.q,
 			limit: query.limit.toString(),
@@ -31,13 +30,11 @@
 		await goto(`?${searchParams.toString()}`, {
 			keepFocus: true,
 		});
-		loading = false;
 	}
 
 	const { data }: { data: PageData } = $props();
 	const query = $state(data.query);
 	const pageNumber = $state(getPageNumber());
-	let loading = $state(false);
 
 	$effect(() => {
 		if (query.q) {

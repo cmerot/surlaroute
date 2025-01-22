@@ -7,7 +7,9 @@
 	import { Badge } from "$lib/components/ui/badge";
 	import { Button } from "$lib/components/ui/button";
 	import * as Card from "$lib/components/ui/card";
+	import type { Map as MapLibreMap } from "maplibre-gl";
 	import { onMount } from "svelte";
+
 	import {
 		GeoJSON,
 		LineLayer,
@@ -27,7 +29,7 @@
 
 	function getMarkers(events: EventPublic[]): MarkerType[] {
 		const markers: Array<MarkerType> = [];
-		for (const [event_index, e] of tour.events.entries()) {
+		for (const [event_index, e] of events.entries()) {
 			if (e.actor_assocs) {
 				for (const assoc of e.actor_assocs) {
 					if (assoc.actor?.contact?.address?.geom_point) {
@@ -35,7 +37,7 @@
 
 						if (event_index === 0) {
 							label = `Départ : ${label}`;
-						} else if (event_index < tour.events.length) {
+						} else if (event_index < events.length) {
 							label = `Étape ${event_index + 1} : ${label}`;
 						} else {
 							label = `Arrivée : ${label}`;
@@ -75,7 +77,7 @@
 	}
 
 	const { data }: { data: PageData } = $props();
-	let map: maplibregl.Map | undefined = $state();
+	let map: MapLibreMap | undefined = $state();
 	const tour = data.tour;
 	const markers = $derived(getMarkers(tour.events));
 	const bounds = $derived(getBoundsFromMarkers(markers));
@@ -124,8 +126,7 @@
 						}}
 					/>
 				</GeoJSON>
-				{#each markers as { lngLat, label, name, assoc }, index}
-					<!-- <EventMarker {org} event={assoc.event} {step} /> -->
+				{#each markers as { lngLat }, index}
 					<Marker
 						{lngLat}
 						onclick={() => console.log("click")}
@@ -149,11 +150,14 @@
 					{/if}
 					{#if producers.length > 0}
 						<p>
-							Produit par {@html producers
-								.map((p) => {
-									return `<a class="underline" href="/directory/${p.actor.type == "Person" ? "people" : "orgs"}/${p.actor.id}">${p.actor.name}</a>`;
-								})
-								.join(", ")}
+							Produit par
+							{#each producers as producer}
+								<a
+									class="underline"
+									href="/directory/${producer.actor.type == 'Person' ? 'people' : 'orgs'}/${producer
+										.actor.id}">${producer.actor.name}</a
+								>
+							{/each}
 							en {tour.year}
 						</p>
 					{/if}
