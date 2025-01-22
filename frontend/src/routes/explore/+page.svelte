@@ -155,12 +155,12 @@
 	>
 		<Controls bind:styleName />
 		{#each data.results.slr as tourFeactureCollection}
-			<!-- {#if showActors}
+			{#if showActors}
 				<FeatureCollection
-					featureCollection={tourFeactureCollection.actor_assocs}
+					featureCollection={tourFeactureCollection.properties.actor_assocs}
 					bind:selectedMarkerId
 				/>
-			{/if} -->
+			{/if}
 			<FeatureCollection featureCollection={tourFeactureCollection} bind:selectedMarkerId />
 		{/each}
 	</MapLibre>
