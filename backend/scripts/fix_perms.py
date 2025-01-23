@@ -29,6 +29,7 @@ from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import raiseload, subqueryload
 from tabulate import tabulate
 
+from app.core.config import settings
 from app.core.db.models import (
     Actor,
     Event,
@@ -234,7 +235,7 @@ def print_entities_ownership(with_owner: bool = True) -> None:
 
 
 if __name__ == "__main__":
-    user = db.scalar(select(User).where(User.email == "admin@example.com"))
+    user = db.scalar(select(User).where(User.email == settings.FIRST_SUPERUSER))
     db.info["user"] = user
     set_people_with_user_ownership()
     set_tours_ownership()

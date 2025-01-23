@@ -13,6 +13,7 @@ from sqlalchemy.orm import (
 )
 from sqlalchemy_utils import Ltree
 
+from app.core.config import settings
 from app.core.db.models import (
     Activity,
     AddressGeo,
@@ -138,7 +139,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=20)
     set_logger(logger)
 
-    user = db.scalar(select(User).where(User.email == "admin@example.com"))
+    user = db.scalar(select(User).where(User.email == settings.FIRST_SUPERUSER))
     db.info["user"] = user
 
     with open(get_input_file_path()) as f:
