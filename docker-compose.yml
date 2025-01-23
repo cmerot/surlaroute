@@ -4,6 +4,8 @@ services:
     image: '${DOCKER_IMAGE_DB?Variable not set}:${TAG-latest}'
     build:
       context: ./db
+      labels:
+        - 'GitCommit=${GIT_COMMIT?Variable not set}'
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -118,6 +120,8 @@ services:
 
     build:
       context: ./backend
+      labels:
+        - 'GitCommit=${GIT_COMMIT?Variable not set}'
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
@@ -144,9 +148,11 @@ services:
       - default
     build:
       context: ./frontend
+      labels:
+        - 'GitCommit=${GIT_COMMIT?Variable not set}'
       args:
         - VITE_API_URL=https://api.${DOMAIN?Variable not set}
-        - NODE_ENV=production
+        - NODE_ENV=${ENVIRONMENT?Variable not set}
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
@@ -165,6 +171,11 @@ services:
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
 
+      # HTTP basic auth
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-frontend-auth.basicauth.users=${HTTP_USERNAME?Variable not set}:${HTTP_HASHED_PASSWORD?Variable not set}
+      # Enable HTTP Basic auth, using the middleware created above
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.middlewares=${STACK_NAME?Variable not set}-frontend-auth
+
 volumes:
   app-db-data:
 
@@ -172,3 +183,4 @@ networks:
   traefik-public:
     # Allow setting it to false for testing
     external: true
+    enable_ipv6: true
