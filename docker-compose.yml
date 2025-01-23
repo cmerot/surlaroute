@@ -1,9 +1,11 @@
 services:
 
   db:
-    image: '${DOCKER_IMAGE_DB?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_DB?Variable not set}:${ENVIRONMENT?Variable not set}'
     build:
       context: ./db
+      labels:
+        - 'GitCommit=${GIT_COMMIT?Variable not set}'
     restart: always
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
@@ -45,7 +47,7 @@ services:
       - traefik.http.services.${STACK_NAME?Variable not set}-adminer.loadbalancer.server.port=8080
 
   prestart:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${ENVIRONMENT?Variable not set}'
     networks:
       - traefik-public
       - default
@@ -76,7 +78,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN}
 
   backend:
-    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_BACKEND?Variable not set}:${ENVIRONMENT?Variable not set}'
     restart: always
     networks:
       - traefik-public
@@ -118,6 +120,8 @@ services:
 
     build:
       context: ./backend
+      labels:
+        - 'GitCommit=${GIT_COMMIT?Variable not set}'
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
@@ -137,16 +141,18 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.middlewares=https-redirect
 
   frontend:
-    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
+    image: '${DOCKER_IMAGE_FRONTEND?Variable not set}:${ENVIRONMENT?Variable not set}'
     restart: always
     networks:
       - traefik-public
       - default
     build:
       context: ./frontend
+      labels:
+        - 'GitCommit=${GIT_COMMIT?Variable not set}'
       args:
         - VITE_API_URL=https://api.${DOMAIN?Variable not set}
-        - NODE_ENV=production
+        - NODE_ENV=${ENVIRONMENT?Variable not set}
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik-public
@@ -165,6 +171,11 @@ services:
       # Enable redirection for HTTP and HTTPS
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.middlewares=https-redirect
 
+      # HTTP basic auth
+      - traefik.http.middlewares.${STACK_NAME?Variable not set}-frontend-auth.basicauth.users=${HTTP_USERNAME?Variable not set}:${HTTP_HASHED_PASSWORD?Variable not set}
+      # Enable HTTP Basic auth, using the middleware created above
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-https.middlewares=${STACK_NAME?Variable not set}-frontend-auth
+
 volumes:
   app-db-data:
 
@@ -172,3 +183,8 @@ networks:
   traefik-public:
     # Allow setting it to false for testing
     external: true
+    enable_ipv6: true
+    ipam:
+      config:
+        # - subnet: fd00:1111::/64
+        - subnet: fd00:2222::/64
