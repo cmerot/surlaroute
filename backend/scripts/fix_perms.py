@@ -42,6 +42,7 @@ from app.core.db.models import (
     User,
 )
 from app.core.db.session import get_db
+from app.core.security import set_security_context_from_user
 
 db = next(get_db())
 
@@ -236,7 +237,8 @@ def print_entities_ownership(with_owner: bool = True) -> None:
 
 if __name__ == "__main__":
     user = db.scalar(select(User).where(User.email == settings.FIRST_SUPERUSER))
-    db.info["user"] = user
+    set_security_context_from_user(db, user)
+
     set_people_with_user_ownership()
     set_tours_ownership()
     db.commit()

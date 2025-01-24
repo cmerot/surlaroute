@@ -26,7 +26,7 @@ from app.core.db.models import (
     User,
 )
 from app.core.db.session import get_db
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, set_security_context_from_user
 from scripts.import_schemas import (
     EventImport,
     OrgImport,
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     set_logger(logger)
 
     user = db.scalar(select(User).where(User.email == settings.FIRST_SUPERUSER))
-    db.info["user"] = user
+    set_security_context_from_user(db, user)
 
     with open(get_input_file_path()) as f:
         data = json.load(f)

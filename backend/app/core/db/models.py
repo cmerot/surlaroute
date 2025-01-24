@@ -7,30 +7,20 @@ from typing import Any
 from geoalchemy2 import Geometry
 from geoalchemy2.functions import ST_Envelope, ST_Union
 from sqlalchemy import (
-    Column,
-    ColumnElement,
     DateTime,
     ForeignKey,
-    Select,
-    and_,
     func,
-    or_,
     select,
-    true,
 )
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.event import listens_for
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
-    Session,
     declared_attr,
     mapped_column,
     relationship,
 )
-from sqlalchemy.orm.session import ORMExecuteState
-from sqlalchemy.sql.elements import BooleanClauseList
 from sqlalchemy_utils import Ltree
 from sqlalchemy_utils.types import LtreeType
 
@@ -559,115 +549,3 @@ class EventActorAssoc(Base):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(event_id={self.event_id} actor_id={self.actor_id})"
-
-
-#
-#
-#
-def filter_out_actor_assocs(
-    assocs: list[EventActorAssoc | TourActorAssoc | OrgActorAssoc],
-) -> list[EventActorAssoc | TourActorAssoc | OrgActorAssoc]:
-    def cleanActor(
-        assoc: EventActorAssoc | TourActorAssoc | OrgActorAssoc,
-    ) -> EventActorAssoc | TourActorAssoc | OrgActorAssoc:
-        if isinstance(assoc.actor, Org):
-            new_assocs = []
-            for member_assoc in assoc.actor.member_assocs:
-                if member_assoc.actor is not None:
-                    new_assocs.append(member_assoc)
-            assoc.actor.member_assocs = new_assocs
-        return assoc
-
-    new_assocs = []
-
-    for assoc in assocs:
-        if assoc.actor:
-            if isinstance(assoc, EventActorAssoc) and assoc.event:
-                new_assocs.append(cleanActor(assoc))
-            elif isinstance(assoc, TourActorAssoc) and assoc.tour:
-                new_assocs.append(cleanActor(assoc))
-            elif isinstance(assoc, OrgActorAssoc) and assoc.org:
-                new_assocs.append(cleanActor(assoc))
-            else:
-                pass
-                # print("filtered out", assoc)
-        else:
-            pass
-            # print("filtered out", assoc)
-
-    return new_assocs
-
-
-def get_model_from_table_name(table_name: str) -> type[Base] | None:
-    for mapper in Base.registry.mappers:
-        if mapper.class_.__tablename__ == table_name:
-            return mapper.class_
-    return None
-
-
-def get_permission_filter(
-    model: type[PermissionsMixin], user: User | None
-) -> BooleanClauseList | ColumnElement[bool]:
-    """
-    Return a filter for the given model and user.
-    """
-    if user and user.is_superuser:
-        return true()
-
-    criteria = []
-
-    # Public other_read gives access
-    criteria.append(model.other_read == True)  # noqa: E712
-
-    # If no user is logged in, that's it
-    if not user:
-        return or_(*criteria)
-
-    # Ownership: a user can select its own entities
-    if user.id:
-        criteria.append(model.owner_id == user.id)
-
-    # If the user is a member, the entity may be available
-    if user.is_member:
-        criteria.append(model.member_read == True)  # noqa: E712
-
-    # If the user is a member of a group, the entity may be available
-    criteria.append(
-        and_(
-            model.group_read == True,  # noqa: E712
-            model.group_owner_id.in_(user.group_ids),
-        )
-    )
-
-    return or_(*criteria)
-
-
-@listens_for(Session, "do_orm_execute")
-def add_permission_filters_on_select(orm_execute_state: ORMExecuteState) -> None:
-    """
-    On Session `do_orm_execute` event, add filters on subclasses of PermissionsMixin
-    by inspecting the exported_columns of the statement.
-    """
-
-    if not isinstance(orm_execute_state.statement, Select):
-        return
-
-    user = orm_execute_state.session.info.get("user")
-
-    models = set()
-
-    # First pass to build the models set
-    for col in orm_execute_state.statement.exported_columns:
-        # Could have a func instead of a real col
-        if not isinstance(col, Column):
-            continue
-        model = get_model_from_table_name(col.table.name)
-        if model:
-            models.add(model)
-
-    # Second pass, add filters
-    for model in models:
-        if issubclass(model, PermissionsMixin) or isinstance(model, Actor):
-            orm_execute_state.statement = orm_execute_state.statement.filter(
-                get_permission_filter(model, user)
-            )

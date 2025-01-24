@@ -3,7 +3,15 @@ import uuid
 import pytest
 from sqlalchemy.orm import Session
 
-from app.core.db.models import Event, Org, OrgActorAssoc, Person, Tour, User
+from app.core.db.models import (
+    Event,
+    Org,
+    OrgActorAssoc,
+    Person,
+    Tour,
+    User,
+)
+from app.core.security import set_security_context_from_user
 
 
 def iid(name: str) -> uuid.UUID:
@@ -143,7 +151,7 @@ def create_default_users(session: Session) -> tuple[User, Org]:
     session.add(superuser)
     session.flush()
 
-    session.info["user"] = superuser
+    set_security_context_from_user(session, superuser)
 
     # Unprivileged user
     create_user(session, "unprivileged")

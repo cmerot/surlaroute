@@ -4,14 +4,15 @@ import pytest
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from app.core.db.models import Tour, User
+from app.core.db.models import Tour
+from app.core.security import SecurityContext, set_security_context
 from app.tours.repository import get_all_tours, get_tour
 from app.tours.schemas import ToursPageParams
 
 
 @pytest.mark.usefixtures("function_create_tours")
 def test_get_all_tours_with_query(db_session: Session):
-    db_session.info["user"] = User(is_superuser=True)
+    set_security_context(db_session, SecurityContext(is_superuser=True))
 
     # Assuming there is a function get_all_tours similar to get_all_actors
     tours, count = get_all_tours(
@@ -24,7 +25,7 @@ def test_get_all_tours_with_query(db_session: Session):
 
 @pytest.mark.usefixtures("function_create_tours")
 def test_get_all_tours_with_activity_filter(db_session: Session):
-    db_session.info["user"] = User(is_superuser=True)
+    set_security_context(db_session, SecurityContext(is_superuser=True))
 
     # Assuming there is a function get_all_tours similar to get_all_actors
     tours, count = get_all_tours(
@@ -37,7 +38,8 @@ def test_get_all_tours_with_activity_filter(db_session: Session):
 
 @pytest.mark.usefixtures("function_create_tours")
 def test_get_tour(db_session: Session):
-    db_session.info["user"] = User(is_superuser=True)
+    set_security_context(db_session, SecurityContext(is_superuser=True))
+
     tour = Tour(name="detailed_tour")
     db_session.add(tour)
     db_session.flush()
@@ -49,7 +51,8 @@ def test_get_tour(db_session: Session):
 
 @pytest.mark.usefixtures("function_create_tours")
 def test_get_tour_with_invalid_id(db_session: Session):
-    db_session.info["user"] = User(is_superuser=True)
+    set_security_context(db_session, SecurityContext(is_superuser=True))
+
     invalid_id = uuid.uuid4()
 
     with pytest.raises(NoResultFound):

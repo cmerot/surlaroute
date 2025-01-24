@@ -29,7 +29,7 @@ from app.core.schemas import (
     AddressPublic,
     PageParams,
 )
-from app.core.security import CurrentUserOrNoneDep
+from app.core.security import OAuthSecurityContextDep
 from app.explore.schemas import (
     ActorFeature,
     EventPointFeature,
@@ -327,14 +327,12 @@ def get_actor_assoc_features(
     "/",
     response_model=list[TourFeatureCollection],
     response_model_exclude_none=True,
+    dependencies=[OAuthSecurityContextDep],
 )
 def get_data(
     session: SessionDep,
     page_params: ExplorePageParamsDep,
-    user: CurrentUserOrNoneDep,
 ) -> list[TourFeatureCollection]:
-    session.info["user"] = user
-
     # Get tours in the bounding box
     tours = get_tours_in_bbox(
         session,

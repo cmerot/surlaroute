@@ -16,7 +16,7 @@ from app.core.schemas import (
 )
 from app.core.security import (
     CurrentUserDep,
-    CurrentUserOrNoneDep,
+    OAuthSecurityContextDep,
     get_current_active_superuser,
 )
 from app.users import crud
@@ -57,8 +57,12 @@ def read(
     )
 
 
-@router.get("/me", response_model=UserPublic)
-def read_user_me(current_user: CurrentUserOrNoneDep) -> User:
+@router.get(
+    "/me",
+    response_model=UserPublic,
+    dependencies=[OAuthSecurityContextDep],
+)
+def read_user_me(current_user: CurrentUserDep) -> User:
     """
     Get current user.
     """

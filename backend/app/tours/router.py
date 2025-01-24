@@ -10,7 +10,7 @@ from sqlalchemy.exc import NoResultFound
 from app.core.db.models import Tour
 from app.core.db.session import SessionDep
 from app.core.schemas import AddressPublic, ErrorResponse, PagedResponse, TourPublic
-from app.core.security import CurrentUserOrNoneDep
+from app.core.security import OAuthSecurityContextDep
 from app.tours import repository
 from app.tours.schemas import (
     ToursPageParamsDep,
@@ -68,17 +68,16 @@ def get_tour_feature_collection(tour: Tour) -> FeatureCollection:
     "/",
     response_model=PagedResponse[TourPublic],
     response_model_exclude_none=True,
+    dependencies=[OAuthSecurityContextDep],
 )
 def get_all_tours(
     session: SessionDep,
     page_params: ToursPageParamsDep,
-    user: CurrentUserOrNoneDep,
 ) -> Any:
     """
     Paginated list of tours
 
     """
-    session.info["user"] = user
 
     actors, count = repository.get_all_tours(session=session, page_params=page_params)
 
@@ -97,16 +96,15 @@ def get_all_tours(
     responses={
         404: {"model": ErrorResponse},
     },
+    dependencies=[OAuthSecurityContextDep],
 )
 def get_tour(
     session: SessionDep,
     id: uuid.UUID,
-    user: CurrentUserOrNoneDep,
 ) -> Tour:
     """
     Tour details
     """
-    session.info["user"] = user
 
     try:
         tour = repository.get_tour(session=session, id=id)
