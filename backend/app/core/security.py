@@ -15,6 +15,7 @@ from sqlalchemy import Column, ColumnElement, Select, and_, or_, select, true
 from sqlalchemy.event import listens_for
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session, joinedload, raiseload, selectinload
+from sqlalchemy.orm.query import QueryContext
 from sqlalchemy.orm.session import ORMExecuteState
 from sqlalchemy.sql.elements import BooleanClauseList
 
@@ -23,9 +24,10 @@ from app.core.config import settings
 from app.core.db.models import (
     Actor,
     Base,
+    Contact,
     OrgActorAssoc,
-    PermissionsMixin,
     Person,
+    RowLevelRestrictionMixin,
     User,
 )
 from app.core.db.session import SessionDep
@@ -195,7 +197,7 @@ def verify_password_reset_token(token: str) -> str | None:
 
 
 def get_permission_filter(
-    model: type[PermissionsMixin], security_context: SecurityContext
+    model: type[RowLevelRestrictionMixin], security_context: SecurityContext
 ) -> BooleanClauseList | ColumnElement[bool]:
     """
     Return a filter for the given model and user.
@@ -263,7 +265,24 @@ def add_permission_filters_on_select(orm_execute_state: ORMExecuteState) -> None
 
     # Second pass, add filters
     for model in models:
-        if issubclass(model, PermissionsMixin) or isinstance(model, Actor):
+        if issubclass(model, RowLevelRestrictionMixin) or isinstance(model, Actor):
             orm_execute_state.statement = orm_execute_state.statement.filter(
                 get_permission_filter(model, security_context)
             )
+
+
+@listens_for(Contact, "load")
+def remove_fields_on_load(target: Contact, context: QueryContext):
+    # remove fields based on the security context and the model's permissions field
+    security_context = get_security_context(context.session)
+
+    if security_context.is_superuser:
+        return
+
+    for field_name, permissions in target.permissions.items():
+        if not permissions["other_read"] and security_context.user_id is None:
+            setattr(target, field_name, None)
+            continue
+        if not permissions["member_read"] and security_context.is_member is None:
+            setattr(target, field_name, None)
+            continue
