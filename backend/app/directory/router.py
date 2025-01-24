@@ -12,7 +12,9 @@ from app.core.db.models import (
 )
 from app.core.db.session import SessionDep
 from app.core.schemas import ErrorResponse, OrgPublic, PagedResponse, PersonPublic
-from app.core.security import CurrentUserOrNoneDep
+from app.core.security import (
+    OAuthSecurityContextDep,
+)
 from app.directory import repository
 from app.directory.schemas import (
     DirectoryPageParamsDep,
@@ -25,17 +27,16 @@ router = APIRouter()
     "/",
     response_model=PagedResponse[Union[OrgPublic, PersonPublic]],  # noqa: UP007
     response_model_exclude_none=True,
+    dependencies=[OAuthSecurityContextDep],
 )
 def get_all_actors(
     session: SessionDep,
     page_params: DirectoryPageParamsDep,
-    user: CurrentUserOrNoneDep,
 ) -> Any:
     """
     Paginated list of actors
 
     """
-    session.info["user"] = user
 
     actors, count = repository.get_all_actors(session=session, page_params=page_params)
     print(count)
@@ -55,16 +56,15 @@ def get_all_actors(
     responses={
         404: {"model": ErrorResponse},
     },
+    dependencies=[OAuthSecurityContextDep],
 )
 def get_org(
     session: SessionDep,
     id: uuid.UUID,
-    user: CurrentUserOrNoneDep,
 ) -> Org:
     """
     Org details
     """
-    session.info["user"] = user
 
     try:
         return repository.get_org(session=session, id=id)
@@ -79,17 +79,16 @@ def get_org(
     responses={
         404: {"model": ErrorResponse},
     },
+    dependencies=[OAuthSecurityContextDep],
 )
 def get_person(
     session: SessionDep,
     id: uuid.UUID,
-    user: CurrentUserOrNoneDep,
 ) -> Person:
     """
     Person details
 
     """
-    session.info["user"] = user
 
     try:
         return repository.get_person(session=session, id=id)

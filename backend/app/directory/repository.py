@@ -21,8 +21,8 @@ from app.core.db.models import (
     Person,
     Tour,
     TourActorAssoc,
-    get_permission_filter,
 )
+from app.core.security import get_permission_filter, get_security_context
 from app.directory.schemas import DirectoryPageParams
 
 
@@ -93,7 +93,9 @@ def get_all_actors(
     # Count statement
     # Since the security filter works by inspecting selected columns
     # we need to apply directly the filter
-    statement = statement.filter(get_permission_filter(Actor, session.info["user"]))
+    statement = statement.filter(
+        get_permission_filter(Actor, get_security_context(session))
+    )
     count_statement = select(func.count()).select_from(statement.subquery())
     count = session.scalars(count_statement).one()
 
