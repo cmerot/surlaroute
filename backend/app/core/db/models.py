@@ -21,6 +21,7 @@ from sqlalchemy.orm import (
     mapped_column,
     relationship,
 )
+from sqlalchemy.types import TypeDecorator
 from sqlalchemy_utils import Ltree
 from sqlalchemy_utils.types import LtreeType
 
@@ -38,7 +39,7 @@ class TimestampMixin:
     )
 
 
-class PermissionsMixin:
+class RowLevelRestrictionMixin:
     """
     Mixin for permissions applied at least to Person, Org, Tour and Event.
     It must be declared first, eg `class Person(Permission, Actor)`
@@ -74,6 +75,27 @@ class PermissionsMixin:
     member_read: Mapped[bool] = mapped_column(default=True)
     member_write: Mapped[bool] = mapped_column(default=False)
     other_read: Mapped[bool] = mapped_column(default=False)
+
+
+class PermissionsType(TypeDecorator):
+    impl = JSONB
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return value
+        return {
+            col: {
+                "group_read": bool(permissions.get("group_read", False)),
+                "group_write": bool(permissions.get("group_write", False)),
+                "member_read": bool(permissions.get("member_read", False)),
+                "member_write": bool(permissions.get("member_write", False)),
+                "other_read": bool(permissions.get("other_read", False)),
+            }
+            for col, permissions in value.items()
+        }
+
+    def process_result_value(self, value, dialect):
+        return value
 
 
 class Base(DeclarativeBase):
@@ -148,7 +170,7 @@ class User(Base):
 #
 
 
-class Actor(PermissionsMixin, Base):
+class Actor(RowLevelRestrictionMixin, Base):
     """
     Base class for Person and Org, so each time we need to link either a
     Person or an Org we can use an Actor.
@@ -250,6 +272,26 @@ class Contact(Base):
     )
     address: Mapped[AddressGeo] = relationship()
     actor: Mapped[Actor] = relationship()
+    permissions: Mapped[dict[str, Any]] = mapped_column(
+        PermissionsType,
+        default={
+            "phone_number": {
+                "group_read": True,
+                "member_read": True,
+                "other_read": False,
+            },
+            "email_address": {
+                "group_read": True,
+                "member_read": True,
+                "other_read": False,
+            },
+        },
+    )
+
+    def __repr__(self) -> str:
+        if not self.email_address:
+            return super().__repr__()
+        return f"{self.__class__.__name__}(email_address={self.email_address})"
 
 
 class AddressGeo(Base):
@@ -273,7 +315,7 @@ class AddressGeo(Base):
         return f"{self.__class__.__name__}({self.q})"
 
 
-class Tour(Base, PermissionsMixin):
+class Tour(Base, RowLevelRestrictionMixin):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column()
     description: Mapped[str | None] = mapped_column(default=None)
@@ -359,7 +401,7 @@ class Tour(Base, PermissionsMixin):
         return f"{self.__class__.__name__}({self.name})"
 
 
-class Event(Base, PermissionsMixin):
+class Event(Base, RowLevelRestrictionMixin):
     id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
     name: Mapped[str | None] = mapped_column(default=None)
     description: Mapped[str | None] = mapped_column(default=None)
