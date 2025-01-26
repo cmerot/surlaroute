@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { enhance } from "$app/forms";
 	import { Theme } from "$lib/components/icons";
-	import { Button } from "$lib/components/ui/button/index.js";
+	import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { auth } from "$lib/stores/auth";
+	import { cn } from "$lib/utils";
 	import { CircleUser, LogIn, LogOut, MonitorCog, Moon, Palette, Sun } from "lucide-svelte";
-	import { mode, ModeWatcher, setMode, setTheme, theme } from "mode-watcher";
+	import { mode, setMode, setTheme, theme } from "mode-watcher";
 
 	const user = $derived($auth.user);
 
@@ -14,20 +15,26 @@
 
 	$effect(() => {
 		setTheme(themeValue);
+	});
+	$effect(() => {
 		setMode(modeValue);
 	});
 </script>
 
-<div class="flex items-center gap-2">
+<nav class="flex flex-1 items-center justify-end">
 	<DropdownMenu.Root>
-		<DropdownMenu.Trigger>
-			{#snippet child({ props })}
-				<Button {...props} variant="ghost" size="icon" class="data-[state=open]:bg-accent">
-					<CircleUser />
-				</Button>
-			{/snippet}
+		<DropdownMenu.Trigger
+			class={cn(
+				buttonVariants({
+					variant: "ghost",
+					class:
+						"mr-2 px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 [&_svg]:size-6",
+				}),
+			)}
+		>
+			<CircleUser />
 		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="end">
+		<DropdownMenu.Content align="end" class="flex items-center gap-2">
 			<DropdownMenu.Group>
 				{#if user}
 					<DropdownMenu.GroupHeading class="px-5 py-3 text-xs font-normal text-muted-foreground">
@@ -127,5 +134,4 @@
 			</DropdownMenu.Group>
 		</DropdownMenu.Content>
 	</DropdownMenu.Root>
-</div>
-<ModeWatcher defaultMode="system" defaultTheme="vert" />
+</nav>
