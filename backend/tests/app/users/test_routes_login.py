@@ -2,7 +2,8 @@ from unittest.mock import patch
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import Session, select
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.db.models import User
