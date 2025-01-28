@@ -11,7 +11,7 @@
 	}
 </script>
 
-<div class="flex h-full items-center justify-center" {style}>
+<div class="flex grow items-center justify-center" {style}>
 	<section class="w-full space-y-10 bg-background/30 p-10 text-foreground sm:w-[640px]">
 		<h1 class="text-3xl font-bold">
 			Erreur {page.status}<br />

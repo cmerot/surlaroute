@@ -2,6 +2,7 @@
 	import * as Select from "$lib/components/ui/select";
 	import { Layers } from "lucide-svelte";
 	import {
+		AttributionControl,
 		Control,
 		ControlButton,
 		ControlGroup,
@@ -14,8 +15,10 @@
 	let { styleName = $bindable() } = $props();
 </script>
 
-<NavigationControl position="top-right" />
-<Control position="top-right">
+<ScaleControl position="bottom-left" />
+<AttributionControl position="bottom-right" />
+
+<Control position="bottom-right">
 	<ControlGroup>
 		<Select.Root type="single" bind:value={styleName as string}>
 			<SelectTrigger>
@@ -31,4 +34,4 @@
 		</Select.Root>
 	</ControlGroup>
 </Control>
-<ScaleControl position="bottom-left" />
+<NavigationControl position="bottom-right" />

@@ -86,13 +86,32 @@ export function encodeCenterString(coordinates: Center): string {
 export function decodeCenterString(coordinates: string): Center {
 	const [lat, lng, zoom] = coordinates.split(",");
 	return {
-		lat: roundTo(parseFloat(lat), 7),
-		lng: roundTo(parseFloat(lng), 7),
+		lat: roundTo(parseFloat(lat), 3),
+		lng: roundTo(parseFloat(lng), 3),
 		zoom: roundTo(parseFloat(zoom), 2),
 	};
 }
 
-export function decodeBoundsString(bounds: string): BBox {
+export interface MapPosition {
+	lat: number;
+	lon: number;
+	zoom: number;
+}
+
+export function parseUrlSearch(search: string): MapPosition | null {
+	const match = search.match(/^\?@(-?\d+\.?\d*),(-?\d+\.?\d*),(\d+\.?\d*)/);
+
+	if (!match) return null;
+
+	const [, lat, lon, zoom] = match;
+
+	return {
+		lat: parseFloat(lat),
+		lon: parseFloat(lon),
+		zoom: parseFloat(zoom),
+	};
+}
+export function decodeBoundsString(bounds: string): LngLatBoundsLike {
 	const [w, s, e, n] = bounds.split(",");
 	return [parseFloat(w), parseFloat(s), parseFloat(e), parseFloat(n)];
 }

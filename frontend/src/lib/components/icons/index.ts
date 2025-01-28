@@ -28,6 +28,7 @@ import LogotextRoot, { type LogotextProps } from "./logotext.svelte";
 import MapPin from "./map-pin.svelte";
 import Mobility, { type MobilityProps } from "./mobility.svelte";
 import ThemeRoot, { type ThemeProps } from "./theme.svelte";
+import Github from "./github.svelte";
 export {
 	CircleUserRound as Account,
 	Activity,
@@ -53,6 +54,7 @@ export {
 	ThemeRoot as Theme,
 	Tickets as Tour,
 	Users,
+	Github,
 	Bike as Velo,
 	Globe as Website,
 	type ActivityProps,
