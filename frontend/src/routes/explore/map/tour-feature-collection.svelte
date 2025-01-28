@@ -6,7 +6,7 @@
 		TourLineFeature,
 	} from "$lib/backend/client";
 	import ActorFeatureMarker from "./actor-feature-marker.svelte";
-	import EventFeatureMarker from "./event-feature-marker.svelte";
+	import EventFeatureMarker from "./event-venues-markers.svelte";
 	import TourFeatureLineLayer from "./tour-feature-line-layer.svelte";
 
 	type Props = {

@@ -16,26 +16,24 @@
 	}
 </script>
 
-<Marker lngLat={lonLngTo2D(feature.geometry.coordinates)} offset={[0, -16]}>
-	<div class="marker-container hover:cursor-pointer">
-		{#if feature.properties.actor_type == "Org"}
-			<MapPin
-				activity={feature.properties.activities[0]}
-				size={36}
-				selected={feature.properties.id === selectedMarkerId}
-				onclick={() => {
-					toggleSelected(feature.properties.id);
-				}}
-				class={feature.properties.id === selectedMarkerId ? "z-50" : "z-10"}
-			/>
-		{:else}
-			<MapPin
-				size={36}
-				selected={feature.properties.id === selectedMarkerId}
-				onclick={() => {
-					toggleSelected(feature.properties.id);
-				}}
-			/>
-		{/if}
-	</div>
+<Marker
+	lngLat={lonLngTo2D(feature.geometry.coordinates)}
+	offset={[0, -14]}
+	class={feature.properties.id === selectedMarkerId ? "z-10" : ""}
+>
+	<button
+		class="marker-container hover:cursor-pointer"
+		onclickcapture={(e) => {
+			e.stopPropagation();
+			toggleSelected(feature.properties.id);
+		}}
+	>
+		<MapPin
+			activity={feature.properties.actor_type == "Org"
+				? feature.properties.activities[0]
+				: undefined}
+			size={36}
+			selected={feature.properties.id === selectedMarkerId}
+		/>
+	</button>
 </Marker>

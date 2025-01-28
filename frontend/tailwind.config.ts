@@ -143,6 +143,7 @@ const config: Config = {
 					300: "hsl(48, 49%, 84%)",
 				},
 				couleur: {
+					dark: "#7b6191",
 					bg: "#b696c6",
 					fg: "#fff",
 				},

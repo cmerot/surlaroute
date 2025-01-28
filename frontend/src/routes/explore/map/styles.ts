@@ -1,13 +1,11 @@
-import type { StyleSpecification } from "maplibre-gl";
+import type { StyleSpecification } from "svelte-maplibre";
 const key = "";
 export type Style = {
 	style: string | StyleSpecification;
 	title: string;
 };
 
-export type Styles = {
-	[key: string]: Style;
-};
+export type Styles = Record<string, Style>;
 
 export const styles: Styles = {
 	cyclosm_raster: {
@@ -164,7 +162,7 @@ export const styles: Styles = {
 			name: "Rails",
 			sources: {
 				maptiler_planet: {
-					url: "https://api.maptiler.com/tiles/v3/tiles.json?key=" + key,
+					url: `https://api.maptiler.com/tiles/v3/tiles.json?key=${key}`,
 					type: "vector",
 				},
 				maptiler_attribution: {
@@ -190,12 +188,15 @@ export const styles: Styles = {
 					type: "background",
 					layout: { visibility: "visible" },
 					paint: {
-						"background-color": {
-							stops: [
-								[6, "hsl(60,20%,85%)"],
-								[20, "hsl(60,24%,90%)"],
-							],
-						},
+						"background-color": [
+							"interpolate",
+							["linear"],
+							["zoom"],
+							6,
+							"hsl(60,20%,85%)",
+							20,
+							"hsl(60,24%,90%)",
+						],
 					},
 				},
 				{
@@ -206,12 +207,15 @@ export const styles: Styles = {
 					maxzoom: 14,
 					layout: { visibility: "visible" },
 					paint: {
-						"fill-color": {
-							stops: [
-								[2, "hsl(60,23%,81%)"],
-								[14, "hsl(60,21%,85%)"],
-							],
-						},
+						"fill-color": [
+							"interpolate",
+							["linear"],
+							["zoom"],
+							2,
+							"hsl(60,23%,81%)",
+							14,
+							"hsl(60,21%,85%)",
+						],
 					},
 					filter: ["in", "class", "neighbourhood", "residential", "suburb"],
 				},
@@ -233,12 +237,15 @@ export const styles: Styles = {
 					maxzoom: 8,
 					layout: { visibility: "visible" },
 					paint: {
-						"fill-color": {
-							stops: [
-								[1, "hsla(91,40%,70%,0.25)"],
-								[7, "hsla(91,40%,70%,0.6)"],
-							],
-						},
+						"fill-color": [
+							"interpolate",
+							["linear"],
+							["zoom"],
+							1,
+							"hsla(91,40%,70%,0.25)",
+							7,
+							"hsla(91,40%,70%,0.6)",
+						],
 					},
 					filter: ["in", "class", "forest", "tree"],
 				},
@@ -251,12 +258,7 @@ export const styles: Styles = {
 					layout: { visibility: "visible" },
 					paint: {
 						"fill-color": "hsla(54,81%,53%,0.3)",
-						"fill-opacity": {
-							stops: [
-								[7, 0.7],
-								[12, 1],
-							],
-						},
+						"fill-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0.7, 12, 1],
 						"fill-antialias": false,
 					},
 					filter: ["==", "class", "sand"],
@@ -270,12 +272,7 @@ export const styles: Styles = {
 					layout: { visibility: "visible" },
 					paint: {
 						"fill-color": "hsla(89,40%,78%,0.8)",
-						"fill-opacity": {
-							stops: [
-								[7, 0.7],
-								[12, 1],
-							],
-						},
+						"fill-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0.7, 12, 1],
 						"fill-antialias": false,
 					},
 					filter: ["==", "class", "grass"],
@@ -289,12 +286,7 @@ export const styles: Styles = {
 					layout: { visibility: "visible" },
 					paint: {
 						"fill-color": "hsla(91,40%,70%,0.8)",
-						"fill-opacity": {
-							stops: [
-								[7, 0.7],
-								[12, 1],
-							],
-						},
+						"fill-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0.7, 12, 1],
 						"fill-antialias": false,
 					},
 					filter: ["==", "class", "wood"],
@@ -319,12 +311,7 @@ export const styles: Styles = {
 					layout: { visibility: "visible" },
 					paint: {
 						"line-color": "hsl(205,56%,73%)",
-						"line-width": {
-							stops: [
-								[9, 1],
-								[18, 3],
-							],
-						},
+						"line-width": ["interpolate", ["linear"], ["zoom"], 9, 1, 18, 3],
 						"line-opacity": ["match", ["get", "brunnel"], "tunnel", 0.7, 1],
 					},
 					filter: ["all", ["!=", "intermittent", 1]],
@@ -548,16 +535,21 @@ export const styles: Styles = {
 					},
 					paint: {
 						"line-color": "hsl(0, 0%, 100%)",
-						"line-width": {
-							base: 1.55,
-							stops: [
-								[15, 0.5],
-								[16, 1],
-								[18, 2],
-								[20, 3],
-								[22, 4],
-							],
-						},
+						"line-width": [
+							"interpolate",
+							["linear"],
+							["zoom"],
+							15,
+							0.5,
+							16,
+							1,
+							18,
+							2,
+							20,
+							3,
+							22,
+							4,
+						],
 						"line-dasharray": [1, 1],
 					},
 					filter: ["==", "class", "path"],
@@ -1082,16 +1074,16 @@ export const styles: Styles = {
 					filter: ["==", "class", "continent"],
 				},
 			],
-			glyphs: "https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=" + key,
+			glyphs: `https://api.maptiler.com/fonts/{fontstack}/{range}.pbf?key=${key}`,
 			bearing: 0,
 			pitch: 0,
 			center: [0, 0],
 			zoom: 1,
-		},
+		} as StyleSpecification,
 	},
 };
 
-export function getStyleName(mode: "light" | "dark" | undefined): keyof Styles {
+export function getDefaultStyleName(mode: "light" | "dark" = "light"): keyof Styles {
 	switch (mode) {
 		case "dark":
 			return "carto_dark_matter";

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import MainNav from "$lib/components/site/nav/main-nav.svelte";
 	import MobileNav from "$lib/components/site/nav/mobile-nav.svelte";
 	import type { Nav } from "$lib/types/nav";
 	import { Logo } from "../icons";
@@ -9,7 +8,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-40 w-full bg-sidebar text-sidebar-foreground backdrop-blur supports-[backdrop-filter]:bg-sidebar"
+	class="sticky top-0 z-[60] w-full bg-sidebar text-sidebar-foreground shadow backdrop-blur supports-[backdrop-filter]:bg-sidebar"
 >
 	<div class="flex h-16 items-center p-4">
 		<MobileNav {title} {navs} />

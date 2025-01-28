@@ -26,6 +26,25 @@
 		showActors = $bindable(),
 	}: Props = $props();
 
+	let selectedTabName: string = $state("actors");
+
+	let tours = $derived.by(() =>
+		results.map((tour) => {
+			const events = tour.features
+				.filter((feature) => feature.properties.type === "event_point")
+				.map((event) => event.properties) as Array<EventPointFeatureProperties>;
+
+			const actors = tour.features
+				.filter((feature) => feature.properties.type === "tour_actor")
+				.map((actor) => actor.properties) as Array<OrgFeatureProperties | PersonFeatureProperties>;
+
+			return {
+				...tour.properties,
+				events,
+				actors,
+			};
+		}),
+	);
 	function isSelectedTour(id: string) {
 		return id === selectedTourId;
 	}
@@ -33,38 +52,33 @@
 	function isSelectedMarker(id: string) {
 		return id === selectedMarkerId;
 	}
+	function scrollToSelectedMarker() {
+		const selectedElement = document.querySelector(".selected-marker");
+		if (selectedElement) {
+			selectedElement.scrollIntoView({ behavior: "smooth", block: "center" });
+		}
+	}
 
-	/**
-	 * Reset selected event id when tour is unselected
-	 */
 	$effect(() => {
-		if (!selectedTourId || selectedMarkerId == "") {
-			selectedMarkerId = undefined;
+		showActors = selectedTabName === "actors";
+	});
+
+	$effect(() => {
+		if (selectedMarkerId) {
+			scrollToSelectedMarker();
 		}
 	});
 
-	let tours = $derived.by(() =>
-		results.map((tourFeatureCollection) => {
-			const events = tourFeatureCollection.features
-				.filter((feature) => feature.properties.type === "event_point")
-				.map((event) => event.properties) as Array<EventPointFeatureProperties>;
-
-			const actors = tourFeatureCollection.features
-				.filter((feature) => feature.properties.type === "tour_actor")
-				.map((actor) => actor.properties) as Array<OrgFeatureProperties | PersonFeatureProperties>;
-
-			return {
-				...tourFeatureCollection.properties,
-				events,
-				actors,
-			};
-		}),
-	);
-
-	let value: string = $state("events");
+	$effect(() => {
+		if (selectedTourId) {
+			selectedTabName = "events";
+		}
+	});
 
 	$effect(() => {
-		showActors = value === "actors";
+		if (!selectedTourId && selectedTabName === "actors") {
+			selectedTabName = "events";
+		}
 	});
 </script>
 
@@ -103,7 +117,7 @@
 				</div>
 			</AccordionTrigger>
 			<Accordion.Content class="space-y-4 p-4">
-				<Tabs.Root bind:value>
+				<Tabs.Root bind:value={selectedTabName}>
 					<Tabs.List>
 						<Tabs.Trigger value="events">Dates</Tabs.Trigger>
 						<Tabs.Trigger value="actors">Ressources</Tabs.Trigger>
@@ -113,8 +127,8 @@
 							{#each event.event_venues as actor}
 								<div class="flex gap-2">
 									<Button
-										class=" grow space-x-2 overflow-hidden {isSelectedMarker(event.id)
-											? ' outline outline-2'
+										class="grow space-x-2 overflow-hidden {isSelectedMarker(event.id)
+											? 'selected-marker outline outline-2'
 											: ''}"
 										variant="ghost"
 										onclick={() => {
@@ -147,8 +161,8 @@
 						{#each tour.actors as actor}
 							<div class="flex gap-2">
 								<Button
-									class=" grow overflow-hidden {isSelectedMarker(actor.id)
-										? ' outline outline-2'
+									class="grow overflow-hidden {isSelectedMarker(actor.id)
+										? 'selected-marker outline outline-2'
 										: ''}"
 									variant="ghost"
 									onclick={() => {

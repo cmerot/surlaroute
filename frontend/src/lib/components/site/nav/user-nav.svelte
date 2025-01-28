@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { enhance } from "$app/forms";
 	import { Theme } from "$lib/components/icons";
-	import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import { auth } from "$lib/stores/auth";
 	import { cn } from "$lib/utils";

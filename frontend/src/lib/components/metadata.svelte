@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { dev } from '$app/environment';
-	import { page } from '$app/state';
-	import { siteConfig } from '$lib/config/site.js';
+	import { dev } from "$app/environment";
+	import { page } from "$app/state";
+	import { siteConfig } from "$lib/config/site.js";
 
 	const title = $derived(
-		page.data?.title ? `${page.data.title} - ${siteConfig.name}` : siteConfig.name
+		page.data?.title ? `${page.data.title} - ${siteConfig.name}` : siteConfig.name,
 	);
 </script>
 

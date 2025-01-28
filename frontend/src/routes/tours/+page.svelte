@@ -44,9 +44,7 @@
 </script>
 
 <Page.Root>
-	<Page.Title class="flex items-center" Icon={Tour}>
-		<span class="grow">Tournées</span>
-	</Page.Title>
+	<Page.Title Icon={Tour}>Tournées</Page.Title>
 	<Page.Content class="space-y-8">
 		{#if data.results.length < 1}
 			<p>Pas de résultat</p>

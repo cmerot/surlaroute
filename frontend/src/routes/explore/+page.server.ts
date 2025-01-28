@@ -7,14 +7,7 @@ import {
 import { getErrorMessage } from "$lib/slr-utils";
 import type { FeatureCollection } from "geojson";
 import type { PageServerLoad } from "./$types";
-import {
-	decodeBoundsString,
-	decodeCenterString,
-	type EntityResult,
-	type GeoQuery,
-	type GeoQueryBase,
-	type Results,
-} from "./utils";
+import { type EntityResult, type Results } from "./utils";
 
 /**
  * Nominatim (OSM) geocoder, ready to use for our Map
@@ -93,39 +86,26 @@ async function getEntity(
 	}
 }
 
-function buildGeoQuery(params: { center?: string; bounds?: string }): GeoQuery {
-	// default bounds: bounds:-5.1978240,42.1583536,9.0493105,51.6488428
-	const baseQuery: GeoQueryBase = {
-		// center: {
-		// 	lat: 46.3398967,
-		// 	lng: 3.3996692,
-		// 	zoom: 5.21,
-		// },
-		// bounds: [-5.4117538, 41.7436202, 10.253668, 52.1611514],
-		bounds: [-5.1168957, 41.2652227, 9.8566018, 51.4183293],
-	};
-
-	if (params.center) {
-		baseQuery.center = decodeCenterString(params.center);
-	}
-
-	if (params.bounds) {
-		baseQuery.bounds = decodeBoundsString(params.bounds);
-	}
-
-	return baseQuery as GeoQuery;
-}
 export const load: PageServerLoad = async ({ url, locals, fetch }) => {
-	// Center coordinates
-	const center = url.searchParams.get("c") || undefined;
+	// search parameter is b=w,s,e,n
+	// default value for bounds : [-5.1168957, 41.2652227, 9.8566018, 51.4183293];
+	const defaultBounds = [-5.1168957, 41.2652227, 9.8566018, 51.4183293] as [
+		number,
+		number,
+		number,
+		number,
+	];
+	let bounds = defaultBounds;
+	const boundsParam = url.searchParams.get("b");
 
-	// Bbox -> used to filter results
-	const bounds = url.searchParams.get("b") || undefined;
-
-	const geoQuery: GeoQuery = buildGeoQuery({ center: center, bounds: bounds });
+	if (boundsParam) {
+		const parts = boundsParam.split(",").map(Number);
+		if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
+			bounds = parts as [number, number, number, number];
+		}
+	}
 
 	const mobilityPath = url.searchParams.get("m") || undefined;
-
 	// Search results
 	const results: Partial<Results> = {};
 
@@ -133,17 +113,17 @@ export const load: PageServerLoad = async ({ url, locals, fetch }) => {
 	const textQuery = url.searchParams.get("q") || undefined;
 	if (textQuery) {
 		console.log("Nominatim search");
-		const nominatimResult = await forwardGeocodingNominatim(fetch, textQuery, bounds);
+		const nominatimResult = await forwardGeocodingNominatim(fetch, textQuery, bounds.join(","));
 		results.nominatim = nominatimResult;
 	}
 
 	// SLR search
-	console.log("SLR exploreGetData");
+	console.log(`SLR search with bounds ${bounds.join(",")}`);
 	const slrResult = await exploreGetData({
 		headers: {
 			Authorization: `Bearer ${locals.authToken}`,
 		},
-		query: { bbox: geoQuery.bounds.join(","), mobility_path: mobilityPath },
+		query: { bbox: bounds.join(","), mobility_path: mobilityPath },
 	});
 
 	if (slrResult.error) {
@@ -165,14 +145,14 @@ export const load: PageServerLoad = async ({ url, locals, fetch }) => {
 
 	const response: {
 		query: {
-			geo: GeoQuery;
+			bounds: [number, number, number, number];
 			q?: string;
 			m?: string;
 		};
 		results: Results;
 	} = {
 		query: {
-			geo: geoQuery,
+			bounds,
 			q: textQuery,
 			m: mobilityPath,
 		},

@@ -71,17 +71,17 @@
 <Metadata />
 <Toaster />
 <Tooltip.Provider>
-	<div class="relative flex min-h-screen flex-col">
+	<div class="flex min-h-screen flex-col">
 		<SiteHeader title={siteConfig.name} {navs} />
-		<div class="flex-1 items-start md:grid md:grid-cols-[220px_minmax(0,1fr)]">
-			<aside
-				class="fixed top-16 z-30 hidden h-[calc(100vh-3.5rem)] w-full shrink-0 md:sticky md:block"
-			>
-				<ScrollArea class="h-full space-y-4  bg-sidebar text-sidebar-foreground">
+		<div class="relative grid flex-1 items-start md:grid-cols-[220px_minmax(0,1fr)]">
+			<aside class="relative z-[500] hidden h-[calc(100dvh-4rem)] shadow md:sticky md:block">
+				<ScrollArea class="h-full space-y-4 bg-sidebar text-sidebar-foreground">
 					<SidebarNav {navs} />
 				</ScrollArea>
 			</aside>
-			{@render children?.()}
+			<div class="flex min-h-[calc(100dvh-4rem)] flex-col">
+				{@render children?.()}
+			</div>
 		</div>
 	</div>
 </Tooltip.Provider>

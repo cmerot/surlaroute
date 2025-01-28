@@ -20,15 +20,15 @@ import {
 	Tickets,
 	UserRound,
 	Users,
-	UsersRound
-} from 'lucide-svelte';
-import Activity, { type ActivityProps } from './activity.svelte';
-import LogoRoot, { type LogoProps } from './logo.svelte';
-import LogotextRoot, { type LogotextProps } from './logotext.svelte';
-import MapPin from './map-pin.svelte';
-import Mobility, { type MobilityProps } from './mobility.svelte';
-import ThemeRoot, { type ThemeProps } from './theme.svelte';
-import Github from './github.svelte';
+	UsersRound,
+} from "lucide-svelte";
+import Activity, { type ActivityProps } from "./activity.svelte";
+import LogoRoot, { type LogoProps } from "./logo.svelte";
+import LogotextRoot, { type LogotextProps } from "./logotext.svelte";
+import MapPin from "./map-pin.svelte";
+import Mobility, { type MobilityProps } from "./mobility.svelte";
+import ThemeRoot, { type ThemeProps } from "./theme.svelte";
+import Github from "./github.svelte";
 export {
 	CircleUserRound as Account,
 	Activity,
@@ -61,5 +61,5 @@ export {
 	type LogoProps,
 	type LogotextProps,
 	type MobilityProps,
-	type ThemeProps
+	type ThemeProps,
 };
