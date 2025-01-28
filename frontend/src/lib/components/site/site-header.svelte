@@ -8,7 +8,7 @@
 </script>
 
 <header
-	class="sticky top-0 z-[60] w-full bg-sidebar text-sidebar-foreground shadow backdrop-blur supports-[backdrop-filter]:bg-sidebar"
+	class="sticky top-0 z-[40] w-full bg-sidebar text-sidebar-foreground shadow backdrop-blur supports-[backdrop-filter]:bg-sidebar"
 >
 	<div class="flex h-16 items-center p-4">
 		<MobileNav {title} {navs} />

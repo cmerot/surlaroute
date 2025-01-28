@@ -74,7 +74,9 @@
 	<div class="flex min-h-screen flex-col">
 		<SiteHeader title={siteConfig.name} {navs} />
 		<div class="relative grid flex-1 items-start md:grid-cols-[220px_minmax(0,1fr)]">
-			<aside class="relative z-[500] hidden h-[calc(100dvh-4rem)] shadow md:sticky md:block">
+			<aside
+				class="top-16 z-30 hidden h-[calc(100dvh-4rem)] w-full shrink-0 shadow md:sticky md:block"
+			>
 				<ScrollArea class="h-full space-y-4 bg-sidebar text-sidebar-foreground">
 					<SidebarNav {navs} />
 				</ScrollArea>

@@ -34,7 +34,7 @@
 		>
 			<CircleUser />
 		</DropdownMenu.Trigger>
-		<DropdownMenu.Content align="end" class="flex items-center gap-2">
+		<DropdownMenu.Content align="end" class="relative z-[40] flex items-center gap-2 ">
 			<DropdownMenu.Group>
 				{#if user}
 					<DropdownMenu.GroupHeading class="px-5 py-3 text-xs font-normal text-muted-foreground">

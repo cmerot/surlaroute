@@ -12,7 +12,7 @@
 {#if loading}
 	<div
 		class={clsx(
-			"loading-bar fixed inset-x-0 top-0 z-50 h-1 bg-couleur-bg transition-opacity duration-300",
+			"loading-bar fixed inset-x-0 top-0 z-[50] h-1 bg-couleur-bg transition-opacity duration-300",
 			classNames,
 		)}
 		{...restProps}

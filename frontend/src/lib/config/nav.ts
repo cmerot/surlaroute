@@ -39,7 +39,7 @@ export const navConfig: NavConfig = {
 		],
 	},
 	userNav: {
-		title: "Mes donnée",
+		title: "Mes données",
 		items: [{ title: "Mon compte", href: "/me", icon: Account }],
 	},
 };
